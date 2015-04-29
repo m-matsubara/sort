@@ -146,9 +146,13 @@ public class SortTest {
 			}
 		};
 
+		//	ソートのタイプ（アルゴリズム）の決定
 		String sortType = args[0];
 
+		//	ソート対象サイズ
 		int arraySize = Integer.parseInt(args[1]);
+
+		//	ソート対象種類（ランダム・昇順ソート済み・降順ソート済み・同じ値（キー値））
 		int arrayType = 0;
 		if (args.length >= 3) {
 			if (args[2].equals("R"))	//	Random
@@ -162,11 +166,13 @@ public class SortTest {
 			else
 				throw new Exception("arguments error ");
 		}
+		//	繰り返し数
 		int times = 10;
 		if (args.length >= 4) {
 			times = Integer.parseInt(args[3]);
 		}
 
+		//	ソート対象配列の初期化
 		array = new SortItem[arraySize];
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem(i / 10);
@@ -174,7 +180,7 @@ public class SortTest {
 
 		//System.out.println("times	algorithm	array type	array size	time	compare count");
 		for (int idx = 1; idx <= times; idx++) {
-
+			//	配列の準備
 			String arrayTypeName = "";
 			switch (arrayType) {
 				case 0:
@@ -203,12 +209,13 @@ public class SortTest {
 					break;
 				}
 			}
-			assignOriginalOrderArray(array);
+			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
+
 
 			String sortName = "";
 			boolean stable = false;
 			SortTest.compareCount = 0;
-			System.gc();
+			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			startTime = System.currentTimeMillis();
 			boolean validation = true;
 
@@ -245,17 +252,17 @@ public class SortTest {
 			else if (sortType.equals("QuickSort(Median3)") || sortType.equals("qsM3")) {
 				sortName = "QuickSort(Median 3)";
 				stable = false;
-				ManyPivotsSort.quickSortMedian3(array, 0, array.length, comparator);
+				ManyPivotSort.quickSortMedian3(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("QuickSort") || sortType.equals("qs")) {
 				sortName = "QuickSort";
 				stable = false;
-				ManyPivotsSort.quickSort(array, 0, array.length, comparator);
+				ManyPivotSort.quickSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("ManyPivotSort") || sortType.equals("mps")) {
 				sortName = "ManyPivotSort";
 				stable = false;
-				ManyPivotsSort.mpSort(array, 0, array.length, comparator);
+				ManyPivotSort.mpSort(array, 0, array.length, comparator);
 			}
 			else
 				throw new Exception("arguments error ");

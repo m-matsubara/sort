@@ -21,6 +21,8 @@ public class MmSort<T> {
 	public static final <T> void insertSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
 		final int range = max - min;
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -58,7 +60,7 @@ public class MmSort<T> {
 
 			array[j + 1] = key;
 		}
-}
+	}
 
 	/**
 	 * 挿入ソート（挿入位置を二分検索によって探索する）
@@ -70,6 +72,8 @@ public class MmSort<T> {
 	public static <T> void insertBinSort(T[] array, int min, int max, Comparator<? super T> comparator)
 	{
 		final int range = max - min;
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -164,6 +168,7 @@ public class MmSort<T> {
 	{
 		final int range = max - min;
 
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -278,8 +283,9 @@ public class MmSort<T> {
 	 */
 	public static final <T> void masSort(final T[] array, final int min, final int max, final T[] works, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;			//	ソート範囲サイズ
 
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -329,23 +335,26 @@ public class MmSort<T> {
 		//	ワーク領域へコピー
 		System.arraycopy(array, min, works, 0, range);	//	正確には最後のブロックはworkにコピーしなくてもよいのだが、かえって制御が複雑になるので全部コピーする。
 
+		//	各ブロックの先頭要素をキャッシュ(CPUのキャッシュヒット率が上がるかなと思って)
 		for (int blockIdx = 0; blockIdx < blockCount; blockIdx++) {
 			blockStartItemCache[blockIdx] = works[blockStart[blockIdx]];
 		}
 
 		//	各ブロックの先頭で比較して、小さい値を持つブロック順にブロックをソート → minOrderBlocks
+		//	（二分探索を使った挿入ソート）
 		for (int minOrderBlocksIdx = 1; minOrderBlocksIdx < blockCount; minOrderBlocksIdx++) {
-			int blockIdx = minOrderBlocks[minOrderBlocksIdx];
+			int blockIdx = minOrderBlocks[minOrderBlocksIdx];	//	ブロックインデックス（このブロックの最小値は他のブロックの最小値と比較して何番目か調べる）
 			//T key = works[blockStart[blockIdx]];
-			T key = blockStartItemCache[blockIdx];
-			int minIdx = 0;
-			int maxIdx = minOrderBlocksIdx;
-			int curIdx = (minIdx + maxIdx) / 2;
+			T key = blockStartItemCache[blockIdx];				//	キー値
+			int minIdx = 0;										//	探索範囲の最小インデックス
+			int maxIdx = minOrderBlocksIdx;						//	探索範囲の最大インデックス + 1
+			int curIdx = (minIdx + maxIdx) / 2;					//	探索範囲の中央インデックス
+			//	二分探索処理
 			while (minIdx < maxIdx) {
 				int curBlockIdx = minOrderBlocks[curIdx];
 				//int compVal = comparator.compare(key, works[blockStart[curBlockIdx]]);
 				int compVal = comparator.compare(key, blockStartItemCache[curBlockIdx]);
-				if (compVal == 0) {
+				if (compVal == 0) {		//	キー値が同じであるなら、ブロック番号の小さい方を先にする。（安定のため）
 					if (blockIdx < curBlockIdx)
 						compVal = -1;
 					else
@@ -358,6 +367,7 @@ public class MmSort<T> {
 				}
 				curIdx = (minIdx + maxIdx) / 2;
 			}
+			//	挿入処理
 			for (int j = minOrderBlocksIdx - 1; j >= curIdx; j--) {
 				minOrderBlocks[j + 1] = minOrderBlocks[j];
 			}
@@ -423,18 +433,20 @@ public class MmSort<T> {
 			}
 			else {
 				//	minOrderBlocks[0] のブロックは先頭の値を取り出したので次の先頭は大きな値になる。二分検索でminOrderBlocksのどの位置にすればよいか決定し位置を修正する
+				//	（部分的な二分探索を使った挿入ソート…先頭ブロックの最小値が変わったのでそこだけ適切な順序に並べ替え）
 				blockStartItemCache[blockIdx] = works[valueIdx + 1];
-				int minBlockIdx = minOrderBlocks[0];
+				int minBlockIdx = minOrderBlocks[0];			//	minOrderBlocks[0]の最小値は取り出したので新しい最小値が他のブロックの最小値と比較して何番目か調べる
 				//T key = works[blockStart[minBlockIdx]];
 				T key = blockStartItemCache[minBlockIdx];
-				int minIdx = 1;
-				int maxIdx = blockCount;
-				int curIdx = (minIdx + maxIdx) / 2;
+				int minIdx = 1;									//	探索範囲の最小インデックス
+				int maxIdx = blockCount;						//	探索範囲の最大インデックス
+				int curIdx = (minIdx + maxIdx) / 2;				//	探索範囲の中央インデックス
+				//	二分探索処理
 				while (minIdx < maxIdx) {
 					int curBlockIdx = minOrderBlocks[curIdx];
 					//int compVal = comparator.compare(key, works[blockStart[curBlockIdx]]);
 					int compVal = comparator.compare(key, blockStartItemCache[curBlockIdx]);
-					if (compVal == 0) {
+					if (compVal == 0) {							//	キー値が同じであるなら、ブロック番号の小さい方を先にする。（安定のため）
 						if (minBlockIdx < curBlockIdx)
 							compVal = -1;
 						else
@@ -448,7 +460,7 @@ public class MmSort<T> {
 					}
 					curIdx = (minIdx + maxIdx) / 2;
 				}
-
+				//	挿入処理
 				for (int j = 1; j < curIdx; j++) {
 					minOrderBlocks[j - 1] = minOrderBlocks[j];
 				}

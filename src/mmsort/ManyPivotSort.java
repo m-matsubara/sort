@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class ManyPivotsSort {
+public class ManyPivotSort {
 	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	/**
 	 * コムソート
@@ -20,7 +20,9 @@ public class ManyPivotsSort {
 	 */
 	public static final <T> void combSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;	//	ソート範囲サイズ
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -79,7 +81,9 @@ public class ManyPivotsSort {
 	 */
 	public static final <T> void quickSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;		//	ソート範囲サイズ
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -114,10 +118,10 @@ public class ManyPivotsSort {
 		}
 */
 
-		final T pivot = array[min + range / 2];
+		final T pivot = array[min + range / 2];		//	ピボット値（ソート対象の中央位置）
 
-		int curMin = min;
-		int curMax = max - 1;
+		int curMin = min;				//	現在処理中位置の小さい方の位置
+		int curMax = max - 1;			//	現在処理中位置の大きい方の位置
 
 		do {
 			while (comparator.compare(array[curMin], pivot) < 0) {
@@ -154,7 +158,9 @@ public class ManyPivotsSort {
 	 */
 	public static final <T> void quickSortMedian3(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;		//	ソート範囲サイズ
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -188,13 +194,14 @@ public class ManyPivotsSort {
 			return;
 		}
 */
-		T pivot;
+		T pivot;							//	ピボット値
 //		pivot = array[min + range / 2];
 
-		T pivot1 = array[min];
-		T pivot2 = array[min + range / 2];
-		T pivot3 = array[max - 1];
+		T pivot1 = array[min];				//	ピボット候補１
+		T pivot2 = array[min + range / 2];	//	ピボット候補２
+		T pivot3 = array[max - 1];			//	ピボット候補３
 
+		//	３つのピボット候補から中央値を取得し、ピボット値とする
 		if (comparator.compare(pivot1, pivot2) < 0) {
 			if (comparator.compare(pivot2, pivot3) < 0) {
 				pivot = pivot2;		//	pivot1 < pivot2 < pivot3
@@ -213,8 +220,8 @@ public class ManyPivotsSort {
 			}
 		}
 
-		int curMin = min;
-		int curMax = max - 1;
+		int curMin = min;				//	現在処理中位置の小さい方の位置
+		int curMax = max - 1;			//	現在処理中位置の大きい方の位置
 
 		do {
 			while (comparator.compare(array[curMin], pivot) < 0) {
@@ -244,6 +251,9 @@ public class ManyPivotsSort {
 
 	/**
 	 * メニー・ピボット・ソート
+	 *
+	 * 内部的に呼び出される。ピボットの配列（ピボット候補）を引数にもつ
+	 *
 	 * @param array ソート対象
 	 * @param min ソート対象の添え字の最小値
 	 * @param max ソート対象の添え字の最大値 + 1
@@ -254,7 +264,9 @@ public class ManyPivotsSort {
 	 */
 	public static final <T> void mpSort(final T[] array, final int min, final int max, final T[] pivots, final int minPivots, final int maxPivots, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;		//	ソート範囲サイズ
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -290,12 +302,13 @@ public class ManyPivotsSort {
 */
 
 		final int pivotIdx = (minPivots + maxPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
-		final T pivot = pivots[pivotIdx];						//
+		final T pivot = pivots[pivotIdx];						//	ピボット値
 
-		int curMin = min;
-		int curMax = max - 1;
+		int curMin = min;			//	現在処理中位置の小さい方の位置
+		int curMax = max - 1;		//	現在処理中位置の大きい方の位置
 
 		do {
+			//	このあたりは割と普通のクイックソートのまま。
 			int comp1;
 			while ((comp1 = comparator.compare(array[curMin], pivot)) < 0) {
 				curMin++;
@@ -341,7 +354,9 @@ public class ManyPivotsSort {
 	 */
 	public static final <T> void mpSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;
+		final int range = max - min;		//	ソート範囲サイズ
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
@@ -399,7 +414,7 @@ public class ManyPivotsSort {
 			pivotsSize = 32 - 1;
 */
 		@SuppressWarnings("unchecked")
-		final T[] pivots = (T[])new Object[pivotsSize];
+		final T[] pivots = (T[])new Object[pivotsSize];		//	ピボット候補の配列
 
 		//	ピボット（複数）の選出
 		for (int i = 0; i < pivots.length; i++) {
@@ -408,7 +423,6 @@ public class ManyPivotsSort {
 		//	ピボット値のみをソート
 		combSort(pivots, 0, pivots.length, comparator);
 		//	ソート対象本体のソート
-		//mp3wSort(array, min, max, pivots, 0, pivots.length, comparator);
 		mpSort(array, min, max, pivots, 0, pivots.length, comparator);
 	}
 
