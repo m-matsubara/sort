@@ -1,0 +1,270 @@
+/*
+ * ソートのベンチマークプログラム
+ *
+ * Copyright (c) 2015 masakazu matsubara
+ * Released under the MIT license
+ * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
+ */
+package mmsort;
+
+import java.util.Comparator;
+import java.util.Random;
+
+public class SortTest {
+	protected static long compareCount = 0;									//	比較された回数
+
+	/**
+	 * ソート対象配列の要素
+	 * @author matsubara
+	 *
+	 */
+	static class SortItem
+	{
+		public int key;				//	ソートのキー
+		public int orginalOrder;	//	ソート前の順序（安定ソートの確認用）
+		public SortItem(int key)
+		{
+			this.key = key;
+			this.orginalOrder = 0;
+		}
+	}
+
+
+	/**
+	 * 配列を昇順の値で初期化する
+	 * @param array 対象配列
+	 */
+	public static void initArray(SortItem[] array)
+	{
+		for (int i = 0; i < array.length; i++) {
+			array[i].key = i / 10;
+		}
+	}
+
+
+	/**
+	 * 配列を降順の値で初期化する
+	 * @param array 対象配列
+	 */
+	public static void initReverseArray(SortItem[] array)
+	{
+		for (int i = 0; i < array.length; i++) {
+			array[i].key = (array.length - i - 1) / 10;
+		}
+	}
+
+
+	/**
+	 * 配列を降順の値で初期化する
+	 * @param array 対象配列
+	 */
+	public static void initFlatArray(SortItem[] array)
+	{
+		for (int i = 0; i < array.length; i++) {
+			array[i].key = 0;
+		}
+	}
+
+
+	/**
+	 * 配列の値をシャッフルする
+	 * @param array 対象配列
+	 * @param randSeed 乱数の種
+	 */
+	public static void shuffleArray(SortItem[] array, long randSeed)
+	{
+		Random rand = new Random(randSeed);
+		for (int i = 0; i < array.length; i++) {
+			int j = rand.nextInt(array.length);
+			SortItem work = array[i];
+			array[i] = array[j];
+			array[j] = work;
+		}
+	}
+
+	/**
+	 * ソート前順序の値を確定
+	 * @param array 対象配列
+	 */
+	public static void assignOriginalOrderArray(SortItem[] array)
+	{
+		for (int i = 0; i < array.length; i++) {
+			array[i].orginalOrder = i;
+		}
+	}
+
+
+	/**
+	 * 配列のソート結果を確認する
+	 * @param array 対象配列
+	 */
+	public static void validateArray(SortItem[] array, boolean stable)
+	{
+		if (stable) {
+			//	安定ソート用
+			for (int i = 0; i < array.length - 1; i++) {
+				if (array[i].key > array[i + 1].key || ((array[i].key == array[i + 1].key) && (array[i].orginalOrder > array[i + 1].orginalOrder)))
+					throw new RuntimeException("array validation error. (stable mode) : " + i);
+			}
+		} else {
+			//	非安定ソート用
+			for (int i = 0; i < array.length - 1; i++) {
+				if (array[i].key > array[i + 1].key)
+					throw new RuntimeException("array validation error. (unstable mode) : " + i);
+			}
+		}
+
+		//	originalOrderの合計値確認（オブジェクトが入れ替えでなく、上書きとかされていないか）
+		long sum = 0;
+		for (int i = 0; i < array.length; i++) {
+			sum += array[i].orginalOrder;
+		}
+		if (sum != ((long)array.length - 1) * array.length / 2)	//	ガウスの方式とかいうやつ
+			throw new RuntimeException("array validation error.");
+	}
+
+
+
+	public static void main(String[] args) throws Exception {
+		//	Arguments : MatSort(1/10) 10000000 R
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+
+		SortItem[] array;
+
+		long startTime;			//	開始時刻（ミリ秒のカウンタ）
+		long endTime;			//	終了時刻（ミリ秒のカウンタ）
+		long compareCount;		//	ソート中に比較を行った回数
+
+		//	比較器
+		Comparator<SortItem> comparator = new Comparator<SortItem>() {
+			@Override
+			public final int compare(SortItem o1, SortItem o2) {
+				SortTest.compareCount++;
+				final int i1 = o1.key;
+				final int i2 = o2.key;
+				return (i1 < i2) ? -1 : (i1 > i2) ? 1 : 0;
+			}
+		};
+
+		String sortType = args[0];
+
+		int arraySize = Integer.parseInt(args[1]);
+		int arrayType = 0;
+		if (args.length >= 3) {
+			if (args[2].equals("R"))	//	Random
+				arrayType = 0;
+			else if (args[2].equals("A"))	//	Ascending ordered
+				arrayType = 1;
+			else if (args[2].equals("D"))	//	Deccending ordered
+				arrayType = 2;
+			else if (args[2].equals("F"))	//	Flat values
+				arrayType = 3;
+			else
+				throw new Exception("arguments error ");
+		}
+		int times = 10;
+		if (args.length >= 4) {
+			times = Integer.parseInt(args[3]);
+		}
+
+		array = new SortItem[arraySize];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = new SortItem(i / 10);
+		}
+
+		//System.out.println("times	algorithm	array type	array size	time	compare count");
+		for (int idx = 1; idx <= times; idx++) {
+
+			String arrayTypeName = "";
+			switch (arrayType) {
+				case 0:
+				{
+					initArray(array);
+					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					arrayTypeName = "Random";
+					break;
+				}
+				case 1:
+				{
+					initArray(array);
+					arrayTypeName = "Ascending ordered";
+					break;
+				}
+				case 2:
+				{
+					initReverseArray(array);
+					arrayTypeName = "Descending ordered";
+					break;
+				}
+				case 3:
+				{
+					initFlatArray(array);
+					arrayTypeName = "Flat";
+					break;
+				}
+			}
+			assignOriginalOrderArray(array);
+
+			String sortName = "";
+			boolean stable = false;
+			SortTest.compareCount = 0;
+			System.gc();
+			startTime = System.currentTimeMillis();
+			boolean validation = true;
+
+			if (sortType.equals("MergeSort") || sortType.equals("ms")) {
+				sortName = "MergeSort";
+				stable = true;
+				MmSort.mergeSort(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("MasSort") || sortType.equals("mas")) {
+				sortName = "MasSort";
+				stable = true;
+				MmSort.masSort(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("MatSort(1/5)") || sortType.equals("mat5")) {
+				sortName = "MatSort(1/5)";
+				stable = true;
+				MmSort.matSort(array, 0, array.length, comparator, array.length / 5);
+			}
+			else if (sortType.equals("MatSort(1/10)") || sortType.equals("mat10")) {
+				sortName = "MatSort(1/10)";
+				stable = true;
+				MmSort.matSort(array, 0, array.length, comparator, array.length / 10);
+			}
+			else if (sortType.equals("MatSort(1/100)") || sortType.equals("mat100")) {
+				sortName = "MatSort(1/100)";
+				stable = true;
+				MmSort.matSort(array, 0, array.length, comparator, array.length / 100);
+			}
+			else if (sortType.equals("Arrays.sort") || sortType.equals("arrays")) {
+				sortName = "Arrays.sort";
+				stable = true;
+				java.util.Arrays.sort(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("QuickSort(Median3)") || sortType.equals("qsM3")) {
+				sortName = "QuickSort(Median 3)";
+				stable = false;
+				ManyPivotsSort.quickSortMedian3(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("QuickSort") || sortType.equals("qs")) {
+				sortName = "QuickSort";
+				stable = false;
+				ManyPivotsSort.quickSort(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("ManyPivotSort") || sortType.equals("mps")) {
+				sortName = "ManyPivotSort";
+				stable = false;
+				ManyPivotsSort.mpSort(array, 0, array.length, comparator);
+			}
+			else
+				throw new Exception("arguments error ");
+			endTime = System.currentTimeMillis();
+			compareCount = SortTest.compareCount;
+			System.out.printf("%d	%s	%s	%d	%f	%d\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount);
+			if (validation)
+				validateArray(array, stable);
+		}
+	}
+
+}
