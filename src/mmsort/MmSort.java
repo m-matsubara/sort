@@ -188,11 +188,11 @@ public class MmSort<T> {
 				T work = array[min + 1];
 				array[min + 1] = array[min + 2];
 				array[min + 2] = work;
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
+				if (comparator.compare(array[min], array[min + 1]) > 0) {
 					work = array[min];
 					array[min] = array[min + 1];
 					array[min + 1] = work;
-			}
+				}
 			}
 			return;
 		} else if (range < 200) {
@@ -266,7 +266,7 @@ public class MmSort<T> {
 		@SuppressWarnings("unchecked")
 		final T[] works = (T[])new Object[(max - min) / 2];
 
-		mergeSort(array, 0, array.length, works, comparator);
+		mergeSort(array, min, max, works, comparator);
 	}
 
 
