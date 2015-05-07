@@ -269,51 +269,183 @@ public class MmSort<T> {
 		mergeSort(array, min, max, works, comparator);
 	}
 
-
 	/**
-	 * MasSort
-	 * 高速化版マージソート
-	 * ソート対象を多くのブロックに分割してマージする。
-	 * 通常のマージソートに比べて、メモリ転送回数を減らすことができるため、メモリアクセスの遅い環境で特に有利と考えられる。
+	 * 改良版マージソート
+	 * （ソート結果を作業領域に直接出力し、作業領域から元の配列にマージしながら戻す）
+	 * 作業用一時領域はソート対象と同じサイズが必要
 	 * @param array ソート対象
 	 * @param min ソート対象の添え字の最小値
 	 * @param max ソート対象の添え字の最大値 + 1
 	 * @param works 作業用一時領域
 	 * @param comparator 比較器
 	 */
-	public static final <T> void masSort(final T[] array, final int min, final int max, final T[] works, final Comparator<? super T> comparator)
+	public static final <T> void merge2Sort(final T[] arrayFrom, final T[] arrayTo, final int min, final int max, final Comparator<? super T> comparator)
+	{
+		final int range = max - min;
+
+		//	ソート対象配列サイズが３以下のときは特別扱い
+		if (range <= 1) {
+			arrayTo[min] = arrayFrom[min];
+			return;
+		} else if (range == 2) {
+			if (comparator.compare(arrayFrom[min], arrayFrom[min + 1]) > 0) {
+				arrayTo[min]     = arrayFrom[min + 1];
+				arrayTo[min + 1] = arrayFrom[min];
+			} else {
+				arrayTo[min]     = arrayFrom[min];
+				arrayTo[min + 1] = arrayFrom[min + 1];
+			}
+			return;
+		} else if (range == 3) {
+			System.arraycopy(arrayFrom, min, arrayTo, min, max - min);
+			if (comparator.compare(arrayTo[min], arrayTo[min + 1]) > 0) {
+				T work = arrayTo[min];
+				arrayTo[min] = arrayTo[min + 1];
+				arrayTo[min + 1] = work;
+			}
+			if (comparator.compare(arrayTo[min + 1], arrayTo[min + 2]) > 0) {
+				T work = arrayTo[min + 1];
+				arrayTo[min + 1] = arrayTo[min + 2];
+				arrayTo[min + 2] = work;
+				if (comparator.compare(arrayTo[min], arrayTo[min + 1]) > 0) {
+					work = arrayTo[min];
+					arrayTo[min] = arrayTo[min + 1];
+					arrayTo[min + 1] = work;
+				}
+			}
+			return;
+		} else if (range < 200) {
+			System.arraycopy(arrayFrom, min, arrayTo, min, max - min);
+			insertBinSort(arrayTo, min, max, comparator);
+			return;
+		}
+
+		int mid = (min + max) / 2;	//	中央位置（範囲１と範囲２の境界）
+		merge2Sort(arrayTo, arrayFrom, min, mid, comparator);	//	範囲１（最小位置～中間位置）のソート
+		merge2Sort(arrayTo, arrayFrom, mid, max, comparator);	//	範囲２（中間位置～最大位置）のソート
+
+		int idx = min;		//	現在処理中の位置（範囲１と範囲２の小さい方をこの位置へ配置（移動）する）
+		int idx1 = min;		//	範囲１の次の値のインデックス
+		int idx2 = mid;		//	範囲２の次の値のインデックス
+
+//		if (comparator.compare(array[mid - 1], array[mid]) < 0)
+//			return;			//	範囲１の値はすべて範囲２の値より小さかった（再配置なし）…ソート済みの配列に対する高速化
+
+
+		//	範囲１の値が小さい間繰り返す（再配置なし）
+/*		//	（この処理無い方が速い…ショック）
+		while (idx1 < mid)  {
+			if (comparator.compare(array[idx1], array[idx2]) > 0) {
+				break;
+			}
+			idx1++;
+		}
+*/
+
+		//	範囲１をワーク配列にコピー
+//		if (mid - idx1 > 0) {
+//			System.arraycopy(arrayFrom, idx1, works, idx1 - min, mid - idx1);
+//		}
+
+		//	ワーク領域（範囲１のコピー）と範囲２をマージしてソート対象(array)の先頭から詰めていく
+		idx = idx1;	//	現在処理中の位置を設定
+		while (idx1 < mid && idx2 < max)  {
+			final T value1 = arrayFrom[idx1];
+			final T value2 = arrayFrom[idx2];
+			if (comparator.compare(value1, value2) <= 0) {
+				arrayTo[idx] = value1;
+				idx1++;
+			} else {
+				arrayTo[idx] = value2;
+				idx2++;
+			}
+			idx++;
+		}
+
+		//	残ったワーク領域をソート対象へ詰める
+		while (idx1 < mid)  {
+			arrayTo[idx] = arrayFrom[idx1];
+			idx++;
+			idx1++;
+		}
+		while (idx2 < max)  {
+			arrayTo[idx] = arrayFrom[idx2];
+			idx++;
+			idx2++;
+		}
+
+//		if (idx != idx2)
+//			throw new RuntimeException("Position error");
+	}
+
+
+	/**
+	 * 改良版マージソート
+	 * （ソート結果を作業領域に直接出力し、作業領域から元の配列にマージしながら戻す）
+	 * 作業用一時領域はソート対象と同じサイズが必要
+	 * @param array ソート対象
+	 * @param min ソート対象の添え字の最小値
+	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param comparator 比較器
+	 */
+	public static final <T> void merge2Sort(T[] array, int min, int max, Comparator<? super T> comparator)
+	{
+		@SuppressWarnings("unchecked")
+		final T[] works = (T[])new Object[array.length];
+
+		System.arraycopy(array, min, works, min, max - min);
+	}
+
+
+	/**
+	 * MasSort
+	 * 高速化版マージソート
+	 * ソート対象を多くのブロックに分割してマージする。
+	 * 通常のマージソートに比べて、メモリ転送回数を減らすことができるため、メモリアクセスの遅い環境で特に有利と考えられる。
+	 * @param arrayFrom ソート対象
+	 * @param arrayTo ソート結果
+	 * @param min ソート対象の添え字の最小値
+	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param comparator 比較器
+	 */
+	public static final <T> void masSort(final T[] arrayFrom, final T[] arrayTo, final int min, final int max, final int toIdx, final Comparator<? super T> comparator)
 	{
 		final int range = max - min;			//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
+			arrayTo[toIdx] = arrayFrom[min];
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(arrayFrom[min], arrayFrom[min + 1]) > 0) {
+				arrayTo[toIdx]     = arrayFrom[min + 1];
+				arrayTo[toIdx + 1] = arrayFrom[min];
+			} else {
+				arrayTo[toIdx]     = arrayFrom[min];
+				arrayTo[toIdx + 1] = arrayFrom[min + 1];
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(arrayFrom[min], arrayFrom[min + 1]) > 0) {
+				T work = arrayFrom[min];
+				arrayFrom[min] = arrayFrom[min + 1];
+				arrayFrom[min + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					work = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work;
+			if (comparator.compare(arrayFrom[min + 1], arrayFrom[min + 2]) > 0) {
+				T work = arrayFrom[min + 1];
+				arrayFrom[min + 1] = arrayFrom[min + 2];
+				arrayFrom[min + 2] = work;
+				if (comparator.compare(arrayFrom[min], arrayFrom[min + 1]) > 0) {
+					work = arrayFrom[min];
+					arrayFrom[min] = arrayFrom[min + 1];
+					arrayFrom[min + 1] = work;
 				}
 			}
+			System.arraycopy(arrayFrom, min, arrayTo, toIdx, max - min);
 			return;
 		} else if (range < 200) {
-			insertBinSort(array, min, max, comparator);
+			insertBinSort(arrayFrom, min, max, comparator);
+			System.arraycopy(arrayFrom, min, arrayTo, toIdx, max - min);
 			return;
 		}
 
@@ -328,16 +460,14 @@ public class MmSort<T> {
 		for (int blockIdx = 0; blockIdx < blockCount; blockIdx++) {
 			blockStart[blockIdx] = (int)((long)range * blockIdx / blockCount);
 			blockEnd[blockIdx] = (int)((long)range * (blockIdx + 1) / blockCount);
-			masSort(array, min + blockStart[blockIdx], min + blockEnd[blockIdx], works, comparator);
+			masSort(arrayTo, arrayFrom, toIdx + blockStart[blockIdx], toIdx + blockEnd[blockIdx], min + blockStart[blockIdx], comparator);
 			minOrderBlocks[blockIdx] = blockIdx;
 		}
 
-		//	ワーク領域へコピー
-		System.arraycopy(array, min, works, 0, range);	//	正確には最後のブロックはworkにコピーしなくてもよいのだが、かえって制御が複雑になるので全部コピーする。
 
 		//	各ブロックの先頭要素をキャッシュ(CPUのキャッシュヒット率が上がるかなと思って)
 		for (int blockIdx = 0; blockIdx < blockCount; blockIdx++) {
-			blockStartItemCache[blockIdx] = works[blockStart[blockIdx]];
+			blockStartItemCache[blockIdx] = arrayFrom[min + blockStart[blockIdx]];
 		}
 
 		//	各ブロックの先頭で比較して、小さい値を持つブロック順にブロックをソート → minOrderBlocks
@@ -377,13 +507,14 @@ public class MmSort<T> {
 		//	先頭要素でソートしたブロックごとにブロックの末尾が次のブロックの先頭より小さければ、ブロック全体を転送することで高速化
 		//	(ソート済み・逆順ソート済みで効果)
 		int idx = 0;
+
 		int blockTransIdx;
 		for (blockTransIdx = 0; blockTransIdx < blockCount - 1; blockTransIdx++) {
 			int blockIdx = minOrderBlocks[blockTransIdx];		//	比較の基準のブロック
 			int blockIdx2 = minOrderBlocks[blockTransIdx + 1];	//	比較の基準の次のブロック
 
 			//	「比較の基準のブロックの末尾」と「比較の基準の次のブロックの先頭」を比較
-			int compVal = comparator.compare(works[blockEnd[blockIdx] - 1], works[blockStart[blockIdx2]]);
+			int compVal = comparator.compare(arrayFrom[min + blockEnd[blockIdx] - 1], arrayFrom[min + blockStart[blockIdx2]]);
 			if (compVal == 0) {
 				if (blockIdx < blockIdx2)
 					compVal = -1;
@@ -397,14 +528,14 @@ public class MmSort<T> {
 			}
 			//	比較の基準のブロックは後続のすべてのブロックより小さいのでブロックごと転送してしまう。
 			int rangeBlock = blockEnd[blockIdx] - blockStart[blockIdx];
-			System.arraycopy(works, blockStart[blockIdx], array, min + idx, rangeBlock);
+			System.arraycopy(arrayFrom, min + blockStart[blockIdx], arrayTo, toIdx + idx, rangeBlock);
 			idx += rangeBlock;
 		}
 		//	最後のブロックのみ残った場合は、比較のブロックがないのでこのブロックも転送する。
 		if (blockTransIdx == blockCount - 1) {
 			int blockIdx = minOrderBlocks[blockTransIdx];
 			int rangeBlock = blockEnd[blockIdx] - blockStart[blockIdx];
-			System.arraycopy(works, blockStart[blockIdx], array, min + idx, rangeBlock);
+			System.arraycopy(arrayFrom, min + blockStart[blockIdx], arrayTo, toIdx + idx, rangeBlock);
 			idx += rangeBlock;
 			blockTransIdx++;
 		}
@@ -419,9 +550,9 @@ public class MmSort<T> {
 		for (/*idx = 0*/; idx < range; idx++) {
 			//	最小の値を持つブロック（minOrderBlocks[0]）の先頭要素を取り出し、ソート対象へ先頭から詰めていく
 			int blockIdx = minOrderBlocks[0];
-			int valueIdx = blockStart[blockIdx];
-			T value = works[valueIdx];
-			array[min + idx] = value;
+			int valueIdx = min + blockStart[blockIdx];
+			T value = arrayFrom[valueIdx];
+			arrayTo[toIdx + idx] = value;
 			//	取り出したブロックの先頭位置をインクリメント
 			blockStart[blockIdx]++;
 
@@ -434,7 +565,7 @@ public class MmSort<T> {
 			else {
 				//	minOrderBlocks[0] のブロックは先頭の値を取り出したので次の先頭は大きな値になる。二分検索でminOrderBlocksのどの位置にすればよいか決定し位置を修正する
 				//	（部分的な二分探索を使った挿入ソート…先頭ブロックの最小値が変わったのでそこだけ適切な順序に並べ替え）
-				blockStartItemCache[blockIdx] = works[valueIdx + 1];
+				blockStartItemCache[blockIdx] = arrayFrom[valueIdx + 1];
 				int minBlockIdx = minOrderBlocks[0];			//	minOrderBlocks[0]の最小値は取り出したので新しい最小値が他のブロックの最小値と比較して何番目か調べる
 				//T key = works[blockStart[minBlockIdx]];
 				T key = blockStartItemCache[minBlockIdx];
@@ -576,29 +707,23 @@ public class MmSort<T> {
 			minIdx = minIdx - workSize;
 			if (minIdx < min)
 				minIdx = min;
-			masSort(array, minIdx, midIdx, works, comparator);
+			System.arraycopy(array, minIdx, works, 0, midIdx - minIdx);
+			//masSort(works, array, 0, midIdx - minIdx, minIdx, comparator);
+			masSort(array, works, minIdx, midIdx, 0, comparator);
 
 			int idx1 = minIdx;
 			int idx2 = midIdx;
 
-			if (comparator.compare(array[midIdx - 1], array[midIdx]) < 0) {
-				continue;			//	範囲１の値はすべて範囲２の値より小さかった（再配置なし）
+			if (comparator.compare(works[midIdx - minIdx - 1], array[midIdx]) < 0) {
+//				範囲１の値はすべて範囲２の値より小さかった
+				System.arraycopy(works, 0, array, minIdx, midIdx - minIdx);
+				continue;
 			}
-
-			//	範囲１の値が小さい間繰り返す（再配置なし）
-	/*		//	（この処理無い方が速い…ショック）
-			while (idx1 < mid)  {
-				if (comparator.compare(array[idx1], array[idx2]) > 0) {
-					break;
-				}
-				idx1++;
-			}
-	*/
 
 			//	範囲１をワーク配列にコピー
-			if (midIdx - idx1 > 0) {
-				System.arraycopy(array, idx1, works, 0, midIdx - idx1);
-			}
+			//if (midIdx - idx1 > 0) {
+			//	System.arraycopy(array, idx1, works, 0, midIdx - idx1);
+			//}
 
 			//	最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
 			int idx = idx1;	//	現在処理中の位置を設定
