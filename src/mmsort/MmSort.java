@@ -481,7 +481,7 @@ public class MmSort<T> {
 	public static <T> void masSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
 	{
 		@SuppressWarnings("unchecked")
-		final T[] works = (T[])new Object[array.length];
+		final T[] works = (T[])new Object[max - min];
 		masSort(array, min, max, works, comparator);
 	}
 
