@@ -222,37 +222,37 @@ public class SortTest {
 			if (sortType.equals("MergeSort") || sortType.equals("ms")) {
 				sortName = "MergeSort";
 				stable = true;
-				MmSort.mergeSort(array, 0, array.length, comparator);
+				MergeSort.mergeSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("ImprovedMergeSort") || sortType.equals("ims")) {
 				sortName = "Improved MergeSort";
 				stable = true;
-				MmSort.improvedMergeSort(array, 0, array.length, comparator);
+				ImprovedMergeSort.improvedMergeSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("InplaceMergeSort") || sortType.equals("ipms")) {
 				sortName = "In-place MergeSort";
 				stable = true;
-				MmSort.ipMergeSort(array, 0, array.length, comparator);
+				InplaceMergeSort.ipMergeSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("MasSort") || sortType.equals("mas")) {
 				sortName = "MasSort";
 				stable = true;
-				MmSort.masSort(array, 0, array.length, comparator);
+				MasSort.masSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("MatSort(1/5)") || sortType.equals("mat5")) {
 				sortName = "MatSort(1/5)";
 				stable = true;
-				MmSort.matSort(array, 0, array.length, comparator, array.length / 5);
+				MatSort.matSort(array, 0, array.length, comparator, array.length / 5);
 			}
 			else if (sortType.equals("MatSort(1/10)") || sortType.equals("mat10")) {
 				sortName = "MatSort(1/10)";
 				stable = true;
-				MmSort.matSort(array, 0, array.length, comparator, array.length / 10);
+				MatSort.matSort(array, 0, array.length, comparator, array.length / 10);
 			}
 			else if (sortType.equals("MatSort(1/100)") || sortType.equals("mat100")) {
 				sortName = "MatSort(1/100)";
 				stable = true;
-				MmSort.matSort(array, 0, array.length, comparator, array.length / 100);
+				MatSort.matSort(array, 0, array.length, comparator, array.length / 100);
 			}
 			else if (sortType.equals("Arrays.sort") || sortType.equals("arrays")) {
 				sortName = "Arrays.sort";
@@ -262,12 +262,12 @@ public class SortTest {
 			else if (sortType.equals("QuickSort(Median3)") || sortType.equals("qsM3")) {
 				sortName = "QuickSort(Median 3)";
 				stable = false;
-				ManyPivotSort.quickSortMedian3(array, 0, array.length, comparator);
+				QuickSortM3.quickSortMedian3(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("QuickSort") || sortType.equals("qs")) {
 				sortName = "QuickSort";
 				stable = false;
-				ManyPivotSort.quickSort(array, 0, array.length, comparator);
+				QuickSort.quickSort(array, 0, array.length, comparator);
 			}
 			else if (sortType.equals("ManyPivotSort") || sortType.equals("mps")) {
 				sortName = "ManyPivotSort";

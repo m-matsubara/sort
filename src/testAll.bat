@@ -10,3 +10,6 @@ call test.bat QuickSort(Median3)
 call test.bat ManyPivotSort
 call test.bat Arrays.sort
 call test.bat MergeSort
+call test.bat InplaceMergeSort
+call test.bat ImprovedMergeSort
+

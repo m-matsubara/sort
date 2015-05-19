@@ -1,0 +1,243 @@
+1	MasSort	Random	100	0.001000	521
+2	MasSort	Random	100	0.000000	527
+3	MasSort	Random	100	0.001000	525
+4	MasSort	Random	100	0.000000	529
+5	MasSort	Random	100	0.000000	533
+6	MasSort	Random	100	0.000000	526
+7	MasSort	Random	100	0.001000	531
+8	MasSort	Random	100	0.000000	525
+9	MasSort	Random	100	0.000000	528
+10	MasSort	Random	100	0.000000	523
+1	MasSort	Ascending ordered	100	0.001000	99
+2	MasSort	Ascending ordered	100	0.000000	99
+3	MasSort	Ascending ordered	100	0.000000	99
+4	MasSort	Ascending ordered	100	0.000000	99
+5	MasSort	Ascending ordered	100	0.000000	99
+6	MasSort	Ascending ordered	100	0.000000	99
+7	MasSort	Ascending ordered	100	0.000000	99
+8	MasSort	Ascending ordered	100	0.000000	99
+9	MasSort	Ascending ordered	100	0.000000	99
+10	MasSort	Ascending ordered	100	0.001000	99
+1	MasSort	Descending ordered	100	0.001000	524
+2	MasSort	Descending ordered	100	0.000000	524
+3	MasSort	Descending ordered	100	0.000000	524
+4	MasSort	Descending ordered	100	0.000000	524
+5	MasSort	Descending ordered	100	0.000000	524
+6	MasSort	Descending ordered	100	0.000000	524
+7	MasSort	Descending ordered	100	0.000000	524
+8	MasSort	Descending ordered	100	0.000000	524
+9	MasSort	Descending ordered	100	0.000000	524
+10	MasSort	Descending ordered	100	0.000000	524
+1	MasSort	Flat	100	0.001000	99
+2	MasSort	Flat	100	0.000000	99
+3	MasSort	Flat	100	0.000000	99
+4	MasSort	Flat	100	0.000000	99
+5	MasSort	Flat	100	0.000000	99
+6	MasSort	Flat	100	0.000000	99
+7	MasSort	Flat	100	0.000000	99
+8	MasSort	Flat	100	0.000000	99
+9	MasSort	Flat	100	0.000000	99
+10	MasSort	Flat	100	0.000000	99
+1	MasSort	Random	1000	0.003000	8624
+2	MasSort	Random	1000	0.001000	8678
+3	MasSort	Random	1000	0.002000	8654
+4	MasSort	Random	1000	0.002000	8642
+5	MasSort	Random	1000	0.000000	8637
+6	MasSort	Random	1000	0.000000	8669
+7	MasSort	Random	1000	0.001000	8665
+8	MasSort	Random	1000	0.000000	8651
+9	MasSort	Random	1000	0.000000	8643
+10	MasSort	Random	1000	0.000000	8654
+1	MasSort	Ascending ordered	1000	0.001000	1102
+2	MasSort	Ascending ordered	1000	0.000000	1102
+3	MasSort	Ascending ordered	1000	0.000000	1102
+4	MasSort	Ascending ordered	1000	0.000000	1102
+5	MasSort	Ascending ordered	1000	0.000000	1102
+6	MasSort	Ascending ordered	1000	0.000000	1102
+7	MasSort	Ascending ordered	1000	0.000000	1102
+8	MasSort	Ascending ordered	1000	0.000000	1102
+9	MasSort	Ascending ordered	1000	0.001000	1102
+10	MasSort	Ascending ordered	1000	0.000000	1102
+1	MasSort	Descending ordered	1000	0.001000	7657
+2	MasSort	Descending ordered	1000	0.000000	7657
+3	MasSort	Descending ordered	1000	0.001000	7657
+4	MasSort	Descending ordered	1000	0.001000	7657
+5	MasSort	Descending ordered	1000	0.001000	7657
+6	MasSort	Descending ordered	1000	0.000000	7657
+7	MasSort	Descending ordered	1000	0.000000	7657
+8	MasSort	Descending ordered	1000	0.001000	7657
+9	MasSort	Descending ordered	1000	0.000000	7657
+10	MasSort	Descending ordered	1000	0.000000	7657
+1	MasSort	Flat	1000	0.001000	1102
+2	MasSort	Flat	1000	0.000000	1102
+3	MasSort	Flat	1000	0.000000	1102
+4	MasSort	Flat	1000	0.001000	1102
+5	MasSort	Flat	1000	0.000000	1102
+6	MasSort	Flat	1000	0.000000	1102
+7	MasSort	Flat	1000	0.000000	1102
+8	MasSort	Flat	1000	0.000000	1102
+9	MasSort	Flat	1000	0.000000	1102
+10	MasSort	Flat	1000	0.000000	1102
+1	MasSort	Random	10000	0.017000	120653
+2	MasSort	Random	10000	0.005000	120715
+3	MasSort	Random	10000	0.011000	120655
+4	MasSort	Random	10000	0.007000	120579
+5	MasSort	Random	10000	0.016000	120576
+6	MasSort	Random	10000	0.010000	120661
+7	MasSort	Random	10000	0.011000	120587
+8	MasSort	Random	10000	0.007000	120703
+9	MasSort	Random	10000	0.005000	120655
+10	MasSort	Random	10000	0.004000	120722
+1	MasSort	Ascending ordered	10000	0.003000	13398
+2	MasSort	Ascending ordered	10000	0.000000	13398
+3	MasSort	Ascending ordered	10000	0.001000	13398
+4	MasSort	Ascending ordered	10000	0.000000	13398
+5	MasSort	Ascending ordered	10000	0.000000	13398
+6	MasSort	Ascending ordered	10000	0.000000	13398
+7	MasSort	Ascending ordered	10000	0.000000	13398
+8	MasSort	Ascending ordered	10000	0.001000	13398
+9	MasSort	Ascending ordered	10000	0.000000	13398
+10	MasSort	Ascending ordered	10000	0.000000	13398
+1	MasSort	Descending ordered	10000	0.009000	97689
+2	MasSort	Descending ordered	10000	0.008000	97689
+3	MasSort	Descending ordered	10000	0.006000	97689
+4	MasSort	Descending ordered	10000	0.006000	97689
+5	MasSort	Descending ordered	10000	0.005000	97689
+6	MasSort	Descending ordered	10000	0.004000	97689
+7	MasSort	Descending ordered	10000	0.005000	97689
+8	MasSort	Descending ordered	10000	0.007000	97689
+9	MasSort	Descending ordered	10000	0.003000	97689
+10	MasSort	Descending ordered	10000	0.007000	97689
+1	MasSort	Flat	10000	0.003000	13398
+2	MasSort	Flat	10000	0.000000	13398
+3	MasSort	Flat	10000	0.001000	13398
+4	MasSort	Flat	10000	0.000000	13398
+5	MasSort	Flat	10000	0.001000	13398
+6	MasSort	Flat	10000	0.000000	13398
+7	MasSort	Flat	10000	0.000000	13398
+8	MasSort	Flat	10000	0.000000	13398
+9	MasSort	Flat	10000	0.000000	13398
+10	MasSort	Flat	10000	0.000000	13398
+1	MasSort	Random	100000	0.081000	1525719
+2	MasSort	Random	100000	0.057000	1525804
+3	MasSort	Random	100000	0.036000	1526047
+4	MasSort	Random	100000	0.024000	1525866
+5	MasSort	Random	100000	0.022000	1526049
+6	MasSort	Random	100000	0.023000	1525850
+7	MasSort	Random	100000	0.022000	1526006
+8	MasSort	Random	100000	0.024000	1525901
+9	MasSort	Random	100000	0.024000	1525722
+10	MasSort	Random	100000	0.022000	1525864
+1	MasSort	Ascending ordered	100000	0.005000	103398
+2	MasSort	Ascending ordered	100000	0.002000	103398
+3	MasSort	Ascending ordered	100000	0.001000	103398
+4	MasSort	Ascending ordered	100000	0.001000	103398
+5	MasSort	Ascending ordered	100000	0.001000	103398
+6	MasSort	Ascending ordered	100000	0.001000	103398
+7	MasSort	Ascending ordered	100000	0.000000	103398
+8	MasSort	Ascending ordered	100000	0.001000	103398
+9	MasSort	Ascending ordered	100000	0.001000	103398
+10	MasSort	Ascending ordered	100000	0.001000	103398
+1	MasSort	Descending ordered	100000	0.074000	1337611
+2	MasSort	Descending ordered	100000	0.044000	1337611
+3	MasSort	Descending ordered	100000	0.015000	1337611
+4	MasSort	Descending ordered	100000	0.014000	1337611
+5	MasSort	Descending ordered	100000	0.014000	1337611
+6	MasSort	Descending ordered	100000	0.013000	1337611
+7	MasSort	Descending ordered	100000	0.014000	1337611
+8	MasSort	Descending ordered	100000	0.012000	1337611
+9	MasSort	Descending ordered	100000	0.012000	1337611
+10	MasSort	Descending ordered	100000	0.012000	1337611
+1	MasSort	Flat	100000	0.005000	103398
+2	MasSort	Flat	100000	0.002000	103398
+3	MasSort	Flat	100000	0.002000	103398
+4	MasSort	Flat	100000	0.001000	103398
+5	MasSort	Flat	100000	0.001000	103398
+6	MasSort	Flat	100000	0.001000	103398
+7	MasSort	Flat	100000	0.001000	103398
+8	MasSort	Flat	100000	0.001000	103398
+9	MasSort	Flat	100000	0.000000	103398
+10	MasSort	Flat	100000	0.001000	103398
+1	MasSort	Random	1000000	0.370000	18622608
+2	MasSort	Random	1000000	0.397000	18622976
+3	MasSort	Random	1000000	0.379000	18622079
+4	MasSort	Random	1000000	0.361000	18623268
+5	MasSort	Random	1000000	0.365000	18622613
+6	MasSort	Random	1000000	0.370000	18623099
+7	MasSort	Random	1000000	0.365000	18623882
+8	MasSort	Random	1000000	0.382000	18622419
+9	MasSort	Random	1000000	0.363000	18623094
+10	MasSort	Random	1000000	0.381000	18622957
+1	MasSort	Ascending ordered	1000000	0.018000	1108870
+2	MasSort	Ascending ordered	1000000	0.009000	1108870
+3	MasSort	Ascending ordered	1000000	0.011000	1108870
+4	MasSort	Ascending ordered	1000000	0.010000	1108870
+5	MasSort	Ascending ordered	1000000	0.009000	1108870
+6	MasSort	Ascending ordered	1000000	0.009000	1108870
+7	MasSort	Ascending ordered	1000000	0.010000	1108870
+8	MasSort	Ascending ordered	1000000	0.009000	1108870
+9	MasSort	Ascending ordered	1000000	0.009000	1108870
+10	MasSort	Ascending ordered	1000000	0.010000	1108870
+1	MasSort	Descending ordered	1000000	0.169000	11652576
+2	MasSort	Descending ordered	1000000	0.065000	11652576
+3	MasSort	Descending ordered	1000000	0.097000	11652576
+4	MasSort	Descending ordered	1000000	0.065000	11652576
+5	MasSort	Descending ordered	1000000	0.063000	11652576
+6	MasSort	Descending ordered	1000000	0.065000	11652576
+7	MasSort	Descending ordered	1000000	0.064000	11652576
+8	MasSort	Descending ordered	1000000	0.064000	11652576
+9	MasSort	Descending ordered	1000000	0.064000	11652576
+10	MasSort	Descending ordered	1000000	0.064000	11652576
+1	MasSort	Flat	1000000	0.020000	1108870
+2	MasSort	Flat	1000000	0.010000	1108870
+3	MasSort	Flat	1000000	0.010000	1108870
+4	MasSort	Flat	1000000	0.009000	1108870
+5	MasSort	Flat	1000000	0.009000	1108870
+6	MasSort	Flat	1000000	0.010000	1108870
+7	MasSort	Flat	1000000	0.010000	1108870
+8	MasSort	Flat	1000000	0.010000	1108870
+9	MasSort	Flat	1000000	0.011000	1108870
+10	MasSort	Flat	1000000	0.010000	1108870
+1	MasSort	Random	10000000	4.198000	220327078
+2	MasSort	Random	10000000	3.898000	220328278
+3	MasSort	Random	10000000	3.934000	220322561
+4	MasSort	Random	10000000	3.982000	220328043
+5	MasSort	Random	10000000	4.146000	220325290
+6	MasSort	Random	10000000	3.887000	220328318
+7	MasSort	Random	10000000	3.885000	220328304
+8	MasSort	Random	10000000	3.928000	220325472
+9	MasSort	Random	10000000	3.892000	220325435
+10	MasSort	Random	10000000	3.888000	220328441
+1	MasSort	Ascending ordered	10000000	0.157000	13483974
+2	MasSort	Ascending ordered	10000000	0.135000	13483974
+3	MasSort	Ascending ordered	10000000	0.136000	13483974
+4	MasSort	Ascending ordered	10000000	0.137000	13483974
+5	MasSort	Ascending ordered	10000000	0.137000	13483974
+6	MasSort	Ascending ordered	10000000	0.136000	13483974
+7	MasSort	Ascending ordered	10000000	0.137000	13483974
+8	MasSort	Ascending ordered	10000000	0.136000	13483974
+9	MasSort	Ascending ordered	10000000	0.134000	13483974
+10	MasSort	Ascending ordered	10000000	0.136000	13483974
+1	MasSort	Descending ordered	10000000	0.866000	138662656
+2	MasSort	Descending ordered	10000000	0.757000	138662656
+3	MasSort	Descending ordered	10000000	0.831000	138662656
+4	MasSort	Descending ordered	10000000	0.753000	138662656
+5	MasSort	Descending ordered	10000000	0.751000	138662656
+6	MasSort	Descending ordered	10000000	0.750000	138662656
+7	MasSort	Descending ordered	10000000	0.773000	138662656
+8	MasSort	Descending ordered	10000000	0.810000	138662656
+9	MasSort	Descending ordered	10000000	0.830000	138662656
+10	MasSort	Descending ordered	10000000	0.751000	138662656
+1	MasSort	Flat	10000000	0.157000	13483974
+2	MasSort	Flat	10000000	0.135000	13483974
+3	MasSort	Flat	10000000	0.139000	13483974
+4	MasSort	Flat	10000000	0.151000	13483974
+5	MasSort	Flat	10000000	0.136000	13483974
+6	MasSort	Flat	10000000	0.135000	13483974
+7	MasSort	Flat	10000000	0.138000	13483974
+8	MasSort	Flat	10000000	0.135000	13483974
+9	MasSort	Flat	10000000	0.141000	13483974
+10	MasSort	Flat	10000000	0.140000	13483974
+1	MasSort	Random	100000000	53.904000	2522495805
+2	MasSort	Random	100000000	55.279000	2522490573
+3	MasSort	Random	100000000	57.045000	2522495708

@@ -1,0 +1,243 @@
+1	MergeSort	Random	100	0.001000	521
+2	MergeSort	Random	100	0.000000	527
+3	MergeSort	Random	100	0.000000	525
+4	MergeSort	Random	100	0.000000	529
+5	MergeSort	Random	100	0.000000	533
+6	MergeSort	Random	100	0.000000	526
+7	MergeSort	Random	100	0.001000	531
+8	MergeSort	Random	100	0.000000	525
+9	MergeSort	Random	100	0.001000	528
+10	MergeSort	Random	100	0.000000	523
+1	MergeSort	Ascending ordered	100	0.001000	99
+2	MergeSort	Ascending ordered	100	0.000000	99
+3	MergeSort	Ascending ordered	100	0.000000	99
+4	MergeSort	Ascending ordered	100	0.000000	99
+5	MergeSort	Ascending ordered	100	0.000000	99
+6	MergeSort	Ascending ordered	100	0.000000	99
+7	MergeSort	Ascending ordered	100	0.000000	99
+8	MergeSort	Ascending ordered	100	0.000000	99
+9	MergeSort	Ascending ordered	100	0.000000	99
+10	MergeSort	Ascending ordered	100	0.000000	99
+1	MergeSort	Descending ordered	100	0.001000	524
+2	MergeSort	Descending ordered	100	0.000000	524
+3	MergeSort	Descending ordered	100	0.000000	524
+4	MergeSort	Descending ordered	100	0.000000	524
+5	MergeSort	Descending ordered	100	0.001000	524
+6	MergeSort	Descending ordered	100	0.000000	524
+7	MergeSort	Descending ordered	100	0.000000	524
+8	MergeSort	Descending ordered	100	0.000000	524
+9	MergeSort	Descending ordered	100	0.000000	524
+10	MergeSort	Descending ordered	100	0.001000	524
+1	MergeSort	Flat	100	0.001000	99
+2	MergeSort	Flat	100	0.000000	99
+3	MergeSort	Flat	100	0.000000	99
+4	MergeSort	Flat	100	0.000000	99
+5	MergeSort	Flat	100	0.000000	99
+6	MergeSort	Flat	100	0.000000	99
+7	MergeSort	Flat	100	0.000000	99
+8	MergeSort	Flat	100	0.000000	99
+9	MergeSort	Flat	100	0.000000	99
+10	MergeSort	Flat	100	0.000000	99
+1	MergeSort	Random	1000	0.002000	8598
+2	MergeSort	Random	1000	0.001000	8579
+3	MergeSort	Random	1000	0.001000	8585
+4	MergeSort	Random	1000	0.000000	8606
+5	MergeSort	Random	1000	0.001000	8565
+6	MergeSort	Random	1000	0.001000	8595
+7	MergeSort	Random	1000	0.000000	8605
+8	MergeSort	Random	1000	0.001000	8585
+9	MergeSort	Random	1000	0.000000	8597
+10	MergeSort	Random	1000	0.000000	8603
+1	MergeSort	Ascending ordered	1000	0.002000	2492
+2	MergeSort	Ascending ordered	1000	0.000000	2492
+3	MergeSort	Ascending ordered	1000	0.001000	2492
+4	MergeSort	Ascending ordered	1000	0.000000	2492
+5	MergeSort	Ascending ordered	1000	0.000000	2492
+6	MergeSort	Ascending ordered	1000	0.000000	2492
+7	MergeSort	Ascending ordered	1000	0.001000	2492
+8	MergeSort	Ascending ordered	1000	0.000000	2492
+9	MergeSort	Ascending ordered	1000	0.000000	2492
+10	MergeSort	Ascending ordered	1000	0.000000	2492
+1	MergeSort	Descending ordered	1000	0.003000	7140
+2	MergeSort	Descending ordered	1000	0.001000	7140
+3	MergeSort	Descending ordered	1000	0.001000	7140
+4	MergeSort	Descending ordered	1000	0.001000	7140
+5	MergeSort	Descending ordered	1000	0.000000	7140
+6	MergeSort	Descending ordered	1000	0.001000	7140
+7	MergeSort	Descending ordered	1000	0.001000	7140
+8	MergeSort	Descending ordered	1000	0.000000	7140
+9	MergeSort	Descending ordered	1000	0.001000	7140
+10	MergeSort	Descending ordered	1000	0.001000	7140
+1	MergeSort	Flat	1000	0.002000	2492
+2	MergeSort	Flat	1000	0.000000	2492
+3	MergeSort	Flat	1000	0.000000	2492
+4	MergeSort	Flat	1000	0.000000	2492
+5	MergeSort	Flat	1000	0.000000	2492
+6	MergeSort	Flat	1000	0.000000	2492
+7	MergeSort	Flat	1000	0.000000	2492
+8	MergeSort	Flat	1000	0.001000	2492
+9	MergeSort	Flat	1000	0.000000	2492
+10	MergeSort	Flat	1000	0.000000	2492
+1	MergeSort	Random	10000	0.010000	119221
+2	MergeSort	Random	10000	0.005000	119208
+3	MergeSort	Random	10000	0.006000	119197
+4	MergeSort	Random	10000	0.006000	119195
+5	MergeSort	Random	10000	0.008000	119140
+6	MergeSort	Random	10000	0.022000	119208
+7	MergeSort	Random	10000	0.015000	119227
+8	MergeSort	Random	10000	0.008000	119236
+9	MergeSort	Random	10000	0.007000	119208
+10	MergeSort	Random	10000	0.009000	119186
+1	MergeSort	Ascending ordered	10000	0.004000	39920
+2	MergeSort	Ascending ordered	10000	0.001000	39920
+3	MergeSort	Ascending ordered	10000	0.000000	39920
+4	MergeSort	Ascending ordered	10000	0.000000	39920
+5	MergeSort	Ascending ordered	10000	0.000000	39920
+6	MergeSort	Ascending ordered	10000	0.001000	39920
+7	MergeSort	Ascending ordered	10000	0.001000	39920
+8	MergeSort	Ascending ordered	10000	0.001000	39920
+9	MergeSort	Ascending ordered	10000	0.002000	39920
+10	MergeSort	Ascending ordered	10000	0.003000	39920
+1	MergeSort	Descending ordered	10000	0.009000	90120
+2	MergeSort	Descending ordered	10000	0.005000	90120
+3	MergeSort	Descending ordered	10000	0.024000	90120
+4	MergeSort	Descending ordered	10000	0.009000	90120
+5	MergeSort	Descending ordered	10000	0.005000	90120
+6	MergeSort	Descending ordered	10000	0.006000	90120
+7	MergeSort	Descending ordered	10000	0.006000	90120
+8	MergeSort	Descending ordered	10000	0.002000	90120
+9	MergeSort	Descending ordered	10000	0.002000	90120
+10	MergeSort	Descending ordered	10000	0.002000	90120
+1	MergeSort	Flat	10000	0.004000	39920
+2	MergeSort	Flat	10000	0.001000	39920
+3	MergeSort	Flat	10000	0.000000	39920
+4	MergeSort	Flat	10000	0.000000	39920
+5	MergeSort	Flat	10000	0.000000	39920
+6	MergeSort	Flat	10000	0.001000	39920
+7	MergeSort	Flat	10000	0.001000	39920
+8	MergeSort	Flat	10000	0.001000	39920
+9	MergeSort	Flat	10000	0.001000	39920
+10	MergeSort	Flat	10000	0.002000	39920
+1	MergeSort	Random	100000	0.059000	1524623
+2	MergeSort	Random	100000	0.038000	1524647
+3	MergeSort	Random	100000	0.021000	1524724
+4	MergeSort	Random	100000	0.020000	1524724
+5	MergeSort	Random	100000	0.019000	1524977
+6	MergeSort	Random	100000	0.020000	1524458
+7	MergeSort	Random	100000	0.019000	1524464
+8	MergeSort	Random	100000	0.019000	1524603
+9	MergeSort	Random	100000	0.019000	1524459
+10	MergeSort	Random	100000	0.021000	1524477
+1	MergeSort	Ascending ordered	100000	0.013000	549328
+2	MergeSort	Ascending ordered	100000	0.008000	549328
+3	MergeSort	Ascending ordered	100000	0.009000	549328
+4	MergeSort	Ascending ordered	100000	0.027000	549328
+5	MergeSort	Ascending ordered	100000	0.011000	549328
+6	MergeSort	Ascending ordered	100000	0.008000	549328
+7	MergeSort	Ascending ordered	100000	0.006000	549328
+8	MergeSort	Ascending ordered	100000	0.002000	549328
+9	MergeSort	Ascending ordered	100000	0.002000	549328
+10	MergeSort	Ascending ordered	100000	0.002000	549328
+1	MergeSort	Descending ordered	100000	0.038000	1083760
+2	MergeSort	Descending ordered	100000	0.033000	1083760
+3	MergeSort	Descending ordered	100000	0.029000	1083760
+4	MergeSort	Descending ordered	100000	0.013000	1083760
+5	MergeSort	Descending ordered	100000	0.013000	1083760
+6	MergeSort	Descending ordered	100000	0.013000	1083760
+7	MergeSort	Descending ordered	100000	0.013000	1083760
+8	MergeSort	Descending ordered	100000	0.012000	1083760
+9	MergeSort	Descending ordered	100000	0.014000	1083760
+10	MergeSort	Descending ordered	100000	0.013000	1083760
+1	MergeSort	Flat	100000	0.012000	549328
+2	MergeSort	Flat	100000	0.018000	549328
+3	MergeSort	Flat	100000	0.017000	549328
+4	MergeSort	Flat	100000	0.008000	549328
+5	MergeSort	Flat	100000	0.002000	549328
+6	MergeSort	Flat	100000	0.002000	549328
+7	MergeSort	Flat	100000	0.003000	549328
+8	MergeSort	Flat	100000	0.003000	549328
+9	MergeSort	Flat	100000	0.002000	549328
+10	MergeSort	Flat	100000	0.002000	549328
+1	MergeSort	Random	1000000	0.327000	18574887
+2	MergeSort	Random	1000000	0.438000	18575106
+3	MergeSort	Random	1000000	0.422000	18574535
+4	MergeSort	Random	1000000	0.445000	18575603
+5	MergeSort	Random	1000000	0.434000	18574792
+6	MergeSort	Random	1000000	0.429000	18575323
+7	MergeSort	Random	1000000	0.422000	18575785
+8	MergeSort	Random	1000000	0.416000	18575097
+9	MergeSort	Random	1000000	0.435000	18575012
+10	MergeSort	Random	1000000	0.420000	18574742
+1	MergeSort	Ascending ordered	1000000	0.128000	7490624
+2	MergeSort	Ascending ordered	1000000	0.032000	7490624
+3	MergeSort	Ascending ordered	1000000	0.032000	7490624
+4	MergeSort	Ascending ordered	1000000	0.033000	7490624
+5	MergeSort	Ascending ordered	1000000	0.036000	7490624
+6	MergeSort	Ascending ordered	1000000	0.033000	7490624
+7	MergeSort	Ascending ordered	1000000	0.032000	7490624
+8	MergeSort	Ascending ordered	1000000	0.033000	7490624
+9	MergeSort	Ascending ordered	1000000	0.032000	7490624
+10	MergeSort	Ascending ordered	1000000	0.032000	7490624
+1	MergeSort	Descending ordered	1000000	0.168000	12166720
+2	MergeSort	Descending ordered	1000000	0.105000	12166720
+3	MergeSort	Descending ordered	1000000	0.108000	12166720
+4	MergeSort	Descending ordered	1000000	0.104000	12166720
+5	MergeSort	Descending ordered	1000000	0.106000	12166720
+6	MergeSort	Descending ordered	1000000	0.105000	12166720
+7	MergeSort	Descending ordered	1000000	0.106000	12166720
+8	MergeSort	Descending ordered	1000000	0.106000	12166720
+9	MergeSort	Descending ordered	1000000	0.106000	12166720
+10	MergeSort	Descending ordered	1000000	0.105000	12166720
+1	MergeSort	Flat	1000000	0.154000	7490624
+2	MergeSort	Flat	1000000	0.033000	7490624
+3	MergeSort	Flat	1000000	0.034000	7490624
+4	MergeSort	Flat	1000000	0.034000	7490624
+5	MergeSort	Flat	1000000	0.039000	7490624
+6	MergeSort	Flat	1000000	0.035000	7490624
+7	MergeSort	Flat	1000000	0.034000	7490624
+8	MergeSort	Flat	1000000	0.034000	7490624
+9	MergeSort	Flat	1000000	0.034000	7490624
+10	MergeSort	Flat	1000000	0.034000	7490624
+1	MergeSort	Random	10000000	4.598000	218878135
+2	MergeSort	Random	10000000	4.735000	218876613
+3	MergeSort	Random	10000000	4.709000	218877124
+4	MergeSort	Random	10000000	4.737000	218878106
+5	MergeSort	Random	10000000	4.827000	218877936
+6	MergeSort	Random	10000000	4.842000	218879517
+7	MergeSort	Random	10000000	4.728000	218879299
+8	MergeSort	Random	10000000	4.747000	218878625
+9	MergeSort	Random	10000000	4.746000	218878295
+10	MergeSort	Random	10000000	4.737000	218878013
+1	MergeSort	Ascending ordered	10000000	0.561000	89912640
+2	MergeSort	Ascending ordered	10000000	0.451000	89912640
+3	MergeSort	Ascending ordered	10000000	0.441000	89912640
+4	MergeSort	Ascending ordered	10000000	0.440000	89912640
+5	MergeSort	Ascending ordered	10000000	0.461000	89912640
+6	MergeSort	Ascending ordered	10000000	0.464000	89912640
+7	MergeSort	Ascending ordered	10000000	0.436000	89912640
+8	MergeSort	Ascending ordered	10000000	0.433000	89912640
+9	MergeSort	Ascending ordered	10000000	0.448000	89912640
+10	MergeSort	Ascending ordered	10000000	0.452000	89912640
+1	MergeSort	Descending ordered	10000000	1.769000	139844288
+2	MergeSort	Descending ordered	10000000	1.663000	139844288
+3	MergeSort	Descending ordered	10000000	1.710000	139844288
+4	MergeSort	Descending ordered	10000000	1.714000	139844288
+5	MergeSort	Descending ordered	10000000	1.708000	139844288
+6	MergeSort	Descending ordered	10000000	1.670000	139844288
+7	MergeSort	Descending ordered	10000000	1.690000	139844288
+8	MergeSort	Descending ordered	10000000	1.676000	139844288
+9	MergeSort	Descending ordered	10000000	1.686000	139844288
+10	MergeSort	Descending ordered	10000000	1.678000	139844288
+1	MergeSort	Flat	10000000	0.561000	89912640
+2	MergeSort	Flat	10000000	0.462000	89912640
+3	MergeSort	Flat	10000000	0.451000	89912640
+4	MergeSort	Flat	10000000	0.454000	89912640
+5	MergeSort	Flat	10000000	0.465000	89912640
+6	MergeSort	Flat	10000000	0.461000	89912640
+7	MergeSort	Flat	10000000	0.454000	89912640
+8	MergeSort	Flat	10000000	0.453000	89912640
+9	MergeSort	Flat	10000000	0.460000	89912640
+10	MergeSort	Flat	10000000	0.456000	89912640
+1	MergeSort	Random	100000000	76.122000	2521158676
+バッチ ジョブを終了しますか (Y/N)? 
+バッチ ジョブを終了しますか (Y/N)? 
