@@ -14,38 +14,38 @@ public class ManyPivotSort {
 	/**
 	 * コムソート
 	 * @param array ソート対象
-	 * @param min ソート対象の添え字の最小値
-	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param from ソート対象の添え字の最小値
+	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void combSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
+	public static final <T> void combSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;	//	ソート範囲サイズ
+		final int range = to - from;	//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
@@ -60,7 +60,7 @@ public class ManyPivotSort {
 			else if (gap == 0)
 				gap = 1;
 			done = true;
-			for (int i = min; i + gap < max; i++) {
+			for (int i = from; i + gap < to; i++) {
 				if (comparator.compare(array[i + gap], array[i]) < 0) {
 					final T work = array[i];
 					array[i] = array[i + gap];
@@ -75,76 +75,76 @@ public class ManyPivotSort {
 	/**
 	 * クイックソート
 	 * @param array ソート対象
-	 * @param min ソート対象の添え字の最小値
-	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param from ソート対象の添え字の最小値
+	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void quickSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
+	public static final <T> void quickSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;		//	ソート範囲サイズ
+		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
 		}
 /*
 		if (range < 50) {
-			combSort(array, min, max, comparator);
+			combSort(array, from, to, comparator);
 			return;
 		}
 */
 
-		final T pivot = array[min + range / 2];		//	ピボット値（ソート対象の中央位置）
+		final T pivot = array[from + range / 2];		//	ピボット値（ソート対象の中央位置）
 
-		int curMin = min;				//	現在処理中位置の小さい方の位置
-		int curMax = max - 1;			//	現在処理中位置の大きい方の位置
+		int curFrom = from;			//	現在処理中位置の小さい方の位置
+		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
 
 		do {
-			while (comparator.compare(array[curMin], pivot) < 0) {
-				curMin++;
+			while (comparator.compare(array[curFrom], pivot) < 0) {
+				curFrom++;
 			}
-			while (comparator.compare(array[curMax], pivot) > 0) {
-				curMax--;
+			while (comparator.compare(array[curTo], pivot) > 0) {
+				curTo--;
 			}
-			if (curMin <= curMax) {
-				final T work = array[curMin];
-				array[curMin] = array[curMax];
-				array[curMax] = work;
-				curMin++;
-				curMax--;
+			if (curFrom <= curTo) {
+				final T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
+				curFrom++;
+				curTo--;
 			}
-		} while (curMin <= curMax);
+		} while (curFrom <= curTo);
 
-		if (min < curMax + 1) {
-			quickSort(array, min, curMax + 1, comparator);
+		if (from < curTo + 1) {
+			quickSort(array, from, curTo + 1, comparator);
 		}
 
-		if (curMin < max - 1) {
-			quickSort(array, curMin, max, comparator);
+		if (curFrom < to - 1) {
+			quickSort(array, curFrom, to, comparator);
 		}
 	}
 
@@ -152,54 +152,54 @@ public class ManyPivotSort {
 	/**
 	 * クイックソート（３つのメディアン）
 	 * @param array ソート対象
-	 * @param min ソート対象の添え字の最小値
-	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param from ソート対象の添え字の最小値
+	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void quickSortMedian3(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
+	public static final <T> void quickSortMedian3(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;		//	ソート範囲サイズ
+		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
 		}
 /*
 		if (range < 50) {
-			combSort(array, min, max, comparator);
+			combSort(array, from, to, comparator);
 			return;
 		}
 */
 		T pivot;							//	ピボット値
-//		pivot = array[min + range / 2];
+//		pivot = array[from + range / 2];
 
-		T pivot1 = array[min];				//	ピボット候補１
-		T pivot2 = array[min + range / 2];	//	ピボット候補２
-		T pivot3 = array[max - 1];			//	ピボット候補３
+		T pivot1 = array[from];				//	ピボット候補１
+		T pivot2 = array[from + range / 2];	//	ピボット候補２
+		T pivot3 = array[to - 1];			//	ピボット候補３
 
 		//	３つのピボット候補から中央値を取得し、ピボット値とする
 		if (comparator.compare(pivot1, pivot2) < 0) {
@@ -220,31 +220,31 @@ public class ManyPivotSort {
 			}
 		}
 
-		int curMin = min;				//	現在処理中位置の小さい方の位置
-		int curMax = max - 1;			//	現在処理中位置の大きい方の位置
+		int curFrom = from;			//	現在処理中位置の小さい方の位置
+		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
 
 		do {
-			while (comparator.compare(array[curMin], pivot) < 0) {
-				curMin++;
+			while (comparator.compare(array[curFrom], pivot) < 0) {
+				curFrom++;
 			}
-			while (comparator.compare(array[curMax], pivot) > 0) {
-				curMax--;
+			while (comparator.compare(array[curTo], pivot) > 0) {
+				curTo--;
 			}
-			if (curMin <= curMax) {
-				final T work = array[curMin];
-				array[curMin] = array[curMax];
-				array[curMax] = work;
-				curMin++;
-				curMax--;
+			if (curFrom <= curTo) {
+				final T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
+				curFrom++;
+				curTo--;
 			}
-		} while (curMin <= curMax);
+		} while (curFrom <= curTo);
 
-		if (min < curMax + 1) {
-			quickSort(array, min, curMax + 1, comparator);
+		if (from < curTo + 1) {
+			quickSort(array, from, curTo + 1, comparator);
 		}
 
-		if (curMin < max - 1) {
-			quickSort(array, curMin, max, comparator);
+		if (curFrom < to - 1) {
+			quickSort(array, curFrom, to, comparator);
 		}
 	}
 
@@ -255,144 +255,144 @@ public class ManyPivotSort {
 	 * 内部的に呼び出される。ピボットの配列（ピボット候補）を引数にもつ
 	 *
 	 * @param array ソート対象
-	 * @param min ソート対象の添え字の最小値
-	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param from ソート対象の添え字の最小値
+	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param pivots ピボットの配列
-	 * @param minPivots 使用対象となる pivots 配列の添え字の最小値
-	 * @param maxPivots 使用対象となる pivots 配列の添え字の最大値 + 1
+	 * @param fromPivots 使用対象となる pivots 配列の添え字の最小値
+	 * @param toPivots 使用対象となる pivots 配列の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int min, final int max, final T[] pivots, final int minPivots, final int maxPivots, final Comparator<? super T> comparator)
+	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;		//	ソート範囲サイズ
+		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
 		}
 /*
 		if (range < 50) {
-			combSort(array, min, max, comparator);
+			combSort(array, from, to, comparator);
 			return;
 		}
 */
 
-		final int pivotIdx = (minPivots + maxPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
+		final int pivotIdx = (fromPivots + toPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];						//	ピボット値
 
-		int curMin = min;			//	現在処理中位置の小さい方の位置
-		int curMax = max - 1;		//	現在処理中位置の大きい方の位置
+		int curFrom = from;			//	現在処理中位置の小さい方の位置
+		int curTo = to - 1;		//	現在処理中位置の大きい方の位置
 
 		do {
 			//	このあたりは割と普通のクイックソートのまま。
 			int comp1;
-			while ((comp1 = comparator.compare(array[curMin], pivot)) < 0) {
-				curMin++;
+			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0) {
+				curFrom++;
 			}
 			int comp2;
-			while ((comp2 = comparator.compare(array[curMax], pivot)) > 0) {
-				curMax--;
+			while ((comp2 = comparator.compare(array[curTo], pivot)) > 0) {
+				curTo--;
 			}
-			if (curMin <= curMax) {
-				if (comp1 != comp2) {	//	実質的には array[curMin]とarray[curMax]の位置の両方の値がピボット値と同じでない場合という意味
-					final T work = array[curMin];
-					array[curMin] = array[curMax];
-					array[curMax] = work;
+			if (curFrom <= curTo) {
+				if (comp1 != comp2) {	//	実質的には array[curFrom]とarray[curTo]の位置の両方の値がピボット値と同じでない場合という意味
+					final T work = array[curFrom];
+					array[curFrom] = array[curTo];
+					array[curTo] = work;
 				}
-				curMin++;
-				curMax--;
+				curFrom++;
+				curTo--;
 			} else {
 				break;
 			}
 		} while (true);
 
-		if (min < curMax + 1) {
-			if (minPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, min, curMax + 1, comparator);
+		if (from < curTo + 1) {
+			if (fromPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+				mpSort(array, from, curTo + 1, comparator);
 			else
-				mpSort(array, min, curMax + 1, pivots, minPivots, pivotIdx, comparator);
+				mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
 		}
 
-		if (curMin < max - 1) {
-			if (pivotIdx + 1 >= maxPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curMin, max, comparator);
+		if (curFrom < to - 1) {
+			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+				mpSort(array, curFrom, to, comparator);
 			else
-				mpSort(array, curMin, max, pivots, pivotIdx + 1, maxPivots, comparator);
+				mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 	}
 
 	/**
 	 * メニー・ピボット・ソート
 	 * @param array ソート対象
-	 * @param min ソート対象の添え字の最小値
-	 * @param max ソート対象の添え字の最大値 + 1
+	 * @param from ソート対象の添え字の最小値
+	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int min, final int max, final Comparator<? super T> comparator)
+	public static final <T> void mpSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;		//	ソート範囲サイズ
+		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
 		}
 /*
 		if (range < 50) {
-			combSort(array, min, max, comparator);
+			combSort(array, from, to, comparator);
 			return;
 		}
 */
 
 		if (range < 3000) {
-			quickSortMedian3(array, min, max, comparator);
+			quickSortMedian3(array, from, to, comparator);
 			return;
 		}
 
@@ -418,12 +418,12 @@ public class ManyPivotSort {
 
 		//	ピボット（複数）の選出
 		for (int i = 0; i < pivots.length; i++) {
-			pivots[i] = array[(int)(min + (long)range * i / pivots.length + range / 2 / pivots.length)];
+			pivots[i] = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
 		}
 		//	ピボット値のみをソート
 		combSort(pivots, 0, pivots.length, comparator);
 		//	ソート対象本体のソート
-		mpSort(array, min, max, pivots, 0, pivots.length, comparator);
+		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
 	}
 
 }

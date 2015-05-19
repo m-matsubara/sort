@@ -224,6 +224,16 @@ public class SortTest {
 				stable = true;
 				MmSort.mergeSort(array, 0, array.length, comparator);
 			}
+			else if (sortType.equals("ImprovedMergeSort") || sortType.equals("ims")) {
+				sortName = "Improved MergeSort";
+				stable = true;
+				MmSort.improvedMergeSort(array, 0, array.length, comparator);
+			}
+			else if (sortType.equals("InplaceMergeSort") || sortType.equals("ipms")) {
+				sortName = "In-place MergeSort";
+				stable = true;
+				MmSort.ipMergeSort(array, 0, array.length, comparator);
+			}
 			else if (sortType.equals("MasSort") || sortType.equals("mas")) {
 				sortName = "MasSort";
 				stable = true;
