@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class MergeSort {
+public class MergeSort implements ISortAlgorithm {
 	/**
 	 * マージソート
 	 * 作業用一時領域はソート対象の範囲サイズ / 2（切り上げ）が必要
@@ -123,5 +123,20 @@ public class MergeSort {
 		final T[] works = (T[])new Object[(to - from) / 2];
 
 		mergeSort(array, from, to, works, comparator);
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		mergeSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "Merge Sort";
 	}
 }

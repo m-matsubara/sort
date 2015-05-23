@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class ImprovedMergeSort {
+public class ImprovedMergeSort implements ISortAlgorithm {
 	/**
 	 * Improved Merge sort
 	 * (Outputs directly to sort the results in the work area, to return while merge from the work area to the original sequence)
@@ -122,5 +122,20 @@ public class ImprovedMergeSort {
 
 		System.arraycopy(array, from, works, from, to - from);
 		improvedMergeSort(works, array, from, to, comparator);
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		improvedMergeSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "Improved Merge Sort";
 	}
 }

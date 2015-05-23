@@ -3,7 +3,7 @@ rem Copyright (c) 2015 masakazu matsubara
 rem Released under the MIT license
 rem https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
 
-set TIMES=10
+set TIMES=%2
 
 java.exe  mmsort.SortTest %1 100 R %TIMES%
 java.exe  mmsort.SortTest %1 100 A %TIMES%

@@ -10,7 +10,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class MatSort {
+public class MatSort implements ISortAlgorithm {
 	/**
 	 * 前方優先バイナリサーチ
 	 * 先頭から範囲を２倍ずつ拡張しながら、ある程度位置を絞り込む。その後絞り込んだ範囲内でバイナリサーチ
@@ -87,6 +87,8 @@ public class MatSort {
 		if (range <= 1)
 			return ;
 		//	作業領域サイズの決定
+		if (workSize == 0)
+			workSize = (range + 9) / 10;	// round up 切り上げ
 		if (workSize > range)
 			workSize = range;					//	作業領域サイズがソート範囲のサイズより大きい場合、ソート範囲のサイズにする。
 		else if (workSize == range)
@@ -156,5 +158,20 @@ public class MatSort {
 				idx1++;
 			}
 		}
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		matSort(array, from, to, comparator, 0);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "MatSort";
 	}
 }

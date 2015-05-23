@@ -3,13 +3,15 @@ rem Copyright (c) 2015 masakazu matsubara
 rem Released under the MIT license
 rem https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
 
-call test.bat MatSort(1/10)
-call test.bat MasSort
-call test.bat QuickSort
-call test.bat QuickSort(Median3)
-call test.bat ManyPivotSort
-call test.bat Arrays.sort
-call test.bat MergeSort
-call test.bat InplaceMergeSort
-call test.bat ImprovedMergeSort
+call test.bat mmsort.MatSort %1
+call test.bat mmsort.MasSort %1
+call test.bat mmsort.QuickSort %1
+call test.bat mmsort.QuickSortM3 %1
+call test.bat mmsort.ManyPivotSort %1
+call test.bat mmsort.ArraysSort %1
+call test.bat mmsort.MergeSort %1
+call test.bat mmsort.InplaceMergeSort %1
+call test.bat mmsort.ImprovedMergeSort %1
+rem call test.bat mmsort.DoReMiFaSort %1
+rem call test.bat mmsort.RichardSort %1
 

@@ -149,6 +149,9 @@ public class SortTest {
 		//	ソートのタイプ（アルゴリズム）の決定
 		String sortType = args[0];
 
+		Class<?> alg = Class.forName(sortType);
+		ISortAlgorithm sorter = (ISortAlgorithm)alg.newInstance();
+
 		//	ソート対象サイズ
 		int arraySize = Integer.parseInt(args[1]);
 
@@ -211,76 +214,21 @@ public class SortTest {
 			}
 			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
 
-
 			String sortName = "";
 			boolean stable = false;
 			SortTest.compareCount = 0;
+
+			sortName = sorter.getName();
+			stable = sorter.isStable();
+
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			startTime = System.currentTimeMillis();
-			boolean validation = true;
-
-			if (sortType.equals("MergeSort") || sortType.equals("ms")) {
-				sortName = "MergeSort";
-				stable = true;
-				MergeSort.mergeSort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("ImprovedMergeSort") || sortType.equals("ims")) {
-				sortName = "Improved MergeSort";
-				stable = true;
-				ImprovedMergeSort.improvedMergeSort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("InplaceMergeSort") || sortType.equals("ipms")) {
-				sortName = "In-place MergeSort";
-				stable = true;
-				InplaceMergeSort.ipMergeSort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("MasSort") || sortType.equals("mas")) {
-				sortName = "MasSort";
-				stable = true;
-				MasSort.masSort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("MatSort(1/5)") || sortType.equals("mat5")) {
-				sortName = "MatSort(1/5)";
-				stable = true;
-				MatSort.matSort(array, 0, array.length, comparator, array.length / 5);
-			}
-			else if (sortType.equals("MatSort(1/10)") || sortType.equals("mat10")) {
-				sortName = "MatSort(1/10)";
-				stable = true;
-				MatSort.matSort(array, 0, array.length, comparator, array.length / 10);
-			}
-			else if (sortType.equals("MatSort(1/100)") || sortType.equals("mat100")) {
-				sortName = "MatSort(1/100)";
-				stable = true;
-				MatSort.matSort(array, 0, array.length, comparator, array.length / 100);
-			}
-			else if (sortType.equals("Arrays.sort") || sortType.equals("arrays")) {
-				sortName = "Arrays.sort";
-				stable = true;
-				java.util.Arrays.sort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("QuickSort(Median3)") || sortType.equals("qsM3")) {
-				sortName = "QuickSort(Median 3)";
-				stable = false;
-				QuickSortM3.quickSortMedian3(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("QuickSort") || sortType.equals("qs")) {
-				sortName = "QuickSort";
-				stable = false;
-				QuickSort.quickSort(array, 0, array.length, comparator);
-			}
-			else if (sortType.equals("ManyPivotSort") || sortType.equals("mps")) {
-				sortName = "ManyPivotSort";
-				stable = false;
-				ManyPivotSort.mpSort(array, 0, array.length, comparator);
-			}
-			else
-				throw new Exception("arguments error ");
+			sorter.sort(array, 0, array.length, comparator);
 			endTime = System.currentTimeMillis();
+
 			compareCount = SortTest.compareCount;
 			System.out.printf("%d	%s	%s	%d	%f	%d\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount);
-			if (validation)
-				validateArray(array, stable);
+			validateArray(array, stable);
 		}
 	}
 

@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class QuickSortM3 {
+public class QuickSortM3 implements ISortAlgorithm {
 	/**
 	 * Quick sort (Median of 3)
 	 * クイックソート（３つのメディアン）
@@ -110,5 +110,18 @@ public class QuickSortM3 {
 		}
 	}
 
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		quickSortMedian3(array, from, to, comparator);
+	}
 
+	public boolean isStable()
+	{
+		return false;
+	}
+
+	public String getName()
+	{
+		return "Quick Sort (Median of 3)";
+	}
 }

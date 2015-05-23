@@ -10,7 +10,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class QuickSort {
+public class QuickSort implements ISortAlgorithm {
 	/**
 	 * Quick sort
 	 * (Nothing ingenuity)
@@ -89,5 +89,20 @@ public class QuickSort {
 		if (curFrom < to - 1) {
 			quickSort(array, curFrom, to, comparator);
 		}
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		quickSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return false;
+	}
+
+	public String getName()
+	{
+		return "Quick Sort";
 	}
 }

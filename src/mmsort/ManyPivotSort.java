@@ -12,7 +12,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class ManyPivotSort {
+public class ManyPivotSort implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	/**
 	 * メニー・ピボット・ソート
@@ -61,7 +61,9 @@ public class ManyPivotSort {
 		}
 /*
 		if (range < 50) {
-			combSort(array, from, to, comparator);
+			CombSort.combSort(array, from, to, comparator);
+			//InsertSort.insertSort(array, from, to, comparator);
+			//BinInsertSort.binInsertSort(array, from, to, comparator);
 			return;
 		}
 */
@@ -73,21 +75,14 @@ public class ManyPivotSort {
 		int curTo = to - 1;		//	現在処理中位置の大きい方の位置
 
 		do {
-			//	このあたりは割と普通のクイックソートのまま。
-			int comp1;
-			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0) {
+			while (comparator.compare(array[curFrom], pivot) < 0)
 				curFrom++;
-			}
-			int comp2;
-			while ((comp2 = comparator.compare(array[curTo], pivot)) > 0) {
+			while (comparator.compare(array[curTo], pivot) > 0)
 				curTo--;
-			}
 			if (curFrom <= curTo) {
-				if (comp1 != comp2) {	//	実質的には array[curFrom]とarray[curTo]の位置の両方の値がピボット値と同じでない場合という意味
-					final T work = array[curFrom];
-					array[curFrom] = array[curTo];
-					array[curTo] = work;
-				}
+				final T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
 				curFrom++;
 				curTo--;
 			} else {
@@ -191,4 +186,18 @@ public class ManyPivotSort {
 		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
 	}
 
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		mpSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return false;
+	}
+
+	public String getName()
+	{
+		return "Many Pivot Sort";
+	}
 }

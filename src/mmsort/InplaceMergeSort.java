@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class InplaceMergeSort {
+public class InplaceMergeSort implements ISortAlgorithm {
 	/**
 	 * Binary search (head position of the same value)
 	 * 二分探索（同じ値がるときは先頭位置）
@@ -201,5 +201,20 @@ public class InplaceMergeSort {
 		ipMergeSort(array, mid, to, comparator);	//	範囲２（中間位置～最大位置）のソート
 
 		ipMerge(array, from, mid, to, comparator);
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		ipMergeSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "In-place Merge Sort";
 	}
 }

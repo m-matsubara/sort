@@ -10,7 +10,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class MasSort {
+public class MasSort implements ISortAlgorithm {
 	/**
 	 * MasSort
 	 *
@@ -22,6 +22,7 @@ public class MasSort {
 	 * 高速化版マージソート
 	 * ソート対象を多くのブロックに分割してマージする。
 	 * 通常のマージソートに比べて、メモリ転送回数を減らすことができるため、メモリアクセスの遅い環境で特に有利と考えられる。
+	 *
 	 * @param arrayFrom sort source / ソート元
 	 * @param arrayTo sort result / ソート結果
 	 * @param from index of first element / ソート対象の開始位置
@@ -227,6 +228,7 @@ public class MasSort {
 	 *
 	 * Faster version of the merge sort.
 	 * 高速化版マージソート
+	 *
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
@@ -239,5 +241,20 @@ public class MasSort {
 		final T[] works = (T[])new Object[range];
 		System.arraycopy(array, from, works, 0, range);
 		masSort(works, array, 0, range, from, comparator);
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		masSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "MasSort";
 	}
 }

@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class CombSort {
+public class CombSort implements ISortAlgorithm {
 	/**
 	 * コムソート
 	 * @param array ソート対象
@@ -68,5 +68,20 @@ public class CombSort {
 				}
 			}
 		}
+	}
+
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		combSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return false;
+	}
+
+	public String getName()
+	{
+		return "CombSort";
 	}
 }

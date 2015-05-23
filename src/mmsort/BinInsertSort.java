@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class BinInsertSort {
+public class BinInsertSort implements ISortAlgorithm {
 	/**
 	 * Binary Insertion sort
 	 * 二分探索版挿入ソート
@@ -96,4 +96,18 @@ public class BinInsertSort {
 		}
 	}
 
+	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		binInsertSort(array, from, to, comparator);
+	}
+
+	public boolean isStable()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return "Binary Insert Sort";
+	}
 }
