@@ -15,7 +15,7 @@ import java.util.Comparator;
 public class ManyPivotSort3W implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	/**
-	 * メニー・ピボット・ソート(3 Way Edition)
+	 * メニー・ピボット・ソート (3 Way Edition)
 	 *
 	 * 内部的に呼び出される。ピボットの配列（ピボット候補）を引数にもつ
 	 *
