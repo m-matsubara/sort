@@ -27,34 +27,34 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 * @param toPivots 使用対象となる pivots 配列の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int min, final int max, final T[] pivots, final int minPivots, final int maxPivots, final Comparator<? super T> comparator)
+	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int minPivots, final int maxPivots, final Comparator<? super T> comparator)
 	{
-		final int range = max - min;		//	ソート範囲サイズ
+		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[min], array[min + 1]) > 0) {
-				final T work = array[min];
-				array[min] = array[min + 1];
-				array[min + 1] = work;
+			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				final T work = array[from];
+				array[from] = array[from + 1];
+				array[from + 1] = work;
 			}
-			if (comparator.compare(array[min + 1], array[min + 2]) > 0) {
-				final T work = array[min + 1];
-				array[min + 1] = array[min + 2];
-				array[min + 2] = work;
-				if (comparator.compare(array[min], array[min + 1]) > 0) {
-					final T work2 = array[min];
-					array[min] = array[min + 1];
-					array[min + 1] = work2;
+			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+				final T work = array[from + 1];
+				array[from + 1] = array[from + 2];
+				array[from + 2] = work;
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T work2 = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = work2;
 				}
 			}
 			return;
@@ -69,76 +69,96 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		final int pivotIdx = (minPivots + maxPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];						//	ピボット値
 
-		int curMin = min;			//	現在処理中位置の小さい方の位置
-		int curMax = max - 1;		//	現在処理中位置の大きい方の位置
-		int eqMin = curMin;
-		int eqMax = curMax;
+		int curFrom = from;			//	現在処理中位置の小さい方の位置
+		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
+		int eqFrom = curFrom;
+		int eqTo = curTo;
+		while (comparator.compare(array[eqFrom], pivot) == 0) {
+			curFrom++;
+			eqFrom++;
+		}
+		while (comparator.compare(array[eqTo], pivot) == 0) {
+			curTo--;
+			eqTo--;
+		}
 
 		do {
-			//	このあたりは割と普通のクイックソートのまま。
 			int comp1;
-			while ((comp1 = comparator.compare(array[curMin], pivot)) < 0) {
-				curMin++;
+			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0) {
+				curFrom++;
 			}
 			int comp2;
-			while ((comp2 = comparator.compare(array[curMax], pivot)) > 0) {
-				curMax--;
+			while ((comp2 = comparator.compare(array[curTo], pivot)) > 0) {
+				curTo--;
 			}
-			if (curMin <= curMax) {
-				if (comp1 != comp2) {	//	実質的には array[curMin]とarray[curMax]の位置の両方の値がピボット値と同じでない場合という意味
-					final T work = array[curMin];
-					array[curMin] = array[curMax];
-					array[curMax] = work;
+			if (curFrom <= curTo) {
+				if (comp1 != comp2) {	//	実質的には array[curFrom]とarray[curTo]の位置の両方の値がピボット値と同じでない場合という意味
+					final T work = array[curFrom];
+					array[curFrom] = array[curTo];
+					array[curTo] = work;
 				}
 				if (comp1 == 0) {
-					final T work = array[curMax];
-					array[curMax] = array[eqMax];
-					array[eqMax] = work;
-					eqMax--;
+					final T work = array[curTo];
+					array[curTo] = array[eqTo];
+					array[eqTo] = work;
+					eqTo--;
 				}
 				if (comp2 == 0) {
-					final T work = array[curMin];
-					array[curMin] = array[eqMin];
-					array[eqMin] = work;
-					eqMin++;
+					final T work = array[curFrom];
+					array[curFrom] = array[eqFrom];
+					array[eqFrom] = work;
+					eqFrom++;
 				}
-				curMin++;
-				curMax--;
+				curFrom++;
+				curTo--;
 			} else {
 				break;
 			}
 		} while (true);
-		if (curMin != eqMin) {
-			while (eqMin > min) {
-				curMin--;
-				eqMin--;
-				final T work = array[curMin];
-				array[curMin] = array[eqMin];
-				array[eqMin] = work;
+		if (curFrom != eqFrom) {
+			while (eqFrom > from) {
+				curFrom--;
+				eqFrom--;
+				final T work = array[curFrom];
+				array[curFrom] = array[eqFrom];
+				array[eqFrom] = work;
 			}
 		}
-		if (curMax != eqMax) {
-			while (eqMax + 1 < max) {
-				eqMax++;
-				curMax++;
-				final T work = array[curMax];
-				array[curMax] = array[eqMax];
-				array[eqMax] = work;
+		if (curTo != eqTo) {
+			while (eqTo + 1 < to) {
+				eqTo++;
+				curTo++;
+				final T work = array[curTo];
+				array[curTo] = array[eqTo];
+				array[eqTo] = work;
 			}
 		}
-
-		if (min < curMin) {
+/*
+		for (int i = from; i < curFrom; i++) {
+			if (comparator.compare(pivot, array[i]) <= 0)
+				throw new RuntimeException("aaa");
+		}
+		for (int i = curFrom; i < curTo + 1; i++) {
+			if (comparator.compare(pivot, array[i]) != 0)
+				throw new RuntimeException("bbb");
+		}
+		for (int i = curTo + 1; i < to; i++) {
+			if (comparator.compare(pivot, array[i]) >= 0)
+				throw new RuntimeException("ccc");
+		}
+*/
+		if (from < curFrom) {
 			if (minPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, min, curMin, comparator);
+				mpSort(array, from, curFrom, comparator);
 			else
-				mpSort(array, min, curMin, pivots, minPivots, pivotIdx, comparator);
+				mpSort(array, from, curFrom, pivots, minPivots, pivotIdx, comparator);
 		}
 
-		if (curMax < max - 1) {
+		if (curTo < to - 1) {
 			if (pivotIdx + 1 >= maxPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curMax + 1, max, comparator);
+				mpSort(array, curTo + 1, to, comparator);
 			else
-				mpSort(array, curMax + 1, max, pivots, pivotIdx + 1, maxPivots, comparator);
+				mpSort(array, curTo + 1, to, pivots, pivotIdx + 1, maxPivots, comparator);
 		}
 	}
 
@@ -235,6 +255,6 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 
 	public String getName()
 	{
-		return "Many Pivot Sort";
+		return "Many Pivot Sort (3 Way)";
 	}
 }
