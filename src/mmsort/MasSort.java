@@ -66,7 +66,7 @@ public class MasSort implements ISortAlgorithm {
 			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
 			return;
 		} else if (range < 200) {
-			BinInsertSort.binInsertSort(arrayFrom, from, to, comparator);
+			BinInsertionSort.binInsertionSort(arrayFrom, from, to, comparator);
 			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
 			return;
 		}
@@ -100,7 +100,7 @@ public class MasSort implements ISortAlgorithm {
 			T key = blockStartItemCache[blockIdx];				//	キー値
 			int fromIdx = 0;										//	探索範囲の最小インデックス
 			int toIdx = fromOrderBlocksIdx;						//	探索範囲の最大インデックス + 1
-			int curIdx = (fromIdx + toIdx) / 2;					//	探索範囲の中央インデックス
+			int curIdx = fromIdx + (toIdx - fromIdx) / 2;		//	探索範囲の中央インデックス
 			//	二分探索処理
 			while (fromIdx < toIdx) {
 				int curBlockIdx = fromOrderBlocks[curIdx];
@@ -117,7 +117,7 @@ public class MasSort implements ISortAlgorithm {
 				} else {
 					fromIdx = curIdx + 1;
 				}
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 			}
 			//	挿入処理
 			for (int j = fromOrderBlocksIdx - 1; j >= curIdx; j--) {

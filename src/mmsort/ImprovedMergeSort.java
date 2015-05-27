@@ -61,7 +61,7 @@ public class ImprovedMergeSort implements ISortAlgorithm {
 			return;
 		} else if (range < 200) {
 			System.arraycopy(arrayFrom, from, arrayTo, from, to - from);
-			BinInsertSort.binInsertSort(arrayTo, from, to, comparator);
+			BinInsertionSort.binInsertionSort(arrayTo, from, to, comparator);
 			return;
 		}
 

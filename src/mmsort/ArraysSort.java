@@ -24,7 +24,7 @@ public class ArraysSort implements ISortAlgorithm {
 
 	public String getName()
 	{
-		return "Binary Insert Sort";
+		return "Arrays.Sort";
 	}
 
 }

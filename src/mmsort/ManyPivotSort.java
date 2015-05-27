@@ -68,7 +68,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 		}
 */
 
-		final int pivotIdx = (fromPivots + toPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
+		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];						//	ピボット値
 
 		int curFrom = from;			//	現在処理中位置の小さい方の位置

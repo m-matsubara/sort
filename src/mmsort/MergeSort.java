@@ -51,11 +51,11 @@ public class MergeSort implements ISortAlgorithm {
 			}
 			return;
 		} else if (range < 200) {
-			BinInsertSort.binInsertSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
-		int mid = (from + to) / 2;	//	中央位置（範囲１と範囲２の境界）
+		int mid = from + (to - from) / 2;	//	中央位置（範囲１と範囲２の境界）
 		mergeSort(array, from, mid, works, comparator);	//	範囲１（最小位置～中間位置）のソート
 		mergeSort(array, mid, to, works, comparator);	//	範囲２（中間位置～最大位置）のソート
 

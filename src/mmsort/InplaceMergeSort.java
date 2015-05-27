@@ -192,7 +192,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 			}
 			return;
 		} else if (range < 200) {
-			BinInsertSort.binInsertSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 

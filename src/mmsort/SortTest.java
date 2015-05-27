@@ -27,6 +27,9 @@ public class SortTest {
 			this.key = key;
 			this.orginalOrder = 0;
 		}
+		public String toString() {
+			return "(Key=" + key + ":OriginalOrder=" + orginalOrder + ")";
+		}
 	}
 
 

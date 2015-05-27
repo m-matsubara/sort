@@ -41,16 +41,16 @@ public class MatSort implements ISortAlgorithm {
 		//	大まかに絞り込んだ範囲内で２分検索する
 		int fromIdx = from;
 		int toIdx = to;
-		int curIdx = (fromIdx + toIdx) / 2;
+		int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 		while (fromIdx < toIdx) {
 			final int compVal = comparator.compare(key, array[curIdx]);
 			if (compVal <= 0) {
 				toIdx = curIdx;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			} else {
 				fromIdx = curIdx + 1;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			}
 		}

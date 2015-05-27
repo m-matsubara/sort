@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class BinInsertSort implements ISortAlgorithm {
+public class BinInsertionSort implements ISortAlgorithm {
 	/**
 	 * Binary Insertion sort
 	 * 二分探索版挿入ソート
@@ -18,7 +18,7 @@ public class BinInsertSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static <T> void binInsertSort(T[] array, int from, int to, Comparator<? super T> comparator)
+	public static <T> void binInsertionSort(T[] array, int from, int to, Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 
@@ -98,7 +98,7 @@ public class BinInsertSort implements ISortAlgorithm {
 
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		binInsertSort(array, from, to, comparator);
+		binInsertionSort(array, from, to, comparator);
 	}
 
 	public boolean isStable()

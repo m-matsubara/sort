@@ -9,7 +9,7 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class InsertSort implements ISortAlgorithm {
+public class InsertionSort implements ISortAlgorithm {
 	/**
 	 * Insertion sort
 	 * 挿入ソート
@@ -18,7 +18,7 @@ public class InsertSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void insertSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void insertionSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 
@@ -67,7 +67,7 @@ public class InsertSort implements ISortAlgorithm {
 
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		insertSort(array, from, to, comparator);
+		insertionSort(array, from, to, comparator);
 	}
 
 	public boolean isStable()
@@ -77,6 +77,6 @@ public class InsertSort implements ISortAlgorithm {
 
 	public String getName()
 	{
-		return "In-place Merge Sort";
+		return "Insertion Sort";
 	}
 }
