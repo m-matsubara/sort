@@ -1,4 +1,5 @@
 /*
+ * Benchmark of Sorting algorithm
  * ソートのベンチマークプログラム
  *
  * Copyright (c) 2015 masakazu matsubara
@@ -14,14 +15,15 @@ public class SortTest {
 	protected static long compareCount = 0;									//	比較された回数
 
 	/**
+	 * Sort element type
 	 * ソート対象配列の要素
 	 * @author matsubara
 	 *
 	 */
 	static class SortItem
 	{
-		public int key;				//	ソートのキー
-		public int orginalOrder;	//	ソート前の順序（安定ソートの確認用）
+		public int key;				//	sort key / ソートのキー
+		public int orginalOrder;	//	Sort pre-order (for confirmation of stable sort) / ソート前の順序（安定ソートの確認用）
 		public SortItem(int key)
 		{
 			this.key = key;

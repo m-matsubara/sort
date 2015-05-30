@@ -39,7 +39,7 @@ public class MasSort implements ISortAlgorithm {
 			arrayTo[destIdx] = arrayFrom[from];
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(arrayFrom[from], arrayFrom[from + 1]) > 0) {
+			if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
 				arrayTo[destIdx]     = arrayFrom[from + 1];
 				arrayTo[destIdx + 1] = arrayFrom[from];
 			} else {
@@ -48,16 +48,16 @@ public class MasSort implements ISortAlgorithm {
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(arrayFrom[from], arrayFrom[from + 1]) > 0) {
+			if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
 				T work = arrayFrom[from];
 				arrayFrom[from] = arrayFrom[from + 1];
 				arrayFrom[from + 1] = work;
 			}
-			if (comparator.compare(arrayFrom[from + 1], arrayFrom[from + 2]) > 0) {
+			if (comparator.compare(arrayFrom[from + 2], arrayFrom[from + 1]) < 0) {
 				T work = arrayFrom[from + 1];
 				arrayFrom[from + 1] = arrayFrom[from + 2];
 				arrayFrom[from + 2] = work;
-				if (comparator.compare(arrayFrom[from], arrayFrom[from + 1]) > 0) {
+				if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
 					work = arrayFrom[from];
 					arrayFrom[from] = arrayFrom[from + 1];
 					arrayFrom[from + 1] = work;
@@ -98,7 +98,7 @@ public class MasSort implements ISortAlgorithm {
 			int blockIdx = fromOrderBlocks[fromOrderBlocksIdx];	//	ブロックインデックス（このブロックの最小値は他のブロックの最小値と比較して何番目か調べる）
 			//T key = works[blockStart[blockIdx]];
 			T key = blockStartItemCache[blockIdx];				//	キー値
-			int fromIdx = 0;										//	探索範囲の最小インデックス
+			int fromIdx = 0;									//	探索範囲の最小インデックス
 			int toIdx = fromOrderBlocksIdx;						//	探索範囲の最大インデックス + 1
 			int curIdx = fromIdx + (toIdx - fromIdx) / 2;		//	探索範囲の中央インデックス
 			//	二分探索処理
@@ -117,6 +117,24 @@ public class MasSort implements ISortAlgorithm {
 				} else {
 					fromIdx = curIdx + 1;
 				}
+				/* virtual code
+					if (key < blockStartItemCache[curBlockIdx]) then
+					begin
+						toIdx = curIdx;
+					end
+					else if (blockStartItemCache[curBlockIdx] < key) then
+					begin
+						fromIdx = curIdx + 1;
+					end
+					else
+					begin
+						// case of key == blockStartItemCache[curBlockIdx]
+						if (blockIdx < curBlockIdx)
+							toIdx = curIdx
+						else
+							fromIdx = curIdx + 1;
+					end;
+				 */
 				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 			}
 			//	挿入処理
@@ -143,6 +161,24 @@ public class MasSort implements ISortAlgorithm {
 				else
 					compVal = 1;
 			}
+			/* virtual code
+				if (arrayFrom[from + blockEnd[blockIdx] - 1] < arrayFrom[from + blockStart[blockIdx2]]) then
+				begin
+					toIdx = curIdx;
+				end
+				else if (arrayFrom[from + blockStart[blockIdx2]] < arrayFrom[from + blockEnd[blockIdx] - 1]) then
+				begin
+					fromIdx = curIdx + 1;
+				end
+				else
+				begin
+					// case of arrayFrom[from + blockStart[blockIdx2]] == arrayFrom[from + blockEnd[blockIdx] - 1]
+					if (blockIdx < blockIdx2) then
+						toIdx = curIdx
+					else
+						fromIdx = curIdx + 1;
+				end;
+			*/
 
 			//	「比較の基準のブロックの末尾」が「比較の基準の次のブロックの先頭」より大きければ高速化ロジックを抜ける
 			if (compVal > 0) {
@@ -211,6 +247,28 @@ public class MasSort implements ISortAlgorithm {
 					} else {
 						fromIdx = curIdx + 1;
 					}
+					/* virtual code
+						if (key < blockStartItemCache[curBlockIdx]) then
+						begin
+							toIdx = curIdx;
+							curIdx = (fromIdx + toIdx) / 2;
+						end
+						else if (blockStartItemCache[curBlockIdx] < key) then
+						begin
+							fromIdx = curIdx + 1;
+						end
+						else
+						begin
+							// case of key == blockStartItemCache[curBlockIdx]
+							if (blockIdx < blockIdx2) then
+							begin
+								toIdx = curIdx;
+								curIdx = (fromIdx + toIdx) / 2;
+							end
+							else
+								fromIdx = curIdx + 1;
+						end;
+					*/
 					curIdx = (fromIdx + toIdx) / 2;
 				}
 				//	挿入処理

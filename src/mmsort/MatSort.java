@@ -27,8 +27,7 @@ public class MatSort implements ISortAlgorithm {
 		int skipSize = 1;
 		int idx = from;
 		while (idx < to) {
-			final int comp = comparator.compare(array[idx], key);
-			if (comp < 0) {
+			if (comparator.compare(array[idx], key) < 0) {
 				from = idx + 1;
 				idx += skipSize;
 				skipSize *= 2;
@@ -43,8 +42,7 @@ public class MatSort implements ISortAlgorithm {
 		int toIdx = to;
 		int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 		while (fromIdx < toIdx) {
-			final int compVal = comparator.compare(key, array[curIdx]);
-			if (compVal <= 0) {
+			if (comparator.compare(key, array[curIdx]) <= 0) {	// virtual code : (array[curIdx] < key) == false
 				toIdx = curIdx;
 				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;

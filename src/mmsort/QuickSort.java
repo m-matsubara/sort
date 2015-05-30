@@ -17,10 +17,10 @@ public class QuickSort implements ISortAlgorithm {
 	 *
 	 * クイックソート
 	 * （何の工夫もない）
-	 * @param array ソート対象
-	 * @param from ソート対象の添え字の最小値
-	 * @param to ソート対象の添え字の最大値 + 1
-	 * @param comparator 比較器
+	 * @param array sort target / ソート対象
+	 * @param from index of first element / ソート対象の開始位置
+	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
+	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void quickSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
@@ -30,26 +30,26 @@ public class QuickSort implements ISortAlgorithm {
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
-			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
-				final T work = array[from + 1];
+			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
+				T work = array[from + 1];
 				array[from + 1] = array[from + 2];
 				array[from + 2] = work;
-				if (comparator.compare(array[from], array[from + 1]) > 0) {
-					final T work2 = array[from];
+				if (comparator.compare(array[from + 1], array[from]) < 0) {
+					work = array[from];
 					array[from] = array[from + 1];
-					array[from + 1] = work2;
+					array[from + 1] = work;
 				}
 			}
 			return;
@@ -70,7 +70,7 @@ public class QuickSort implements ISortAlgorithm {
 			while (comparator.compare(array[curFrom], pivot) < 0) {
 				curFrom++;
 			}
-			while (comparator.compare(array[curTo], pivot) > 0) {
+			while (comparator.compare(pivot, array[curTo]) < 0) {
 				curTo--;
 			}
 			if (curFrom <= curTo) {

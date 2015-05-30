@@ -12,6 +12,7 @@ import java.util.Comparator;
 public class InplaceMergeSort implements ISortAlgorithm {
 	/**
 	 * Binary search (head position of the same value)
+	 *
 	 * 二分探索（同じ値がるときは先頭位置）
 	 * @param key search key / 探索するキー
 	 * @param array search target / 探索対象
@@ -26,8 +27,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 		int toIdx = to;
 		int curIdx = (fromIdx + toIdx) / 2;
 		while (fromIdx < toIdx) {
-			final int compVal = comparator.compare(key, array[curIdx]);
-			if (compVal <= 0) {
+			if (comparator.compare(key, array[curIdx]) <= 0) {	// virtual code : (array[curIdx] < key) == false
 				toIdx = curIdx;
 				curIdx = (fromIdx + toIdx) / 2;
 				continue;
@@ -42,6 +42,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 
 	/**
 	 * Binary search (tail position of the same value)
+	 *
 	 * 二分探索（同じ値がるときは最終位置の後ろ）
 	 * @param key search key / 探索するキー
 	 * @param array search target / 探索対象
@@ -56,8 +57,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 		int toIdx = to;
 		int curIdx = (fromIdx + toIdx) / 2;
 		while (fromIdx < toIdx) {
-			final int compVal = comparator.compare(key, array[curIdx]);
-			if (compVal < 0) {
+			if (comparator.compare(key, array[curIdx]) < 0) {
 				toIdx = curIdx;
 				curIdx = (fromIdx + toIdx) / 2;
 				continue;
@@ -104,6 +104,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 
 	/**
 	 * In-place Merge
+	 *
 	 * インプレース・マージ
 	 * @param array merge target / マージ対象
 	 * @param from index of range1 first element / マージ対象の開始位置
@@ -118,7 +119,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 		if (comparator.compare(array[mid - 1], array[mid]) < 0)
 			return;
 		if ((mid - from == 1) && (to - mid == 1)) {
-			if (comparator.compare(array[from], array[mid]) > 0) {
+			if (comparator.compare(array[mid], array[from]) < 0) {
 				T work = array[from];
 				array[from] = array[mid];
 				array[mid] = work;
@@ -154,6 +155,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 
 	/**
 	 * In-place Merge sort
+	 *
 	 * インプレース・マージソート
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
@@ -168,23 +170,23 @@ public class InplaceMergeSort implements ISortAlgorithm {
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
-			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
 				T work = array[from + 1];
 				array[from + 1] = array[from + 2];
 				array[from + 2] = work;
-				if (comparator.compare(array[from], array[from + 1]) > 0) {
+				if (comparator.compare(array[from + 1], array[from]) < 0) {
 					work = array[from];
 					array[from] = array[from + 1];
 					array[from + 1] = work;
@@ -196,9 +198,9 @@ public class InplaceMergeSort implements ISortAlgorithm {
 			return;
 		}
 
-		int mid = (from + to) / 2;	//	中央位置（範囲１と範囲２の境界）
-		ipMergeSort(array, from, mid, comparator);	//	範囲１（最小位置～中間位置）のソート
-		ipMergeSort(array, mid, to, comparator);	//	範囲２（中間位置～最大位置）のソート
+		int mid = (from + to) / 2;	//	center position (boundary of range1 and range2) / 中央位置（範囲１と範囲２の境界）
+		ipMergeSort(array, from, mid, comparator);	//	sort of range1(from - center) /  範囲１（最小位置～中間位置）のソート
+		ipMergeSort(array, mid, to, comparator);	//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
 
 		ipMerge(array, from, mid, to, comparator);
 	}

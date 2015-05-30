@@ -12,6 +12,7 @@ import java.util.Comparator;
 public class InsertionSort implements ISortAlgorithm {
 	/**
 	 * Insertion sort
+	 *
 	 * 挿入ソート
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
@@ -26,39 +27,39 @@ public class InsertionSort implements ISortAlgorithm {
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
-			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
+			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
 				T work = array[from + 1];
 				array[from + 1] = array[from + 2];
 				array[from + 2] = work;
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
+				if (comparator.compare(array[from + 1], array[from]) < 0) {
 					work = array[from];
 					array[from] = array[from + 1];
 					array[from + 1] = work;
-			}
+				}
 			}
 			return;
 		}
 
 		for (int i = from + 1; i < to; i++) {
 			final T key = array[i];
-			if (comparator.compare(array[i - 1], key) > 0) {
+			if (comparator.compare(key, array[i - 1]) < 0) {
 				int j = i;
 				do {
 					array[j] = array[j - 1];
 					j--;
-				} while (j > 0 && comparator.compare(array[j - 1], key) > 0);
+				} while (j > 0 && comparator.compare(key, array[j - 1]) < 0);
 				array[j] = key;
 			}
 		}

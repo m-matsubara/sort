@@ -1,7 +1,7 @@
 /*
  * Many Pivot Sort
  *
- * メニー・ピボット・ソート
+ * メニー・ピボット・ソート(3 Way partition版)
  * 事前にピボット値をたくさん確定することで高速化を図った改良版クイックソート
  *
  * Copyright (c) 2015 masakazu matsubara
@@ -27,7 +27,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 * @param toPivots 使用対象となる pivots 配列の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int minPivots, final int maxPivots, final Comparator<? super T> comparator)
+	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
@@ -35,86 +35,78 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
-			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
-				final T work = array[from + 1];
+			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
+				T work = array[from + 1];
 				array[from + 1] = array[from + 2];
 				array[from + 2] = work;
-				if (comparator.compare(array[from], array[from + 1]) > 0) {
-					final T work2 = array[from];
+				if (comparator.compare(array[from + 1], array[from]) < 0) {
+					work = array[from];
 					array[from] = array[from + 1];
-					array[from + 1] = work2;
+					array[from + 1] = work;
 				}
 			}
 			return;
 		}
 /*
-		if (range < 50) {
-			combSort(array, min, max, comparator);
+		if (range < 30) {
+			//CombSort.combSort(array, from, to, comparator);
+			//InsertionSort.insertionSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 */
 
-		final int pivotIdx = (minPivots + maxPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
+		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];						//	ピボット値
 
 		int curFrom = from;			//	現在処理中位置の小さい方の位置
 		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
 		int eqFrom = curFrom;
 		int eqTo = curTo;
-		while (comparator.compare(array[eqFrom], pivot) == 0) {
-			curFrom++;
-			eqFrom++;
-		}
-		while (comparator.compare(array[eqTo], pivot) == 0) {
-			curTo--;
-			eqTo--;
-		}
-
-		do {
+		while (true) {
 			int comp1;
-			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0) {
+			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0)
 				curFrom++;
-			}
 			int comp2;
-			while ((comp2 = comparator.compare(array[curTo], pivot)) > 0) {
+			while ((comp2 = comparator.compare(pivot, array[curTo])) < 0)
 				curTo--;
-			}
 			if (curFrom <= curTo) {
-				if (comp1 != comp2) {	//	実質的には array[curFrom]とarray[curTo]の位置の両方の値がピボット値と同じでない場合という意味
-					final T work = array[curFrom];
-					array[curFrom] = array[curTo];
-					array[curTo] = work;
-				}
+				T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
+
 				if (comp1 == 0) {
-					final T work = array[curTo];
+					work = array[curTo];
 					array[curTo] = array[eqTo];
 					array[eqTo] = work;
 					eqTo--;
 				}
 				if (comp2 == 0) {
-					final T work = array[curFrom];
+					work = array[curFrom];
 					array[curFrom] = array[eqFrom];
 					array[eqFrom] = work;
 					eqFrom++;
 				}
+
 				curFrom++;
 				curTo--;
 			} else {
 				break;
 			}
-		} while (true);
+		}
+
 		if (curFrom != eqFrom) {
 			while (eqFrom > from) {
 				curFrom--;
@@ -133,6 +125,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 				array[eqTo] = work;
 			}
 		}
+
 /*
 		for (int i = from; i < curFrom; i++) {
 			if (comparator.compare(pivot, array[i]) <= 0)
@@ -147,18 +140,18 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 				throw new RuntimeException("ccc");
 		}
 */
-		if (from < curFrom) {
-			if (minPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, from, curFrom, comparator);
+		if (from < curTo) {
+			if (fromPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+				mpSort(array, from, curTo + 1, comparator);
 			else
-				mpSort(array, from, curFrom, pivots, minPivots, pivotIdx, comparator);
+				mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
 		}
 
-		if (curTo < to - 1) {
-			if (pivotIdx + 1 >= maxPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curTo + 1, to, comparator);
+		if (curFrom < to - 1) {
+			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+				mpSort(array, curFrom, to, comparator);
 			else
-				mpSort(array, curTo + 1, to, pivots, pivotIdx + 1, maxPivots, comparator);
+				mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 	}
 
@@ -177,26 +170,26 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		if (range <= 1) {
 			return;
 		} else if (range == 2) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
 			return;
 		} else if (range == 3) {
-			if (comparator.compare(array[from], array[from + 1]) > 0) {
-				final T work = array[from];
+			if (comparator.compare(array[from + 1], array[from]) < 0) {
+				T work = array[from];
 				array[from] = array[from + 1];
 				array[from + 1] = work;
 			}
-			if (comparator.compare(array[from + 1], array[from + 2]) > 0) {
-				final T work = array[from + 1];
+			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
+				T work = array[from + 1];
 				array[from + 1] = array[from + 2];
 				array[from + 2] = work;
-				if (comparator.compare(array[from], array[from + 1]) > 0) {
-					final T work2 = array[from];
+				if (comparator.compare(array[from + 1], array[from]) < 0) {
+					work = array[from];
 					array[from] = array[from + 1];
-					array[from + 1] = work2;
+					array[from + 1] = work;
 				}
 			}
 			return;
@@ -234,13 +227,35 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		final T[] pivots = (T[])new Object[pivotsSize];		//	ピボット候補の配列
 
 		//	ピボット（複数）の選出
-		for (int i = 0; i < pivots.length; i++) {
-			pivots[i] = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
+		T item = array[(int)(from + range / 2 / pivots.length)];
+		pivots[0] = item;
+		int pivotCount = 1;
+		for (int i = 1; i < pivots.length; i++) {
+			item = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
+			int fromIdx = 0;
+			int toIdx = pivotCount;
+			while (true) {
+				int curIdx = (fromIdx + toIdx) / 2;
+				if (fromIdx >= toIdx) {
+					for (int j = pivotCount; j > curIdx; j--)
+						pivots[j] = pivots[j - 1];
+					pivots[curIdx] = item;
+					pivotCount++;
+					break;
+				}
+				int comp = comparator.compare(item, pivots[curIdx]);
+				if (comp == 0)
+					break;
+				if (comp < 0)
+					toIdx = curIdx;
+				else
+					fromIdx = curIdx + 1;
+			}
 		}
 		//	ピボット値のみをソート
-		CombSort.combSort(pivots, 0, pivots.length, comparator);
+		//BinInsertionSort.binInsertionSort(pivots, 0, pivotCount, comparator);
 		//	ソート対象本体のソート
-		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
+		mpSort(array, from, to, pivots, 0, pivotCount, comparator);
 	}
 
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
