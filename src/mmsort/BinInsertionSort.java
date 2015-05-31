@@ -92,7 +92,7 @@ public class BinInsertionSort implements ISortAlgorithm {
 				} else {
 					fromIdx = curIdx + 1;
 				}
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 			}
 			for (int j = i - 1; j >= curIdx; j--) {
 				array[j + 1] = array[j];
@@ -101,16 +101,19 @@ public class BinInsertionSort implements ISortAlgorithm {
 		}
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		binInsertionSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Binary Insert Sort";

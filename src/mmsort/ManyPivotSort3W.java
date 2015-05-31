@@ -1,5 +1,5 @@
 /*
- * Many Pivot Sort
+ * Many Pivot Sort (3 Way partition edition)
  *
  * メニー・ピボット・ソート(3 Way partition版)
  * 事前にピボット値をたくさん確定することで高速化を図った改良版クイックソート
@@ -15,21 +15,24 @@ import java.util.Comparator;
 public class ManyPivotSort3W implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	/**
-	 * メニー・ピボット・ソート (3 Way Edition)
+	 * Many pivot sort (3 Way partition)
 	 *
+	 * メニー・ピボット・ソート (3 Way partition)
+	 *
+	 * internal method (Added argument the pivot array)
 	 * 内部的に呼び出される。ピボットの配列（ピボット候補）を引数にもつ
 	 *
-	 * @param array ソート対象
-	 * @param from ソート対象の添え字の最小値
-	 * @param to ソート対象の添え字の最大値 + 1
-	 * @param pivots ピボットの配列
-	 * @param fromPivots 使用対象となる pivots 配列の添え字の最小値
-	 * @param toPivots 使用対象となる pivots 配列の添え字の最大値 + 1
-	 * @param comparator 比較器
+	 * @param array sort target / ソート対象
+	 * @param from index of first element / ソート対象の開始位置
+	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
+	 * @param pivots array of pivot / ピボットの配列
+	 * @param fromPivots from index of pivots / 使用対象となる pivots 配列の添え字の最小値
+	 * @param toPivots to index of pivots (last element of exclusive) / 使用対象となる pivots 配列の添え字の最大値 + 1
+	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
-		final int range = to - from;		//	ソート範囲サイズ
+		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
@@ -60,19 +63,17 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			return;
 		}
 /*
-		if (range < 30) {
-			//CombSort.combSort(array, from, to, comparator);
-			//InsertionSort.insertionSort(array, from, to, comparator);
+		if (range < 50) {
 			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 */
 
-		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	pivots配列の中で、今回使うべき要素の添え字
-		final T pivot = pivots[pivotIdx];						//	ピボット値
+		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
+		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
 
-		int curFrom = from;			//	現在処理中位置の小さい方の位置
-		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
+		int curFrom = from;		//	min index / 現在処理中位置の小さい方の位置
+		int curTo = to - 1;		//	max index / 現在処理中位置の大きい方の位置
 		int eqFrom = curFrom;
 		int eqTo = curTo;
 		while (true) {
@@ -140,18 +141,18 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 				throw new RuntimeException("ccc");
 		}
 */
-		if (from < curTo) {
+		if (from < curFrom - 1) {
 			if (fromPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, from, curTo + 1, comparator);
+				mpSort(array, from, curFrom, comparator);
 			else
-				mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
+				mpSort(array, from, curFrom, pivots, fromPivots, pivotIdx, comparator);
 		}
 
-		if (curFrom < to - 1) {
+		if (curFrom < curTo) {
 			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curFrom, to, comparator);
+				mpSort(array, curTo + 1, to, comparator);
 			else
-				mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
+				mpSort(array, curTo + 1, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 	}
 
@@ -164,7 +165,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 */
 	public static final <T> void mpSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		final int range = to - from;		//	ソート範囲サイズ
+		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
@@ -196,12 +197,12 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		}
 /*
 		if (range < 50) {
-			combSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 */
 
-		if (range < 3000) {
+		if (range < PIVOTS_SIZE * 100) {
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);
 			return;
 		}
@@ -235,7 +236,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			int fromIdx = 0;
 			int toIdx = pivotCount;
 			while (true) {
-				int curIdx = (fromIdx + toIdx) / 2;
+				int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				if (fromIdx >= toIdx) {
 					for (int j = pivotCount; j > curIdx; j--)
 						pivots[j] = pivots[j - 1];
@@ -252,22 +253,24 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 					fromIdx = curIdx + 1;
 			}
 		}
-		//	ピボット値のみをソート
-		//BinInsertionSort.binInsertionSort(pivots, 0, pivotCount, comparator);
+
 		//	ソート対象本体のソート
 		mpSort(array, from, to, pivots, 0, pivotCount, comparator);
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		mpSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return false;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Many Pivot Sort (3 Way)";

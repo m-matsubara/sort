@@ -25,15 +25,15 @@ public class InplaceMergeSort implements ISortAlgorithm {
 	{
 		int fromIdx = from;
 		int toIdx = to;
-		int curIdx = (fromIdx + toIdx) / 2;
+		int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 		while (fromIdx < toIdx) {
 			if (comparator.compare(key, array[curIdx]) <= 0) {	// virtual code : (array[curIdx] < key) == false
 				toIdx = curIdx;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			} else {
 				fromIdx = curIdx + 1;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			}
 		}
@@ -55,15 +55,15 @@ public class InplaceMergeSort implements ISortAlgorithm {
 	{
 		int fromIdx = from;
 		int toIdx = to;
-		int curIdx = (fromIdx + toIdx) / 2;
+		int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 		while (fromIdx < toIdx) {
 			if (comparator.compare(key, array[curIdx]) < 0) {
 				toIdx = curIdx;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			} else {
 				fromIdx = curIdx + 1;
-				curIdx = (fromIdx + toIdx) / 2;
+				curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				continue;
 			}
 		}
@@ -198,23 +198,26 @@ public class InplaceMergeSort implements ISortAlgorithm {
 			return;
 		}
 
-		int mid = (from + to) / 2;	//	center position (boundary of range1 and range2) / 中央位置（範囲１と範囲２の境界）
+		int mid = from + (to - from) / 2;			//	center position (boundary of range1 and range2) / 中央位置（範囲１と範囲２の境界）
 		ipMergeSort(array, from, mid, comparator);	//	sort of range1(from - center) /  範囲１（最小位置～中間位置）のソート
 		ipMergeSort(array, mid, to, comparator);	//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
 
 		ipMerge(array, from, mid, to, comparator);
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		ipMergeSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "In-place Merge Sort";

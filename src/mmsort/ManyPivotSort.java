@@ -63,9 +63,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 			return;
 		}
 /*
-		if (range < 30) {
-			//CombSort.combSort(array, from, to, comparator);
-			//InsertionSort.insertionSort(array, from, to, comparator);
+		if (range < 50) {
 			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
@@ -151,7 +149,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 		}
 /*
 		if (range < 50) {
-			combSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 */
@@ -191,16 +189,19 @@ public class ManyPivotSort implements ISortAlgorithm {
 		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		mpSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return false;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Many Pivot Sort";

@@ -12,16 +12,19 @@ import java.util.Comparator;
 
 public class ArraysSort implements ISortAlgorithm {
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		Arrays.sort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Arrays.Sort";

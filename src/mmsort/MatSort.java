@@ -158,16 +158,19 @@ public class MatSort implements ISortAlgorithm {
 		}
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		matSort(array, from, to, comparator, 0);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "MatSort";

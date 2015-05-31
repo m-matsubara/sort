@@ -91,16 +91,19 @@ public class QuickSort implements ISortAlgorithm {
 		}
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		quickSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return false;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Quick Sort";

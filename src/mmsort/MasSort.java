@@ -228,8 +228,8 @@ public class MasSort implements ISortAlgorithm {
 				//T key = works[blockStart[fromBlockIdx]];
 				T key = blockStartItemCache[fromBlockIdx];
 				int fromIdx = 1;									//	探索範囲の最小インデックス
-				int toIdx = blockCount;						//	探索範囲の最大インデックス
-				int curIdx = (fromIdx + toIdx) / 2;				//	探索範囲の中央インデックス
+				int toIdx = blockCount;								//	探索範囲の最大インデックス
+				int curIdx = fromIdx + (toIdx - fromIdx) / 2;		//	探索範囲の中央インデックス
 				//	二分探索処理
 				while (fromIdx < toIdx) {
 					int curBlockIdx = fromOrderBlocks[curIdx];
@@ -243,7 +243,7 @@ public class MasSort implements ISortAlgorithm {
 					}
 					if (compVal < 0) {
 						toIdx = curIdx;
-						curIdx = (fromIdx + toIdx) / 2;
+						curIdx = fromIdx + (toIdx - fromIdx) / 2;
 					} else {
 						fromIdx = curIdx + 1;
 					}
@@ -251,7 +251,7 @@ public class MasSort implements ISortAlgorithm {
 						if (key < blockStartItemCache[curBlockIdx]) then
 						begin
 							toIdx = curIdx;
-							curIdx = (fromIdx + toIdx) / 2;
+							curIdx = fromIdx + (toIdx - fromIdx) / 2;
 						end
 						else if (blockStartItemCache[curBlockIdx] < key) then
 						begin
@@ -263,13 +263,13 @@ public class MasSort implements ISortAlgorithm {
 							if (blockIdx < blockIdx2) then
 							begin
 								toIdx = curIdx;
-								curIdx = (fromIdx + toIdx) / 2;
+								curIdx = fromIdx + (toIdx - fromIdx) / 2;
 							end
 							else
 								fromIdx = curIdx + 1;
 						end;
 					*/
-					curIdx = (fromIdx + toIdx) / 2;
+					curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				}
 				//	挿入処理
 				for (int j = 1; j < curIdx; j++) {
@@ -301,16 +301,19 @@ public class MasSort implements ISortAlgorithm {
 		masSort(works, array, 0, range, from, comparator);
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		masSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "MasSort";

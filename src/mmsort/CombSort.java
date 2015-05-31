@@ -72,16 +72,19 @@ public class CombSort implements ISortAlgorithm {
 		}
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		combSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return false;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "CombSort";

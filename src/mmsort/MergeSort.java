@@ -125,16 +125,19 @@ public class MergeSort implements ISortAlgorithm {
 		mergeSort(array, from, to, works, comparator);
 	}
 
+	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		mergeSort(array, from, to, comparator);
 	}
 
+	@Override
 	public boolean isStable()
 	{
 		return true;
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Merge Sort";
