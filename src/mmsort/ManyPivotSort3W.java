@@ -13,7 +13,8 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort3W implements ISortAlgorithm {
-	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	protected static final int SWITCH_SIZE = 3000;
 	/**
 	 * Many pivot sort (3 Way partition)
 	 *
@@ -148,7 +149,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 				mpSort(array, from, curFrom, pivots, fromPivots, pivotIdx, comparator);
 		}
 
-		if (curFrom < curTo) {
+		if (curTo < to - 1) {
 			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
 				mpSort(array, curTo + 1, to, comparator);
 			else
@@ -202,12 +203,12 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		}
 */
 
-		if (range < PIVOTS_SIZE * 100) {
+		if (range < SWITCH_SIZE) {
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);
 			return;
 		}
 
-		int pivotsSize = 127;
+		int pivotsSize = PIVOTS_SIZE;
 /*
 		if (range >= 1000000)
 			pivotsSize = 2048 - 1;
