@@ -179,7 +179,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 */
 		@SuppressWarnings("unchecked")
 		final T[] pivots = (T[])new Object[pivotsSize];		//	pivot candidates / ピボット候補の配列
-/*
+
 		//	ピボット（複数）の選出
 		for (int i = 0; i < pivots.length; i++) {
 			pivots[i] = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
@@ -188,44 +188,6 @@ public class ManyPivotSort implements ISortAlgorithm {
 		BinInsertionSort.binInsertionSort(pivots, 0, pivots.length, comparator);
 		//	sort of array / ソート対象本体のソート
 		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
-*/
-		// ピボット（複数）の選出
-		// arrayよりpivotsへ２分挿入ソートのような方式で値をソートしながら詰めていく。この時、重複値は取り除くため、必ずしもPIVOT_SIZE個確保できるとは限らない。
-		T item = array[(int)(from + range / 2 / pivots.length)];
-		pivots[0] = item;
-		int pivotCount = 1;
-		for (int i = 1; i < pivots.length; i++) {
-			item = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
-			int fromIdx = 0;
-			int toIdx = pivotCount;
-			while (true) {
-				int curIdx = fromIdx + (toIdx - fromIdx) / 2;
-				if (fromIdx >= toIdx) {
-					for (int j = pivotCount; j > curIdx; j--)
-						pivots[j] = pivots[j - 1];
-					pivots[curIdx] = item;
-					pivotCount++;
-					break;
-				}
-				int comp = comparator.compare(item, pivots[curIdx]);
-				if (comp == 0)
-					break;	// 同一値
-				if (comp < 0)
-					toIdx = curIdx;
-				else
-					fromIdx = curIdx + 1;
-			}
-		}
-
-		//	ソート対象本体のソート
-		if (pivotCount >= 7)
-			mpSort(array, from, to, pivots, 0, pivotCount, comparator);
-		else {
-			// 重複値が多くピボット値がわずかしか確保できない場合は、クイックソート（３つのメディアン）に切り替える。
-			// ほとんどのピボット候補が同一キーということは、arraysはほとんど同じキー値の可能性が高いが断定はできない。
-			// インサートソートに切り替えてもよいが少し危険かもしれない。
-			QuickSortM3.quickSortMedian3(array, from, to, comparator);
-		}
 	}
 
 	@Override
