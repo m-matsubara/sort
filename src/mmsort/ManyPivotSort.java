@@ -33,43 +33,6 @@ public class ManyPivotSort implements ISortAlgorithm {
 	 */
 	protected static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
-		final int range = to - from;		//	sort range / ソート範囲サイズ
-
-		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
-				T work = array[from + 1];
-				array[from + 1] = array[from + 2];
-				array[from + 2] = work;
-				if (comparator.compare(array[from + 1], array[from]) < 0) {
-					work = array[from];
-					array[from] = array[from + 1];
-					array[from + 1] = work;
-				}
-			}
-			return;
-		}
-/*
-		if (range < 50) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			return;
-		}
-*/
-
 		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
 
@@ -81,15 +44,13 @@ public class ManyPivotSort implements ISortAlgorithm {
 				curFrom++;
 			while (comparator.compare(pivot, array[curTo]) < 0)
 				curTo--;
-			if (curFrom <= curTo) {
-				final T work = array[curFrom];
-				array[curFrom] = array[curTo];
-				array[curTo] = work;
-				curFrom++;
-				curTo--;
-			} else {
+			if (curTo < curFrom)
 				break;
-			}
+			final T work = array[curFrom];
+			array[curFrom] = array[curTo];
+			array[curTo] = work;
+			curFrom++;
+			curTo--;
 		}
 
 		if (from < curTo) {
@@ -148,12 +109,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 			}
 			return;
 		}
-/*
-		if (range < 50) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			return;
-		}
-*/
+
 		if (range < SWITCH_SIZE) {
 			// しきい値以下ではクイックソート（３つのメディアン）に切り替える。
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);

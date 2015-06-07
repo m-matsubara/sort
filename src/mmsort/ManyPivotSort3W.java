@@ -13,8 +13,8 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort3W implements ISortAlgorithm {
-	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 3000;
+	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	protected static final int SWITCH_SIZE = 50;
 	/**
 	 * Many pivot sort (3 Way partition)
 	 *
@@ -63,18 +63,24 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			}
 			return;
 		}
-/*
+
 		if (range < 50) {
 			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
-*/
+
 
 		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
 
 		int curFrom = from;		//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1;		//	max index / 現在処理中位置の大きい方の位置
+
+		while (curFrom < curTo && comparator.compare(array[curFrom], pivot) == 0)
+			curFrom++;
+		while (curFrom < curTo && comparator.compare(pivot, array[curTo]) == 0)
+			curTo--;
+
 		int eqFrom = curFrom;
 		int eqTo = curTo;
 		while (true) {
@@ -84,29 +90,28 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			int comp2;
 			while ((comp2 = comparator.compare(pivot, array[curTo])) < 0)
 				curTo--;
-			if (curFrom <= curTo) {
-				T work = array[curFrom];
-				array[curFrom] = array[curTo];
-				array[curTo] = work;
-
-				if (comp1 == 0) {
-					work = array[curTo];
-					array[curTo] = array[eqTo];
-					array[eqTo] = work;
-					eqTo--;
-				}
-				if (comp2 == 0) {
-					work = array[curFrom];
-					array[curFrom] = array[eqFrom];
-					array[eqFrom] = work;
-					eqFrom++;
-				}
-
-				curFrom++;
-				curTo--;
-			} else {
+			if (curFrom > curTo)
 				break;
+
+			T work = array[curFrom];
+			array[curFrom] = array[curTo];
+			array[curTo] = work;
+
+			if (comp1 == 0) {
+				work = array[curTo];
+				array[curTo] = array[eqTo];
+				array[eqTo] = work;
+				eqTo--;
 			}
+			if (comp2 == 0) {
+				work = array[curFrom];
+				array[curFrom] = array[eqFrom];
+				array[eqFrom] = work;
+				eqFrom++;
+			}
+
+			curFrom++;
+			curTo--;
 		}
 
 		if (curFrom != eqFrom) {

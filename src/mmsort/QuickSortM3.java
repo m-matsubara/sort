@@ -50,12 +50,12 @@ public class QuickSortM3 implements ISortAlgorithm {
 			}
 			return;
 		}
-/*
-		if (range < 50) {
-			combSort(array, from, to, comparator);
+
+		if (range < 40) {
+			InsertionSort.insertionSort(array, from, to, comparator);
 			return;
 		}
-*/
+
 		T pivot;							// pivot value / ピボット値
 //		pivot = array[from + range / 2];
 
