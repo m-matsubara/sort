@@ -80,6 +80,8 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			curFrom++;
 		while (curFrom < curTo && comparator.compare(pivot, array[curTo]) == 0)
 			curTo--;
+		if (curFrom >= curTo)
+			return;
 
 		int eqFrom = curFrom;
 		int eqTo = curTo;
