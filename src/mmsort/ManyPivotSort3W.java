@@ -36,10 +36,10 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		if (range < 50) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			QuickSortM3.quickSortMedian3(array, from, to, comparator);
 			return;
 		}
-
 
 		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
@@ -146,12 +146,8 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
-		if (range < 50) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			return;
-		}
-
 		if (range < SWITCH_SIZE) {
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);
 			return;
 		}
