@@ -33,20 +33,21 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 */
 	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
-		final int range = to - from;		//	sort range / ソート範囲サイズ
-
-		if (range < 50) {
-			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			QuickSortM3.quickSortMedian3(array, from, to, comparator);
-			return;
-		}
-
 		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
 
 		int curFrom = from;		//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1;		//	max index / 現在処理中位置の大きい方の位置
 
+		// A little faster
+		// 少し高速化
+		//
+		// +----------------+-----------------------------------------+----------------+
+		// | value == pivot |                    ?                    | value == pivot |
+		// +----------------+-----------------------------------------+----------------+
+		// ~                ~                                         ~                 ~
+		// |                |                                         |                 |
+		// from          curFrom                                   curTo                to
 		while (curFrom < curTo && comparator.compare(array[curFrom], pivot) == 0)
 			curFrom++;
 		while (curFrom < curTo && comparator.compare(pivot, array[curTo]) == 0)
@@ -57,10 +58,20 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		int eqFrom = curFrom;
 		int eqTo = curTo;
 		while (true) {
-			int comp1;
+			// Separation
+			// 分割
+			//
+			// +----------------+---------------+---------+---------------+----------------+
+			// | value == pivot | value < pivot |    ?    | value > pivot | value == pivot |
+			// +----------------+---------------+---------+---------------+----------------+
+			// ~                ~               ~         ~               ~                 ~
+			// |                |               |         |               |                 |
+			// from           eqFrom         curFrom   curTo            eqTo                to
+
+			int comp1;		// array[curFrom] と pivot の比較値
 			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0)
 				curFrom++;
-			int comp2;
+			int comp2;		// array[curTo] と pivot の比較値
 			while ((comp2 = comparator.compare(pivot, array[curTo])) < 0)
 				curTo--;
 			if (curFrom > curTo)
@@ -70,12 +81,20 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			array[curFrom] = array[curTo];
 			array[curTo] = work;
 
+			// Elements that were in the array[curFrom] at the time of comparison is present in the array[curTo] by swap.
+			// array [curTo] is replaced with the array [eqTo], to collect the value equal to the pivot value in the rear.
+			// 比較時に array[curFrom] にあった要素はスワップによって array[curTo] に存在している
+			// array[curTo] と array[eqTo] を入れ替えて、ピボット値と等しい値を後方にいったん集める
 			if (comp1 == 0) {
 				work = array[curTo];
 				array[curTo] = array[eqTo];
 				array[eqTo] = work;
 				eqTo--;
 			}
+			// Elements that were in the array[curTo] at the time of comparison is present in the array[curFrom] by swap.
+			// array [curFrom] is replaced with the array [eqFrom], to collect the value equal to the pivot value in the rear.
+			// 比較時に array[curTo] にあった要素はスワップによって array[curFrom] に存在している
+			// array[curFrom] と array[eqFrom] を入れ替えて、ピボット値と等しい値を後方にいったん集める
 			if (comp2 == 0) {
 				work = array[curFrom];
 				array[curFrom] = array[eqFrom];
@@ -87,6 +106,26 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			curTo--;
 		}
 
+		// Bring pivot value and a value equal to the center
+		// ピボット値と等しい値を中央に持ってくる
+		//
+		// ■Before
+		// +----------------+-----------------+-----------------------+----------------+
+		// | value == pivot | value < pivot   |         value > pivot | value == pivot |
+		// +----------------+-----------------+-----------------------+----------------+
+		// ~        |       ~                 ~                       ~        |        ~
+		// |        |       |                 |                       |        |        |
+		// from     |     eqFrom         curFrom & curTo            eqTo       |        to
+		//          |                                                          |
+		//          +---------------+                 +------------------------+
+		//                          |                 |
+		// ■After                  v                 v
+		// +-----------------+----------------+----------------+-----------------------+
+		// | value < pivot   | value == pivot | value == pivot |         value > pivot |
+		// +-----------------+----------------+----------------+-----------------------+
+		// ~                 ~                                ~                         ~
+		// |                 |                                |                         |
+		// from            eqFrom                           eqTo                        to
 		if (curFrom != eqFrom) {
 			while (eqFrom > from) {
 				curFrom--;
@@ -147,7 +186,9 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		if (range < SWITCH_SIZE) {
-			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			// Please replace with your favorite sorting algorithm...
+
+			// BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);
 			return;
 		}
@@ -172,17 +213,26 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		@SuppressWarnings("unchecked")
 		final T[] pivots = (T[])new Object[pivotsSize];		//	ピボット候補の配列
 
-		//	ピボット（複数）の選出
+		// Selection of the pivot values (Binary insertion sort ish processing).
+		// Remove duplicate values.
+		// 複数のピボット値を選出(バイナリ挿入ソートっぽい処理)
+		// 重複値は取り除く
 		T item = array[(int)(from + range / 2 / pivots.length)];
 		pivots[0] = item;
 		int pivotCount = 1;
 		for (int i = 1; i < pivots.length; i++) {
+			// Get element at appropriate intervals from array
+			// 配列より適当な間隔で要素を取得
 			item = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
 			int fromIdx = 0;
 			int toIdx = pivotCount;
+			// Binary search, insert if non duplicate
+			// 二分探索して重複がなければ挿入
 			while (true) {
 				int curIdx = fromIdx + (toIdx - fromIdx) / 2;
 				if (fromIdx >= toIdx) {
+					// Insertion position determination
+					// 挿入位置確定
 					for (int j = pivotCount; j > curIdx; j--)
 						pivots[j] = pivots[j - 1];
 					pivots[curIdx] = item;
@@ -190,8 +240,11 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 					break;
 				}
 				int comp = comparator.compare(item, pivots[curIdx]);
-				if (comp == 0)
+				if (comp == 0) {
+					// Equal and already Selection pivot value, and exits the process, and proceeds to the next element
+					// すでに選出したピボット値と等しければ処理を抜けて次の要素へ進む
 					break;
+				}
 				if (comp < 0)
 					toIdx = curIdx;
 				else
