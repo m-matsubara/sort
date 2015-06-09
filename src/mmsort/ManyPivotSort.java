@@ -82,34 +82,6 @@ public class ManyPivotSort implements ISortAlgorithm {
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
-				T work = array[from + 1];
-				array[from + 1] = array[from + 2];
-				array[from + 2] = work;
-				if (comparator.compare(array[from + 1], array[from]) < 0) {
-					work = array[from];
-					array[from] = array[from + 1];
-					array[from + 1] = work;
-				}
-			}
-			return;
-		}
-
 		if (range < SWITCH_SIZE) {
 			// しきい値以下ではクイックソート（３つのメディアン）に切り替える。
 			QuickSortM3.quickSortMedian3(array, from, to, comparator);
@@ -136,13 +108,14 @@ public class ManyPivotSort implements ISortAlgorithm {
 		@SuppressWarnings("unchecked")
 		final T[] pivots = (T[])new Object[pivotsSize];		//	pivot candidates / ピボット候補の配列
 
-		//	ピボット（複数）の選出
+		// Selection of the pivot values (Binary insertion sort ish processing).
+		// ピボット（複数）の選出
 		for (int i = 0; i < pivots.length; i++) {
 			pivots[i] = array[(int)(from + (long)range * i / pivots.length + range / 2 / pivots.length)];
 		}
-		//	sort of pivot candidates / ピボット値のみをソート
+		// sort of pivot candidates / ピボット値のみをソート
 		BinInsertionSort.binInsertionSort(pivots, 0, pivots.length, comparator);
-		//	sort of array / ソート対象本体のソート
+		// sort of array / ソート対象本体のソート
 		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
 	}
 
