@@ -35,37 +35,7 @@ public class MasSort implements ISortAlgorithm {
 		final int range = to - from;			//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			arrayTo[destIdx] = arrayFrom[from];
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
-				arrayTo[destIdx]     = arrayFrom[from + 1];
-				arrayTo[destIdx + 1] = arrayFrom[from];
-			} else {
-				arrayTo[destIdx]     = arrayFrom[from];
-				arrayTo[destIdx + 1] = arrayFrom[from + 1];
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
-				T work = arrayFrom[from];
-				arrayFrom[from] = arrayFrom[from + 1];
-				arrayFrom[from + 1] = work;
-			}
-			if (comparator.compare(arrayFrom[from + 2], arrayFrom[from + 1]) < 0) {
-				T work = arrayFrom[from + 1];
-				arrayFrom[from + 1] = arrayFrom[from + 2];
-				arrayFrom[from + 2] = work;
-				if (comparator.compare(arrayFrom[from + 1], arrayFrom[from]) < 0) {
-					work = arrayFrom[from];
-					arrayFrom[from] = arrayFrom[from + 1];
-					arrayFrom[from + 1] = work;
-				}
-			}
-			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
-			return;
-		} else if (range < 200) {
+		if (range < 200) {
 			BinInsertionSort.binInsertionSort(arrayFrom, from, to, comparator);
 			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
 			return;
@@ -85,7 +55,6 @@ public class MasSort implements ISortAlgorithm {
 			masSort(arrayTo, arrayFrom, destIdx + blockStart[blockIdx], destIdx + blockEnd[blockIdx], from + blockStart[blockIdx], comparator);
 			fromOrderBlocks[blockIdx] = blockIdx;
 		}
-
 
 		//	各ブロックの先頭要素をキャッシュ(CPUのキャッシュヒット率が上がるかなと思って)
 		for (int blockIdx = 0; blockIdx < blockCount; blockIdx++) {
