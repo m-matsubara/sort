@@ -126,10 +126,11 @@ public class MatSort implements ISortAlgorithm {
 		System.arraycopy(array, fromIdx, works, 0, workSize);
 		MasSort.masSort(works, array, 0, workSize, fromIdx, comparator);
 
-		//	最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
+		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
+		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
 		while (fromIdx > from) {
 			// Sort the previous block (fromIdx ～ midIdx)
-			//	ひとつ前のブロックをソート (fromIdx ～ midIdx)
+			// ひとつ前のブロックをソート (fromIdx ～ midIdx)
 			// +-----------------------------------------------------------------+
 			// | Block   | Block   | Block   | ... | Block   | Block   | sorted  |
 			// +-----------------------------------------------------------------+
@@ -166,7 +167,8 @@ public class MatSort implements ISortAlgorithm {
 				continue;
 			}
 
-			//	最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
+			// Merging the last block and that front of the block to create a new big block. This repeated until the block is one.
+			// 最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
 			// array
 			// +-----------------------------------------------------------------+
 			// | Block   | Block   | Block   | ... | Block   | sorted  | sorted  |
