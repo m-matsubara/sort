@@ -13,8 +13,8 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort3W implements ISortAlgorithm {
-	protected static final int PIVOTS_SIZE = 31;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 50;
+	protected static final int PIVOTS_SIZE = 31;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	protected static final int SWITCH_SIZE = 50;							// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
 	/**
 	 * Many pivot sort (3 Way partition)
 	 *
@@ -45,7 +45,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		// +----------------+-----------------------------------------+----------------+
 		// | value == pivot |                    ?                    | value == pivot |
 		// +----------------+-----------------------------------------+----------------+
-		// ~                ~                                         ~                 ~
+		// ^                ^                                         ^                 ^
 		// |                |                                         |                 |
 		// from          curFrom                                   curTo                to
 		while (curFrom < curTo && comparator.compare(array[curFrom], pivot) == 0)
@@ -64,7 +64,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 			// +----------------+---------------+---------+---------------+----------------+
 			// | value == pivot | value < pivot |    ?    | value > pivot | value == pivot |
 			// +----------------+---------------+---------+---------------+----------------+
-			// ~                ~               ~         ~               ~                 ~
+			// ^                ^               ^         ^               ^                 ^
 			// |                |               |         |               |                 |
 			// from           eqFrom         curFrom   curTo            eqTo                to
 
@@ -109,21 +109,21 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		// Bring pivot value and a value equal to the center
 		// ピボット値と等しい値を中央に持ってくる
 		//
-		// ■Before
+		// Before
 		// +----------------+-----------------+-----------------------+----------------+
 		// | value == pivot | value < pivot   |         value > pivot | value == pivot |
 		// +----------------+-----------------+-----------------------+----------------+
-		// ~        |       ~                 ~                       ~        |        ~
+		// ^        |       ^                 ^                       ^        |        ^
 		// |        |       |                 |                       |        |        |
-		// from     |     eqFrom         curFrom & curTo            eqTo       |        to
+		// from     |     eqFrom      curFrom & curTo               eqTo       |        to
 		//          |                                                          |
 		//          +---------------+                 +------------------------+
 		//                          |                 |
-		// ■After                  v                 v
+		// After                    v                 v
 		// +-----------------+----------------+----------------+-----------------------+
 		// | value < pivot   | value == pivot | value == pivot |         value > pivot |
 		// +-----------------+----------------+----------------+-----------------------+
-		// ~                 ~                                ~                         ~
+		// ^                 ^                                ^                         ^
 		// |                 |                                |                         |
 		// from            eqFrom                           eqTo                        to
 		if (curFrom != eqFrom) {
@@ -175,7 +175,9 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	}
 
 	/**
-	 * メニー・ピボット・ソート
+	 * Many pivot sort (3 Way partition)
+	 *
+	 * メニー・ピボット・ソート (3 Way partition)
 	 * @param array ソート対象
 	 * @param from ソート対象の添え字の最小値
 	 * @param to ソート対象の添え字の最大値 + 1
