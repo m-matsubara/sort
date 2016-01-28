@@ -199,6 +199,10 @@ public class MatSort implements ISortAlgorithm {
 		}
 	}
 
+	public <T> void parallel_sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+	}
+
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{

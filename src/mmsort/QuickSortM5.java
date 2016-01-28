@@ -159,7 +159,8 @@ public class QuickSortM5 implements ISortAlgorithm {
 		}
 
 		if (range < 40) {
-			InsertionSort.insertionSort(array, from, to, comparator);
+			//InsertionSort.insertionSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 

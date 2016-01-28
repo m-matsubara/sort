@@ -83,8 +83,8 @@ public class ManyPivotSort implements ISortAlgorithm {
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range < SWITCH_SIZE) {
-			// しきい値以下ではクイックソート（３つのメディアン）に切り替える。
-			QuickSortM3.quickSortMedian3(array, from, to, comparator);
+			// しきい値以下ではクイックソート（5つのメディアン）に切り替える。
+			QuickSortM5.quickSortMedian5(array, from, to, comparator);
 			return;
 		}
 
