@@ -11,13 +11,24 @@ import java.util.Comparator;
 
 public class QuickSortM5 implements ISortAlgorithm {
 
-	public static final <T> void sort5(final T[] array, int p1, int p2, int p3, int p4, int p5, final Comparator<? super T> comparator)
+	/**
+	 * 配列中の任意の５か所をソートする
+	 * （３番目の要素からピボット値を得るために使用）
+	 * @param array sort target / ソート対象
+	 * @param p1 index 1 / 添え字1
+	 * @param p2 index 2 / 添え字2
+	 * @param p3 index 3 / 添え字3
+	 * @param p4 index 4 / 添え字4
+	 * @param p5 index 5 / 添え字5
+	 * @param comparator
+	 */
+	public static final <T> void sort5(final T[] array, final int p1, final int p2, final int p3, final int p4, final int p5, final Comparator<? super T> comparator)
 	{
-		T v1 = array[p1];
-		T v2 = array[p2];
-		T v3 = array[p3];
-		T v4 = array[p4];
-		T v5 = array[p5];
+		final T v1 = array[p1];
+		final T v2 = array[p2];
+		final T v3 = array[p3];
+		final T v4 = array[p4];
+		final T v5 = array[p5];
 
 		//	まず、先頭３つのソート
 		if (comparator.compare(v1, v2) <= 0) {
@@ -170,28 +181,128 @@ public class QuickSortM5 implements ISortAlgorithm {
 		int p2 = p1 + (p3 - p1) / 2;
 		int p4 = p3 + (p5 - p3) / 2;
 
-		sort5(array, p1, p2, p3, p4, p5, comparator);
+		//sort5(array, p1, p2, p3, p4, p5, comparator);
+		{
+			T v1 = array[p1];
+			T v2 = array[p2];
+			T v3 = array[p3];
+			T v4 = array[p4];
+			T v5 = array[p5];
+
+			//	まず、先頭３つのソート
+			if (comparator.compare(v1, v2) <= 0) {
+				if (comparator.compare(v2, v3) <= 0) {
+					// v1 <= v2 <= v3
+					//array[p1] = v1;
+					//array[p2] = v2;
+					//array[p3] = v3;
+				} else if (comparator.compare(v1, v3) <= 0) {
+					// v1 <= v3 <= v2
+					//array[p1] = v1;
+					array[p2] = v3;
+					array[p3] = v2;
+				} else {
+					// v3 <= v1 <= v2
+					array[p1] = v3;
+					array[p2] = v1;
+					array[p3] = v2;
+				}
+			} else {
+				if (comparator.compare(v1, v3) <= 0) {
+					// v2 <= v1 <= v3
+					array[p1] = v2;
+					array[p2] = v1;
+					//array[p3] = v3;
+				} else if (comparator.compare(v2, v3) <= 0) {
+					// v2 <= v3 <= v1
+					array[p1] = v2;
+					array[p2] = v3;
+					array[p3] = v1;
+				} else {
+					// v3 <= v2 <= v1
+					array[p1] = v3;
+					//array[p2] = v2;
+					array[p3] = v1;
+				}
+			}
+
+			// v4 ( = array[p4]) を挿入ソートっぽく指定位置に挿入
+			if (comparator.compare(array[p2], v4) <= 0) {
+				if (comparator.compare(array[p3], v4) <= 0) {
+					// array[p3] <= v4
+				} else {
+					// array[p2] <= v4 < array[p3];
+					array[p4] = array[p3];
+					array[p3] = v4;
+				}
+			} else {
+				if (comparator.compare(array[p1], v4) <= 0) {
+					// array[p1] <= v4 < array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = v4;
+				} else {
+					// v4 < array[p1] <= array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = array[p1];
+					array[p1] = v4;
+				}
+			}
+
+			// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
+			if (comparator.compare(array[p3], v5) <= 0) {
+				// array[p3] <= v5
+				if (comparator.compare(array[p4], v5) <= 0) {
+					// array[p3] <= array[4] <= v5
+				} else {
+					// array[p3] <= v5 < array[p4]
+					array[p5] = array[p4];
+					array[p4] = v5;
+				}
+			} else {
+				// v5 < array[p3]
+				if (comparator.compare(array[p2], v5) <= 0) {
+					// array[p2] <= v5 < array[p3]
+					array[p5] = array[p4];
+					array[p4] = array[p3];
+					array[p3] = v5;
+				} else {
+					// v5 < array[p2] <= array[p3]
+					if (comparator.compare(array[p1], v5) <= 0) {
+						// array[p1] <= v5 < array[p2] <= array[p3]
+						array[p5] = array[p4];
+						array[p4] = array[p3];
+						array[p3] = array[p2];
+						array[p2] = v5;
+					} else {
+						// v5 < array[p1] <= array[p2] <= array[p3]
+						array[p5] = array[p4];
+						array[p4] = array[p3];
+						array[p3] = array[p2];
+						array[p2] = array[p1];
+						array[p1] = v5;
+					}
+				}
+			}
+		}
 
 		final T pivot = array[p3];	//	ピボット値
 
 		int curFrom = from;			//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1;			//	max index / 現在処理中位置の大きい方の位置
 
-		do {
-			while (comparator.compare(array[curFrom], pivot) < 0) {
+		while (true) {
+			while (comparator.compare(array[curFrom], pivot) < 0)
 				curFrom++;
-			}
-			while (comparator.compare(pivot, array[curTo]) < 0) {
+			while (comparator.compare(pivot, array[curTo]) < 0)
 				curTo--;
-			}
-			if (curFrom <= curTo) {
-				final T work = array[curFrom];
-				array[curFrom] = array[curTo];
-				array[curTo] = work;
-				curFrom++;
-				curTo--;
-			}
-		} while (curFrom <= curTo);
+			if (curFrom > curTo)
+				break;
+			final T work = array[curFrom];
+			array[curFrom++] = array[curTo];
+			array[curTo--] = work;
+		};
 
 		if (from < curTo + 1) {
 			quickSortMedian5(array, from, curTo + 1, comparator);

@@ -87,21 +87,17 @@ public class QuickSortM3 implements ISortAlgorithm {
 		int curFrom = from;			//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1;			//	max index / 現在処理中位置の大きい方の位置
 
-		do {
-			while (comparator.compare(array[curFrom], pivot) < 0) {
+		while (true) {
+			while (comparator.compare(array[curFrom], pivot) < 0)
 				curFrom++;
-			}
-			while (comparator.compare(pivot, array[curTo]) < 0) {
+			while (comparator.compare(pivot, array[curTo]) < 0)
 				curTo--;
-			}
-			if (curFrom <= curTo) {
-				final T work = array[curFrom];
-				array[curFrom] = array[curTo];
-				array[curTo] = work;
-				curFrom++;
-				curTo--;
-			}
-		} while (curFrom <= curTo);
+			if (curFrom > curTo)
+				break;
+			final T work = array[curFrom];
+			array[curFrom++] = array[curTo];
+			array[curTo--] = work;
+		};
 
 		if (from < curTo + 1) {
 			quickSortMedian3(array, from, curTo + 1, comparator);

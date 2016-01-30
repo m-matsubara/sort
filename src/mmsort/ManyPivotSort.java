@@ -40,17 +40,15 @@ public class ManyPivotSort implements ISortAlgorithm {
 		int curTo = to - 1;		//	max index / 現在処理中位置の大きい方の位置
 
 		while (true) {
-			while (comparator.compare(array[curFrom], pivot) < 0)
-				curFrom++;
-			while (comparator.compare(pivot, array[curTo]) < 0)
-				curTo--;
+			while (comparator.compare(array[curFrom++], pivot) < 0);
+			while (comparator.compare(pivot, array[curTo--]) < 0);
+			curFrom--;
+			curTo++;
 			if (curTo < curFrom)
 				break;
 			final T work = array[curFrom];
-			array[curFrom] = array[curTo];
-			array[curTo] = work;
-			curFrom++;
-			curTo--;
+			array[curFrom++] = array[curTo];
+			array[curTo--] = work;
 		}
 
 		if (from < curTo) {
@@ -81,7 +79,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
-		//	ソート対象配列サイズが３以下のときは特別扱い
+		//	ソート対象配列サイズが一定以下のときは特別扱い
 		if (range < SWITCH_SIZE) {
 			// しきい値以下ではクイックソート（5つのメディアン）に切り替える。
 			QuickSortM5.quickSortMedian5(array, from, to, comparator);

@@ -13,13 +13,13 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 31;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	protected static final int SWITCH_SIZE = 50;							// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
 
-	public static final <T> void sort5(final T[] array, int p1, int p2, int p3, int p4, int p5, final Comparator<? super T> comparator)
+	public static final <T> void sort5(final T[] array, final int p1, final int p2, final int p3, final int p4, final int p5, final Comparator<? super T> comparator)
 	{
-		T v1 = array[p1];
-		T v2 = array[p2];
-		T v3 = array[p3];
-		T v4 = array[p4];
-		T v5 = array[p5];
+		final T v1 = array[p1];
+		final T v2 = array[p2];
+		final T v3 = array[p3];
+		final T v4 = array[p4];
+		final T v5 = array[p5];
 
 		//	まず、先頭３つのソート
 		if (comparator.compare(v1, v2) <= 0) {
@@ -133,9 +133,9 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 
 
 	/**
-	 * Many pivot sort (3 Way partition)
+	 * Quick sort (3 Way partition & Median of 5)
 	 *
-	 * メニー・ピボット・ソート (3 Way partition)
+	 * クイックソート (3 Way partition & Median of 5)
 	 *
 	 * internal method (Added argument the pivot array)
 	 * 内部的に呼び出される。ピボットの配列（ピボット候補）を引数にもつ
@@ -155,11 +155,11 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			return;
 		}
 
-		int p1 = from;
-		int p5 = to - 1;
-		int p3 = p1 + (p5 - p1) / 2;
-		int p2 = p1 + (p3 - p1) / 2;
-		int p4 = p3 + (p5 - p3) / 2;
+		final int p1 = from;
+		final int p5 = to - 1;
+		final int p3 = p1 + (p5 - p1) / 2;
+		final int p2 = p1 + (p3 - p1) / 2;
+		final int p4 = p3 + (p5 - p3) / 2;
 
 		sort5(array, p3, p2, p1, p4, p5, comparator);	//	p1とp3を入れ替えている。これにより、p1位置に5つの中央値が来る
 //		System.out.println(array[p1].toString() + "," + array[p2].toString() + "," + array[p3].toString() + "," + array[p4].toString() + "," + array[p5].toString());
@@ -221,8 +221,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			if (comp1 == 0) {
 				work = array[curTo];
 				array[curTo] = array[eqTo];
-				array[eqTo] = work;
-				eqTo--;
+				array[eqTo--] = work;
 			}
 			// Elements that were in the array[curTo] at the time of comparison is present in the array[curFrom] by swap.
 			// array [curFrom] is replaced with the array [eqFrom], to collect the value equal to the pivot value in the rear.
@@ -231,8 +230,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			if (comp2 == 0) {
 				work = array[curFrom];
 				array[curFrom] = array[eqFrom];
-				array[eqFrom] = work;
-				eqFrom++;
+				array[eqFrom++] = work;
 			}
 
 			curFrom++;
