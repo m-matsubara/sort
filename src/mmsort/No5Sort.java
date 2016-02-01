@@ -187,7 +187,6 @@ public class No5Sort implements ISortAlgorithm {
 		// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
 		if (comparator.compare(array[p3], v5) <= 0) {
 			// array[p3] <= v5
-/* v4 と v5 の位置関係は重要ではない(v3が中央に来さえすればよい)
 			if (comparator.compare(array[p4], v5) <= 0) {
 				// array[p3] <= array[4] <= v5
 			} else {
@@ -195,7 +194,6 @@ public class No5Sort implements ISortAlgorithm {
 				array[p5] = array[p4];
 				array[p4] = v5;
 			}
-*/
 		} else {
 			// v5 < array[p3]
 			if (comparator.compare(array[p2], v5) <= 0) {
@@ -321,7 +319,7 @@ public class No5Sort implements ISortAlgorithm {
 			// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
 			if (comparator.compare(array[p3], v5) <= 0) {
 				// array[p3] <= v5
-	/* v4 と v5 の位置関係は重要ではない(v3が中央に来さえすればよい)
+/* 4番目 と 5番目の位置関係は重要ではない(v3が中央に来さえすればよい)
 				if (comparator.compare(array[p4], v5) <= 0) {
 					// array[p3] <= array[4] <= v5
 				} else {
@@ -329,7 +327,7 @@ public class No5Sort implements ISortAlgorithm {
 					array[p5] = array[p4];
 					array[p4] = v5;
 				}
-	*/
+*/
 			} else {
 				// v5 < array[p3]
 				if (comparator.compare(array[p2], v5) <= 0) {
@@ -339,6 +337,7 @@ public class No5Sort implements ISortAlgorithm {
 					array[p3] = v5;
 				} else {
 					// v5 < array[p2] <= array[p3]
+/* 1番目 と 2番目の位置関係は重要ではない(v3が中央に来さえすればよい)
 					if (comparator.compare(array[p1], v5) <= 0) {
 						// array[p1] <= v5 < array[p2] <= array[p3]
 						array[p5] = array[p4];
@@ -353,6 +352,11 @@ public class No5Sort implements ISortAlgorithm {
 						array[p2] = array[p1];
 						array[p1] = v5;
 					}
+*/
+					array[p5] = array[p4];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = v5;
 				}
 			}
 		}
