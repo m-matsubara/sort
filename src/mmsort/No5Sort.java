@@ -367,9 +367,11 @@ public class No5Sort implements ISortAlgorithm {
 		array[from + 1] = array[p2];
 		array[p2] = work;
 
-		work = array[from + 2];
-		array[from + 2] = array[p3];
-		array[p3] = work;
+		//work = array[from + 2];
+		//array[from + 2] = array[p3];
+		//array[p3] = work;
+		array[p3] = array[from + 2];
+		array[from + 2] = pivot;
 
 		work = array[to - 2];
 		array[to - 2] = array[p4];
