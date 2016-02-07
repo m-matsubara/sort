@@ -11,6 +11,81 @@ import java.util.Comparator;
 
 public class QuickSortM5 implements ISortAlgorithm {
 
+
+	/**
+	 * 5つの値から中央値を得る
+	 * @param v1
+	 * @param v2
+	 * @param v3
+	 * @param v4
+	 * @param v5
+	 * @param comparator
+	 * @return
+	 */
+	public static final <T> T median5(T v1, T v2, T v3, T v4, T v5, final Comparator<? super T> comparator)
+	{
+		T work;
+
+		if (comparator.compare(v3, v2) < 0) {
+			work = v2;
+			v2 = v3;
+			v3 = work;
+		}
+		if (comparator.compare(v5, v4) < 0) {
+			work = v4;
+			v4 = v5;
+			v5 = work;
+		}
+
+		//	v2 <= v3, v4 <= v5
+
+		if (comparator.compare(v2, v4) < 0) {
+			//
+			work = v2;
+			v2 = v1;
+			v1 = work;
+			if (comparator.compare(v3, v2) < 0) {
+				work = v2;
+				v2 = v3;
+				v3 = work;
+			}
+		} else {
+			work = v4;
+			v4 = v1;
+			v1 = work;
+			if (comparator.compare(v5, v4) < 0) {
+				work = v4;
+				v4 = v5;
+				v5 = work;
+			}
+		}
+		if (comparator.compare(v2, v4) < 0) {
+			if (comparator.compare(v3, v4) < 0) {
+				return v3;
+			} else {
+				//work = v3;
+				//v3 = v4;
+				//v4 = work;
+				return v4;
+			}
+		} else {
+			//work = v2;
+			//v2 = v4;
+			//v4 = work;
+			if (comparator.compare(/*v4*/ v2, v5) < 0) {
+				//work = v4;
+				//v4 = v3;
+				//v3 = work;
+				return v2;
+			} else {
+				//work = v5;
+				//v5 = v3;
+				//v3 = work;
+				return v5;
+			}
+		}
+	}
+
 	/**
 	 * 配列中の任意の５か所をソートする
 	 * （３番目の要素からピボット値を得るために使用）
@@ -140,55 +215,27 @@ public class QuickSortM5 implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
-		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
-				T work = array[from + 1];
-				array[from + 1] = array[from + 2];
-				array[from + 2] = work;
-				if (comparator.compare(array[from + 1], array[from]) < 0) {
-					work = array[from];
-					array[from] = array[from + 1];
-					array[from + 1] = work;
-				}
-			}
-			return;
-		}
-
-		if (range < 40) {
+		//	ソート対象配列サイズが一定数以下のときは特別扱い
+		if (range < 20) {
 			//InsertionSort.insertionSort(array, from, to, comparator);
 			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
-		int p1 = from;
-		int p5 = to - 1;
-		int p3 = p1 + (p5 - p1) / 2;
-		int p2 = p1 + (p3 - p1) / 2;
-		int p4 = p3 + (p5 - p3) / 2;
+		final int p1 = from;
+		final int p5 = to - 1;
+		final int p3 = p1 + (p5 - p1) / 2;
+		final int p2 = p1 + (p3 - p1) / 2;
+		final int p4 = p3 + (p5 - p3) / 2;
 
+		//final T pivot = median5(array[p1], array[p2], array[p3], array[p4], array[p5], comparator);
 		//sort5(array, p1, p2, p3, p4, p5, comparator);
 		{
-			T v1 = array[p1];
-			T v2 = array[p2];
-			T v3 = array[p3];
-			T v4 = array[p4];
-			T v5 = array[p5];
-
+			final T v1 = array[p1];
+			final T v2 = array[p2];
+			final T v3 = array[p3];
+			final T v4 = array[p4];
+			final T v5 = array[p5];
 			//	まず、先頭３つのソート
 			if (comparator.compare(v1, v2) <= 0) {
 				if (comparator.compare(v2, v3) <= 0) {
@@ -253,6 +300,7 @@ public class QuickSortM5 implements ISortAlgorithm {
 			// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
 			if (comparator.compare(array[p3], v5) <= 0) {
 				// array[p3] <= v5
+/* 4番目 と 5番目の位置関係は重要ではない(v3が中央に来さえすればよい)
 				if (comparator.compare(array[p4], v5) <= 0) {
 					// array[p3] <= array[4] <= v5
 				} else {
@@ -260,6 +308,7 @@ public class QuickSortM5 implements ISortAlgorithm {
 					array[p5] = array[p4];
 					array[p4] = v5;
 				}
+*/
 			} else {
 				// v5 < array[p3]
 				if (comparator.compare(array[p2], v5) <= 0) {
@@ -269,6 +318,7 @@ public class QuickSortM5 implements ISortAlgorithm {
 					array[p3] = v5;
 				} else {
 					// v5 < array[p2] <= array[p3]
+/* 1番目 と 2番目の位置関係は重要ではない(v3が中央に来さえすればよい)
 					if (comparator.compare(array[p1], v5) <= 0) {
 						// array[p1] <= v5 < array[p2] <= array[p3]
 						array[p5] = array[p4];
@@ -283,31 +333,41 @@ public class QuickSortM5 implements ISortAlgorithm {
 						array[p2] = array[p1];
 						array[p1] = v5;
 					}
+*/
+					array[p5] = array[p4];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = v5;
 				}
 			}
 		}
 
 		final T pivot = array[p3];	//	ピボット値
 
-		int curFrom = from;			//	min index / 現在処理中位置の小さい方の位置
-		int curTo = to - 1;			//	max index / 現在処理中位置の大きい方の位置
+		array[p3] = array[from];
+		array[from] = pivot;
+
+		int curFrom = from + 1;			//	min index / 現在処理中位置の小さい方の位置
+		int curTo = to - 1;				//	max index / 現在処理中位置の大きい方の位置
 
 		while (true) {
-			while (comparator.compare(array[curFrom], pivot) < 0)
-				curFrom++;
-			while (comparator.compare(pivot, array[curTo]) < 0)
-				curTo--;
-			if (curFrom > curTo)
+			while (comparator.compare(array[curFrom++], pivot) < 0);
+			while (comparator.compare(pivot, array[curTo--]) < 0);
+			curFrom--;
+			curTo++;
+			if (curFrom >= curTo)
 				break;
-			final T work = array[curFrom];
+			T work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
 		};
 
-		if (from < curTo + 1) {
-			quickSortMedian5(array, from, curTo + 1, comparator);
-		}
+		array[from] = array[curTo];
+		array[curTo] = pivot;
 
+		if (from < curTo) {
+			quickSortMedian5(array, from, curTo, comparator);
+		}
 		if (curFrom < to - 1) {
 			quickSortMedian5(array, curFrom, to, comparator);
 		}
