@@ -11,7 +11,6 @@ import java.util.Comparator;
 
 public class QuickSortM5 implements ISortAlgorithm {
 
-
 	/**
 	 * 5つの値から中央値を得る
 	 * @param v1
@@ -343,13 +342,14 @@ public class QuickSortM5 implements ISortAlgorithm {
 		}
 
 		final T pivot = array[p3];	//	ピボット値
+		T work;
 
 		array[p3] = array[from];
 		array[from] = pivot;
 
+		//	パーティション操作
 		int curFrom = from + 1;			//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1;				//	max index / 現在処理中位置の大きい方の位置
-
 		while (true) {
 			while (comparator.compare(array[curFrom++], pivot) < 0);
 			while (comparator.compare(pivot, array[curTo--]) < 0);
@@ -357,14 +357,16 @@ public class QuickSortM5 implements ISortAlgorithm {
 			curTo++;
 			if (curFrom >= curTo)
 				break;
-			T work = array[curFrom];
+			work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
 		};
 
+		//	ピボット値をパーティションの間に入れ替える（再起の処理の対象外にできる）
 		array[from] = array[curTo];
 		array[curTo] = pivot;
 
+		//	小さいパーティション・大きいパーティションそれぞれで再起
 		if (from < curTo) {
 			quickSortMedian5(array, from, curTo, comparator);
 		}

@@ -12,6 +12,80 @@ import java.util.Comparator;
 public class No5Sort implements ISortAlgorithm {
 
 	/**
+	 * 5つの値から中央値を得る
+	 * @param v1
+	 * @param v2
+	 * @param v3
+	 * @param v4
+	 * @param v5
+	 * @param comparator
+	 * @return
+	 */
+	public static final <T> T median5(T v1, T v2, T v3, T v4, T v5, final Comparator<? super T> comparator)
+	{
+		T work;
+
+		if (comparator.compare(v3, v2) < 0) {
+			work = v2;
+			v2 = v3;
+			v3 = work;
+		}
+		if (comparator.compare(v5, v4) < 0) {
+			work = v4;
+			v4 = v5;
+			v5 = work;
+		}
+
+		//	v2 <= v3, v4 <= v5
+
+		if (comparator.compare(v2, v4) < 0) {
+			//
+			work = v2;
+			v2 = v1;
+			v1 = work;
+			if (comparator.compare(v3, v2) < 0) {
+				work = v2;
+				v2 = v3;
+				v3 = work;
+			}
+		} else {
+			work = v4;
+			v4 = v1;
+			v1 = work;
+			if (comparator.compare(v5, v4) < 0) {
+				work = v4;
+				v4 = v5;
+				v5 = work;
+			}
+		}
+		if (comparator.compare(v2, v4) < 0) {
+			if (comparator.compare(v3, v4) < 0) {
+				return v3;
+			} else {
+				//work = v3;
+				//v3 = v4;
+				//v4 = work;
+				return v4;
+			}
+		} else {
+			//work = v2;
+			//v2 = v4;
+			//v4 = work;
+			if (comparator.compare(/*v4*/ v2, v5) < 0) {
+				//work = v4;
+				//v4 = v3;
+				//v3 = work;
+				return v2;
+			} else {
+				//work = v5;
+				//v5 = v3;
+				//v3 = work;
+				return v5;
+			}
+		}
+	}
+
+	/**
 	 * 配列中の任意の５か所をソートする
 	 * （３番目の要素からピボット値を得るために使用）
 	 * @param array sort target / ソート対象
@@ -130,6 +204,9 @@ public class No5Sort implements ISortAlgorithm {
 
 	/**
 	 * No5 Sort
+	 *
+	 * 基本的には「 ５つのメディアン」だが、５つの中央値を選択したときに、小さい値２つを配列の先頭側に、大きい２つを配列の最後側に
+	 * 退避し、パーティション操作から除外することで高速化を図ったアルゴリズム
 	 *
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
@@ -267,6 +344,19 @@ public class No5Sort implements ISortAlgorithm {
 			}
 		}
 
+
+		/*
+		 * この時点で、
+		 *   array[from](array[p1])には、5つの候補のうち、中央値以下の値が入っている。
+		 *   array[p3]には、中央値が入っている。
+		 *   array[to - 1](array[p5])には、5つの候補のうち、中央値以上の値が入っている。
+		 * そこで、
+		 *   array[from + 1]とarray[p2]の値を入れ替え
+		 *   array[from + 2]とarray[p3]の値を入れ替え
+		 *   array[to - 2]とarray[p4]の値を入れ替え
+		 * とすることで、パーティション操作のの範囲を狭くすることができる。
+		 **/
+
 		final T pivot = array[p3];	//	ピボット値
 
 		T work = array[from + 1];
@@ -283,9 +373,9 @@ public class No5Sort implements ISortAlgorithm {
 		array[to - 2] = array[p4];
 		array[p4] = work;
 
+		//	パーティション操作
 		int curFrom = from + 3;			//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1 - 2;			//	max index / 現在処理中位置の大きい方の位置
-
 		while (true) {
 			while (comparator.compare(array[curFrom++], pivot) < 0);
 			while (comparator.compare(pivot, array[curTo--]) < 0);
@@ -298,9 +388,11 @@ public class No5Sort implements ISortAlgorithm {
 			array[curTo--] = work;
 		};
 
+		//	ピボット値をパーティションの間に入れ替える（再起の処理の対象外にできる）
 		array[from + 2] = array[curTo];
 		array[curTo] = pivot;
 
+		//	小さいパーティション・大きいパーティションそれぞれで再起
 		if (from < curTo) {
 			no5Sort(array, from, curTo, comparator);
 		}
