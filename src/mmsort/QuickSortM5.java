@@ -1,5 +1,5 @@
 /*
- * Quick sort (Median of 3)
+ * Quick sort (Median of 5)
  *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
