@@ -374,42 +374,27 @@ public class No5Sort implements ISortAlgorithm {
 		array[p4] = work;
 
 		//	パーティション操作
-		int curFrom = from + 3 - 1;			//	min index / 現在処理中位置の小さい方の位置
-		int curTo = to - 1 - 2 + 1;			//	max index / 現在処理中位置の大きい方の位置
+		int curFrom = from + 3;			//	min index / 現在処理中位置の小さい方の位置
+		int curTo = to - 1 - 2;			//	max index / 現在処理中位置の大きい方の位置
 		while (true) {
-			while (comparator.compare(array[++curFrom], pivot) < 0);
-			while (comparator.compare(pivot, array[--curTo]) < 0);
+			while (comparator.compare(array[curFrom++], pivot) < 0);
+			while (comparator.compare(pivot, array[curTo--]) < 0);
+			curFrom--;
+			curTo++;
 			if (curFrom >= curTo)
 				break;
 			work = array[curFrom];
-			array[curFrom] = array[curTo];
-			array[curTo] = work;
+			array[curFrom++] = array[curTo];
+			array[curTo--] = work;
 		};
 
 		//	ピボット値をパーティションの間に入れ替える（再起の処理の対象外にできる）
 		array[from + 2] = array[curTo];
 		array[curTo] = pivot;
 
-/*
-		//      p2, p4 が元の位置に戻せるなら戻す。（昇順ソート済みの配列をソートするときに影響）
-        if (p2 < curTo) {
-                work = array[from + 1];
-                array[from + 1] = array[p2];
-                array[p2] = work;
-        }
-        if (p4 >= curFrom) {
-                work = array[to - 2];
-                array[to - 2] = array[p4];
-                array[p4] = work;
-        }
-*/
-        //	小さいパーティション・大きいパーティションそれぞれで再起
-		//if (from < curTo) {
-			no5Sort(array, from, curTo, comparator);
-		//}
-		//if (curFrom < to - 1) {
-			no5Sort(array, curFrom, to, comparator);
-		//}
+		//	小さいパーティション・大きいパーティションそれぞれで再起
+		no5Sort(array, from, curTo, comparator);
+		no5Sort(array, curFrom, to, comparator);
 	}
 
 	@Override

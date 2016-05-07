@@ -22,6 +22,13 @@ public class QuickSortM3 implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
+		//	ソート対象配列サイズが一定数以下のときは特別扱い
+		if (range < 20) {
+			//InsertionSort.insertionSort(array, from, to, comparator);
+			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			return;
+		}
+
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
@@ -84,28 +91,23 @@ public class QuickSortM3 implements ISortAlgorithm {
 			}
 		}
 
-		int curFrom = from;			//	min index / 現在処理中位置の小さい方の位置
-		int curTo = to - 1;			//	max index / 現在処理中位置の大きい方の位置
-
+		int curFrom = from;				//	min index / 現在処理中位置の小さい方の位置
+		int curTo = to - 1;				//	max index / 現在処理中位置の大きい方の位置
 		while (true) {
-			while (comparator.compare(array[curFrom], pivot) < 0)
-				curFrom++;
-			while (comparator.compare(pivot, array[curTo]) < 0)
-				curTo--;
-			if (curFrom > curTo)
+			while (comparator.compare(array[curFrom++], pivot) < 0);
+			while (comparator.compare(pivot, array[curTo--]) < 0);
+			curFrom--;
+			curTo++;
+			if (curFrom >= curTo)
 				break;
-			final T work = array[curFrom];
+			T work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
-		};
-
-		if (from < curTo + 1) {
-			quickSortMedian3(array, from, curTo + 1, comparator);
 		}
 
-		if (curFrom < to - 1) {
-			quickSortMedian3(array, curFrom, to, comparator);
-		}
+		//	小さいパーティション・大きいパーティションそれぞれで再起
+		quickSortMedian3(array, from, curTo + 1, comparator);
+		quickSortMedian3(array, curFrom, to, comparator);
 	}
 
 	@Override

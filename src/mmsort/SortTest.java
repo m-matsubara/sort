@@ -144,6 +144,8 @@ public class SortTest {
 		Comparator<SortItem> comparator = new Comparator<SortItem>() {
 			@Override
 			public final int compare(SortItem o1, SortItem o2) {
+				//	マルチスレッド間の調停をしていないのでマルチスレッドのソートは正確な値にならないが、大まかな数値としては問題ない。
+				//	スレッドセーフにするとマルチスレッドの効果が分からなくなるのでやらない。
 				SortTest.compareCount++;
 				final int i1 = o1.key;
 				final int i2 = o2.key;
@@ -219,14 +221,12 @@ public class SortTest {
 			}
 			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
 
-			String sortName = "";
-			boolean stable = false;
+			String sortName = sorter.getName();
+			boolean stable = sorter.isStable();
 			SortTest.compareCount = 0;
 
-			sortName = sorter.getName();
-			stable = sorter.isStable();
-
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
+			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			startTime = System.currentTimeMillis();
 			sorter.sort(array, 0, array.length, comparator);
 			endTime = System.currentTimeMillis();

@@ -14,7 +14,7 @@ import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 3000;							//	Quick Sort (Median of 3) に切り替えるサイズ
+	protected static final int SWITCH_SIZE = 5000;							//	Quick Sort (Median of 5) に切り替えるサイズ
 	/**
 	 * Many pivot sort
 	 *
@@ -44,25 +44,19 @@ public class ManyPivotSort implements ISortAlgorithm {
 			while (comparator.compare(pivot, array[curTo--]) < 0);
 			curFrom--;
 			curTo++;
-			if (curTo < curFrom)
+			if (curFrom > curTo)
 				break;
 			final T work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
 		}
 
-		if (from < curTo) {
-			if (fromPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, from, curTo + 1, comparator);
-			else
-				mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
-		}
-
-		if (curFrom < to - 1) {
-			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curFrom, to, comparator);
-			else
-				mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
+		if (toPivots - fromPivots <= 3) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+			mpSort(array, from, curTo + 1, comparator);
+			mpSort(array, curFrom, to, comparator);
+		} else {
+			mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
+			mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 	}
 
@@ -86,23 +80,8 @@ public class ManyPivotSort implements ISortAlgorithm {
 			return;
 		}
 
-		int pivotsSize = PIVOTS_SIZE;
-/*
-		if (range >= 1000000)
-			pivotsSize = 2048 - 1;
-		else if (range >= 500000)
-			pivotsSize = 1024 - 1;
-		else if (range >= 250000)
-			pivotsSize = 512 - 1;
-		else if (range >= 120000)
-			pivotsSize = 256 - 1;
-		else if (range >= 60000)
-			pivotsSize = 128 - 1;
-		else if (range >= 30000)
-			pivotsSize = 64 - 1;
-		else
-			pivotsSize = 32 - 1;
-*/
+		int pivotsSize = PIVOTS_SIZE;	//	ソート要素数によって変えてみたり…。
+
 		@SuppressWarnings("unchecked")
 		final T[] pivots = (T[])new Object[pivotsSize];		//	pivot candidates / ピボット候補の配列
 

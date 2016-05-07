@@ -161,11 +161,119 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 		final int p2 = p1 + (p3 - p1) / 2;
 		final int p4 = p3 + (p5 - p3) / 2;
 
-		sort5(array, p3, p2, p1, p4, p5, comparator);	//	p1とp3を入れ替えている。これにより、p1位置に5つの中央値が来る
-//		System.out.println(array[p1].toString() + "," + array[p2].toString() + "," + array[p3].toString() + "," + array[p4].toString() + "," + array[p5].toString());
+		//sort5(array, p3, p2, p1, p4, p5, comparator);	//	p1とp3を入れ替えている。これにより、p1位置に5つの中央値が来る
+		{
+			final T v1 = array[p1];
+			final T v2 = array[p2];
+			final T v3 = array[p3];
+			final T v4 = array[p4];
+			final T v5 = array[p5];
 
+			//	まず、先頭３つのソート
+			if (comparator.compare(v1, v2) <= 0) {
+				// v1 <= v2
+				if (comparator.compare(v2, v3) <= 0) {
+					// v1 <= v2 <= v3
+					//array[p1] = v1;
+					//array[p2] = v2;
+					//array[p3] = v3;
+				} else if (comparator.compare(v1, v3) <= 0) {
+					// v1 <= v3 < v2
+					//array[p1] = v1;
+					array[p2] = v3;
+					array[p3] = v2;
+				} else {
+					// v3 < v1 <= v2
+					array[p1] = v3;
+					array[p2] = v1;
+					array[p3] = v2;
+				}
+			} else {
+				// v2 < v1
+				if (comparator.compare(v1, v3) <= 0) {
+					// v2 < v1 <= v3
+					array[p1] = v2;
+					array[p2] = v1;
+					//array[p3] = v3;
+				} else if (comparator.compare(v2, v3) <= 0) {
+					// v2 <= v3 < v1
+					array[p1] = v2;
+					array[p2] = v3;
+					array[p3] = v1;
+				} else {
+					// v3 < v2 < v1
+					array[p1] = v3;
+					//array[p2] = v2;
+					array[p3] = v1;
+				}
+			}
 
-		final T pivot = array[p1];	//	p1 == from となる。
+			// v4 ( = array[p4]) を挿入ソートっぽく指定位置に挿入
+			if (comparator.compare(array[p2], v4) <= 0) {
+				if (comparator.compare(array[p3], v4) <= 0) {
+					// array[p3] <= v4
+				} else {
+					// array[p2] <= v4 < array[p3];
+					array[p4] = array[p3];
+					array[p3] = v4;
+				}
+			} else {
+				if (comparator.compare(array[p1], v4) <= 0) {
+					// array[p1] <= v4 < array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = v4;
+				} else {
+					// v4 < array[p1] <= array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = array[p1];
+					array[p1] = v4;
+				}
+			}
+
+			// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
+			if (comparator.compare(array[p3], v5) <= 0) {
+				// array[p3] <= v5
+/*
+				if (comparator.compare(array[p4], v5) <= 0) {
+					// array[p3] <= array[4] <= v5
+				} else {
+					// array[p3] <= v5 < array[p4]
+					array[p5] = array[p4];
+					array[p4] = v5;
+				}
+*/
+			} else {
+				// v5 < array[p3]
+				if (comparator.compare(array[p2], v5) <= 0) {
+					// array[p2] <= v5 < array[p3]
+					array[p5] = array[p4];
+					array[p4] = array[p3];
+					array[p3] = v5;
+				} else {
+					// v5 < array[p2] <= array[p3]
+					if (comparator.compare(array[p1], v5) <= 0) {
+						// array[p1] <= v5 < array[p2] <= array[p3]
+						array[p5] = array[p4];
+						array[p4] = array[p3];
+						array[p3] = array[p2];
+						array[p2] = v5;
+					} else {
+						// v5 < array[p1] <= array[p2] <= array[p3]
+						array[p5] = array[p4];
+						array[p4] = array[p3];
+						array[p3] = array[p2];
+						array[p2] = array[p1];
+						array[p1] = v5;
+					}
+				}
+			}
+		}
+
+		final T pivot = array[p3];
+		array[p3] = array[p1];
+		array[p1] = pivot;
 
 		int curFrom = from + 1;		//	min index / 現在処理中位置の小さい方の位置(「 + 1」しているのは、array[from] の位置にピボット値がいるため、処理する必要がないから)
 		int curTo = to - 1;			//	max index / 現在処理中位置の大きい方の位置
@@ -200,26 +308,52 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// ^                ^               ^         ^               ^                 ^
 			// |                |               |         |               |                 |
 			// from           eqFrom         curFrom   curTo            eqTo                to
-
+/*
 			int comp1;		// array[curFrom] と pivot の比較値
 			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0)
 				curFrom++;
 			int comp2;		// array[curTo] と pivot の比較値
 			while ((comp2 = comparator.compare(pivot, array[curTo])) < 0)
 				curTo--;
+*/
+			boolean notEqCurFrom = true;
+			for (;;) {
+				final int comp = comparator.compare(array[curFrom], pivot);
+				if (comp > 0)
+					break;
+				else if (comp == 0) {
+					notEqCurFrom = false;
+					break;
+				}
+				curFrom++;
+			}
+			boolean notEqCurTo = true;
+			for (;;) {
+				final int comp = comparator.compare(pivot, array[curTo]);
+				if (comp > 0)
+					break;
+				else if (comp == 0) {
+					notEqCurTo = false;
+					break;
+				}
+				curTo--;
+			}
+
 			if (curFrom > curTo)
 				break;
 
-			T work = array[curFrom];
-			array[curFrom] = array[curTo];
-			array[curTo] = work;
+			if (notEqCurFrom || notEqCurTo) {
+				final T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
+			}
 
 			// Elements that were in the array[curFrom] at the time of comparison is present in the array[curTo] by swap.
 			// array [curTo] is replaced with the array [eqTo], to collect the value equal to the pivot value in the rear.
 			// 比較時に array[curFrom] にあった要素はスワップによって array[curTo] に存在している
 			// array[curTo] と array[eqTo] を入れ替えて、ピボット値と等しい値を後方にいったん集める
-			if (comp1 == 0) {
-				work = array[curTo];
+			if (!notEqCurFrom) {
+				final T work = array[curTo];
 				array[curTo] = array[eqTo];
 				array[eqTo--] = work;
 			}
@@ -227,8 +361,8 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// array [curFrom] is replaced with the array [eqFrom], to collect the value equal to the pivot value in the rear.
 			// 比較時に array[curTo] にあった要素はスワップによって array[curFrom] に存在している
 			// array[curFrom] と array[eqFrom] を入れ替えて、ピボット値と等しい値を後方にいったん集める
-			if (comp2 == 0) {
-				work = array[curFrom];
+			if (!notEqCurTo) {
+				final T work = array[curFrom];
 				array[curFrom] = array[eqFrom];
 				array[eqFrom++] = work;
 			}

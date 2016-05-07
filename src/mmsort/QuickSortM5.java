@@ -360,19 +360,11 @@ public class QuickSortM5 implements ISortAlgorithm {
 			work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
-		};
-
-		//	ピボット値をパーティションの間に入れ替える（再起の処理の対象外にできる）
-		array[from] = array[curTo];
-		array[curTo] = pivot;
+		}
 
 		//	小さいパーティション・大きいパーティションそれぞれで再起
-		if (from < curTo) {
-			quickSortMedian5(array, from, curTo, comparator);
-		}
-		if (curFrom < to - 1) {
-			quickSortMedian5(array, curFrom, to, comparator);
-		}
+		quickSortMedian5(array, from, curTo + 1, comparator);
+		quickSortMedian5(array, curFrom, to, comparator);
 	}
 
 	@Override

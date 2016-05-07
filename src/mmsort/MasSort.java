@@ -35,8 +35,11 @@ public class MasSort implements ISortAlgorithm {
 		final int range = to - from;			//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range < 200) {
-			BinInsertionSort.binInsertionSort(arrayFrom, from, to, comparator);
+		if (range <= 1) {
+			return;
+		}
+		if (range < 100) {
+			MergeSort.mergeSort(arrayFrom, from, to, comparator);
 			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
 			return;
 		}

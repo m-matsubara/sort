@@ -192,9 +192,7 @@ public class MatSort implements ISortAlgorithm {
 			// remaining temporary data to array
 			// 残った一時領域のデータをソート対象へ詰める
 			while (idx1 < midIdx)  {
-				array[idx] = temp[idx1 - fromIdx];
-				idx++;
-				idx1++;
+				array[idx++] = temp[idx1++ - fromIdx];
 			}
 		}
 	}

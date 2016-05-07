@@ -33,6 +33,7 @@ public class MergeSort implements ISortAlgorithm {
 				array[from + 1] = work;
 			}
 			return;
+/*
 		} else if (range == 3) {
 			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
@@ -53,6 +54,7 @@ public class MergeSort implements ISortAlgorithm {
 		} else if (range < 200) {
 			BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
+*/
 		}
 
 		int mid = from + (to - from) / 2;	//	中央位置（範囲１と範囲２の境界）
@@ -65,17 +67,6 @@ public class MergeSort implements ISortAlgorithm {
 
 		if (comparator.compare(array[mid - 1], array[mid]) < 0)
 			return;			//	範囲１の値はすべて範囲２の値より小さかった（再配置なし）…ソート済みの配列に対する高速化
-
-
-		//	範囲１の値が小さい間繰り返す（再配置なし）
-/*		//	（この処理無い方が速い…ショック）
-		while (idx1 < mid)  {
-			if (comparator.compare(array[idx1], array[idx2]) > 0) {
-				break;
-			}
-			idx1++;
-		}
-*/
 
 		//	範囲１をワーク配列にコピー
 		if (mid - idx1 > 0) {
