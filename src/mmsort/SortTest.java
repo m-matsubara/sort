@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class SortTest {
-	protected static int SAME_NUMBER = 1;
+	protected static int SAME_NUMBER = 2;
 	protected static long compareCount = 0;									//	比較された回数
 
 	/**
@@ -73,6 +73,29 @@ public class SortTest {
 		}
 	}
 
+	/**
+	 * 半分ソートされた状態で初期化
+	 * @param array 対象配列
+	 * @param randSeed 乱数の種
+	 * @param array 対象配列
+	 */
+	public static void initHalfSortedArray(SortItem[] array, long randSeed)
+	{
+		int half = array.length / 2;
+		for (int i = 0; i < half; i++) {
+			array[i].key = (i * 2) / SAME_NUMBER ;
+		}
+		for (int i = half; i < array.length; i++) {
+			array[i].key = ((i - half) * 2 + 1) / SAME_NUMBER ;
+		}
+		Random rand = new Random(randSeed);
+		for (int i = half; i < array.length; i++) {
+			int j = half + rand.nextInt(half);
+			SortItem work = array[i];
+			array[i] = array[j];
+			array[j] = work;
+		}
+	}
 
 	/**
 	 * 配列の値をシャッフルする
@@ -165,7 +188,7 @@ public class SortTest {
 		//	ソート対象サイズ
 		int arraySize = Integer.parseInt(args[1]);
 
-		//	ソート対象種類（ランダム・昇順ソート済み・降順ソート済み・同じ値（キー値））
+		//	ソート対象種類（ランダム・昇順ソート済み・降順ソート済み・同じ値（キー値）・半分ソート済み）
 		int arrayType = 0;
 		if (args.length >= 3) {
 			if (args[2].equals("R"))	//	Random
@@ -176,6 +199,8 @@ public class SortTest {
 				arrayType = 2;
 			else if (args[2].equals("F"))	//	Flat values
 				arrayType = 3;
+			else if (args[2].equals("H"))	//	Half sorted
+				arrayType = 4;
 			else
 				throw new Exception("arguments error ");
 		}
@@ -190,6 +215,7 @@ public class SortTest {
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem(i / SAME_NUMBER);
 		}
+		shuffleArray(array, 0);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、0を乱数の種とすることで疑似乱数配列を固定化する。
 
 		//System.out.println("times	algorithm	array type	array size	time	compare count");
 		for (int idx = 1; idx <= times; idx++) {
@@ -198,7 +224,6 @@ public class SortTest {
 			switch (arrayType) {
 				case 0:
 				{
-					initArray(array);
 					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
 					arrayTypeName = "Random";
 					break;
@@ -219,6 +244,12 @@ public class SortTest {
 				{
 					initFlatArray(array);
 					arrayTypeName = "Flat";
+					break;
+				}
+				case 4:
+				{
+					initHalfSortedArray(array, idx);
+					arrayTypeName = "Half sorted";
 					break;
 				}
 			}
