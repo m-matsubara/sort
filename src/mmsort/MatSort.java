@@ -88,7 +88,7 @@ public class MatSort implements ISortAlgorithm {
 			return ;
 		//	作業領域サイズの決定
 		if (workSize == 0)
-			workSize = (range + 9) / 10;	// round up / 切り上げ
+			workSize = (range + 9) / 10;		// round up / 切り上げ
 		if (workSize > range)
 			workSize = range;					//	作業領域サイズがソート範囲のサイズより大きい場合、ソート範囲のサイズにする。
 		else if (workSize == range)
@@ -101,25 +101,23 @@ public class MatSort implements ISortAlgorithm {
 		final T[] temp = (T[])new Object[workSize];
 
 		// Sort the final block
-		// 最終ブロックをソート
-		//
-		// array
-		// +-----------------------------------------------------------------+
-		// | Block   | Block   | Block   | ... | Block   | Block   | Last    |
-		// +-----------------------------------------------------------------+
-		// ^                                                       ^    |     ^
-		// |                                                       |    |     |
-		// from                                                fromIdx  |     to
-		//                                                              |
-		//                                             via a temp, sort |
+		// 最終ブロックをソート                                                                                                                       Sort !!
 		//                                                              |
 		// array                                                        v
 		// +-----------------------------------------------------------------+
-		// | Block   | Block   | Block   | ... | Block   | Block   | sorted  |
+		// | Block   | Block   | Block   | ... | Block   | Block   | Block   |
 		// +-----------------------------------------------------------------+
+		// ^                                                       ^          ^
+		// |                                                       |          |
+		// from                                                fromIdx        to
 		int fromIdx = to - workSize;
-		System.arraycopy(array, fromIdx, temp, 0, workSize);
-		MasSort.masSort(temp, array, 0, workSize, fromIdx, comparator);
+		// MasSort or No6Sort
+		//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
+		//   多くの場合 No6Sortの方が高速だが、MasSortの方が比較回数が少ない。
+		//System.arraycopy(array, fromIdx, temp, 0, workSize);
+		//MasSort.masSort(temp, array, 0, workSize, fromIdx, comparator);
+		int depthRemain = (int)(Math.log(workSize) / Math.log(2.0));
+		No6Sort.no6Sort(array, fromIdx, to, temp, depthRemain, comparator);
 
 		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
 		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
@@ -134,17 +132,23 @@ public class MatSort implements ISortAlgorithm {
 			// ^                                             ^    |     ^         ^
 			// |                                             |    |     |         |
 			// from                                     fromIdx   |   midIdx      to
-			//                                                    |
-			// temp                                               v
-			// +---------------------------------------------------------
-			// |         |         |         | ... |         | sorted  | ...
-			// +---------------------------------------------------------
+			//       +------------------ sort --------------------+
+			//       |
+			// temp  v
+			// +---------+
+			// | sorted  |
+			// +---------+
 			final int midIdx = fromIdx;
 			fromIdx = fromIdx - workSize;
 			if (fromIdx < from)
 				fromIdx = from;
+			// MasSort or No6Sort
+			//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
+			//   多くの場合 No6Sortの方が高速だが、MasSortの方が比較回数が少ない。
+			//System.arraycopy(array, fromIdx, temp, 0, midIdx - fromIdx);
+			//MasSort.masSort(array, temp, fromIdx, midIdx, 0, comparator);
+			No6Sort.no6Sort(array, fromIdx, midIdx, temp, depthRemain, comparator);
 			System.arraycopy(array, fromIdx, temp, 0, midIdx - fromIdx);
-			MasSort.masSort(array, temp, fromIdx, midIdx, 0, comparator);
 
 			int idx1 = fromIdx;
 			int idx2 = midIdx;
@@ -158,11 +162,11 @@ public class MatSort implements ISortAlgorithm {
 			// Merging the last block and that front of the block to create a new big block. This repeated until the block is one.
 			// 最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
 			// temp
-			// +---------------------------------------------------------
-			// |         |         |         | ... |         | sorted  | ...
-			// +---------------------------------------------------------
-			//                                                    |
-			//                                                  merge
+			// +---------+
+			// | sorted  |
+			// +---------+
+			//      |
+			//      +----------------- merge ---------------------+
 			//                                                    |
 			// array                                              v
 			// +-----------------------------------------------------------------+
@@ -197,10 +201,6 @@ public class MatSort implements ISortAlgorithm {
 				array[idx++] = temp[idx1++ - fromIdx];
 			}
 		}
-	}
-
-	public <T> void parallel_sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
-	{
 	}
 
 	@Override
