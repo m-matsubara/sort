@@ -12,6 +12,7 @@ call test.bat mmsort.QuickSortM5 %1
 call test.bat mmsort.No5Sort %1
 call test.bat mmsort.QuickSort3WM5 %1
 
+call test.bat mmsort.No6Sort %1
 call test.bat mmsort.MatSort %1
 call test.bat mmsort.MasSort %1
 call test.bat mmsort.ArraysSort %1
