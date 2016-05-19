@@ -1,6 +1,8 @@
 /*
  * Merge sort
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -33,7 +35,6 @@ public class MergeSort implements ISortAlgorithm {
 				array[from + 1] = work;
 			}
 			return;
-/*
 		} else if (range == 3) {
 			if (comparator.compare(array[from + 1], array[from]) < 0) {
 				T work = array[from];
@@ -51,10 +52,6 @@ public class MergeSort implements ISortAlgorithm {
 				}
 			}
 			return;
-		} else if (range < 200) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			return;
-*/
 		}
 
 		int mid = from + (to - from) / 2;	//	中央位置（範囲１と範囲２の境界）

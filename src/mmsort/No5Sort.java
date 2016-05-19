@@ -1,6 +1,8 @@
 /*
  * No5 Sort
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2016 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt

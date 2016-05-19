@@ -4,6 +4,8 @@
  * メニー・ピボット・ソート
  * 事前にピボット値をたくさん確定することで高速化を図った改良版クイックソート
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -14,7 +16,7 @@ import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 5000;							//	Quick Sort (Median of 5) に切り替えるサイズ
+	protected static final int SWITCH_SIZE = 5000;							//	クイックソートに切り替えるサイズ
 	/**
 	 * Many pivot sort
 	 *
@@ -75,7 +77,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 
 		//	ソート対象配列サイズが一定以下のときは特別扱い
 		if (range < SWITCH_SIZE) {
-			// しきい値以下ではクイックソート（5つのメディアン）に切り替える。
+			// しきい値以下ではクイックソート（５つのメディアン）に切り替える。
 			QuickSortM5.quickSortMedian5(array, from, to, comparator);
 			return;
 		}
@@ -92,6 +94,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 		}
 		// sort of pivot candidates / ピボット値のみをソート
 		BinInsertionSort.binInsertionSort(pivots, 0, pivots.length, comparator);
+		//QuickSortM3.quickSortMedian3(pivots, 0, pivots.length, comparator);
 		// sort of array / ソート対象本体のソート
 		mpSort(array, from, to, pivots, 0, pivots.length, comparator);
 	}

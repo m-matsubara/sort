@@ -9,6 +9,7 @@
  *   このコードは学習用に実装されたシンプルな実装版です。
  *   実用コードは MasSort クラスを利用してください。
  *
+ * http://www.mmatsubara.com/developer/sort/
  *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license

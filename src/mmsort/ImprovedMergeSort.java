@@ -1,6 +1,8 @@
 /*
  * Improved Merge sort
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -59,15 +61,11 @@ public class ImprovedMergeSort implements ISortAlgorithm {
 				}
 			}
 			return;
-		} else if (range < 200) {
-			System.arraycopy(arrayFrom, from, arrayTo, from, to - from);
-			BinInsertionSort.binInsertionSort(arrayTo, from, to, comparator);
-			return;
 		}
 
 		int mid = from + (to - from) / 2;	//	center position (boundary of range1 and range 2) / 中央位置（範囲１と範囲２の境界）
 		improvedMergeSort(arrayTo, arrayFrom, from, mid, comparator);	//	sort of range1(from - center) / 範囲１（最小位置～中間位置）のソート
-		improvedMergeSort(arrayTo, arrayFrom, mid, to, comparator);		//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
+		improvedMergeSort(arrayTo, arrayFrom, mid,  to,  comparator);	//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
 
 		int idx = from;		//	index of processing / 現在処理中の位置（範囲１と範囲２の小さい方をこの位置へ配置（移動）する）
 		int idx1 = from;	//	index of range1 / 範囲１のインデックス
@@ -76,30 +74,31 @@ public class ImprovedMergeSort implements ISortAlgorithm {
 		// merge of workarea and range2, packing to array
 		// ワーク領域（範囲１のコピー）と範囲２をマージしてソート対象(array)の先頭から詰めていく
 		idx = idx1;	//	現在処理中の位置を設定
-		while (idx1 < mid && idx2 < to)  {
-			final T value1 = arrayFrom[idx1];
-			final T value2 = arrayFrom[idx2];
+		T value1 = arrayFrom[idx1];
+		T value2 = arrayFrom[idx2];
+		for (;;) {
 			if (comparator.compare(value1, value2) <= 0) {		// virtual code : (value2 < value1) == false
-				arrayTo[idx] = value1;
+				arrayTo[idx++] = value1;
 				idx1++;
+				if (idx1 >= mid)
+					break;
+				value1 = arrayFrom[idx1];
 			} else {
-				arrayTo[idx] = value2;
+				arrayTo[idx++] = value2;
 				idx2++;
+				if (idx2 >= to)
+					break;
+				value2 = arrayFrom[idx2];
 			}
-			idx++;
 		}
 
 		// Pack the remaining work area to be sorted
 		// 残ったワーク領域をソート対象へ詰める
 		while (idx1 < mid)  {
-			arrayTo[idx] = arrayFrom[idx1];
-			idx++;
-			idx1++;
+			arrayTo[idx++] = arrayFrom[idx1++];
 		}
 		while (idx2 < to)  {
-			arrayTo[idx] = arrayFrom[idx2];
-			idx++;
-			idx2++;
+			arrayTo[idx++] = arrayFrom[idx2++];
 		}
 	}
 

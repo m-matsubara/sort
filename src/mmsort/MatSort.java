@@ -2,6 +2,8 @@
  * MatSort
  * Saving memory version merge sort (saving memory version MasSort)
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt

@@ -2,6 +2,8 @@
  * Benchmark of Sorting algorithm
  * ソートのベンチマークプログラム
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -12,6 +14,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class SortTest {
+	protected static int SAME_NUMBER = 1;
 	protected static long compareCount = 0;									//	比較された回数
 
 	/**
@@ -42,7 +45,7 @@ public class SortTest {
 	public static void initArray(SortItem[] array)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = i / 10;
+			array[i].key = i / SAME_NUMBER;
 		}
 	}
 
@@ -54,7 +57,7 @@ public class SortTest {
 	public static void initReverseArray(SortItem[] array)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = (array.length - i - 1) / 10;
+			array[i].key = (array.length - i - 1) / SAME_NUMBER;
 		}
 	}
 
@@ -185,7 +188,7 @@ public class SortTest {
 		//	ソート対象配列の初期化
 		array = new SortItem[arraySize];
 		for (int i = 0; i < array.length; i++) {
-			array[i] = new SortItem(i / 10);
+			array[i] = new SortItem(i / SAME_NUMBER);
 		}
 
 		//System.out.println("times	algorithm	array type	array size	time	compare count");
