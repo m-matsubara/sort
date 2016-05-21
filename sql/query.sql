@@ -1,40 +1,192 @@
+﻿--*DataTitle 乱数データ(実行時間)
 select 
-  SR.ARRAY_TYPE
-  , SR.ALGORITHM as "�A���S���Y��"
-  , round(avg(case SR.ARRAY_SIZE when       100 then SR.TIME_SEC else null end), 3) as "100"
-  , round(avg(case SR.ARRAY_SIZE when      1000 then SR.TIME_SEC else null end), 3) as "1000"
-  , round(avg(case SR.ARRAY_SIZE when     10000 then SR.TIME_SEC else null end), 3) as "10000"
-  , round(avg(case SR.ARRAY_SIZE when    100000 then SR.TIME_SEC else null end), 3) as "100000"
-  , round(avg(case SR.ARRAY_SIZE when   1000000 then SR.TIME_SEC else null end), 3) as "1000000"
-  , round(avg(case SR.ARRAY_SIZE when  10000000 then SR.TIME_SEC else null end), 3) as "10000000"
-  --, round(avg(case SR.ARRAY_SIZE when 100000000 then SR.TIME_SEC else null end), 3) as "100000000"
-from TB_SORT_RESULT SR
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+  
+from
+  VW_SORT_REPORT_TIME SR
 where
-  0=0
-  and SR.ARRAY_TYPE = 'Random'
---  and SR.ARRAY_TYPE = 'Ascending ordered'
---  and SR.ARRAY_TYPE = 'Descending ordered'
---  and SR.ARRAY_TYPE = 'Flat'
-group by SR.ARRAY_TYPE, SR.ALGORITHM
-order by SR.ARRAY_TYPE, 8;
+  SR.ARRAY_TYPE = 'Random'
+order by 
+  SR."10000000"
+;
 
+--*DataTitle 前半ソート済み・後半乱数(実行時間)
 select 
-  SR.ARRAY_TYPE
-  , SR.ALGORITHM as "�A���S���Y��"
-  , round(avg(case SR.ARRAY_SIZE when       100 then SR.COMPARE_COUNT else null end), 3) as "100"
-  , round(avg(case SR.ARRAY_SIZE when      1000 then SR.COMPARE_COUNT else null end), 3) as "1000"
-  , round(avg(case SR.ARRAY_SIZE when     10000 then SR.COMPARE_COUNT else null end), 3) as "10000"
-  , round(avg(case SR.ARRAY_SIZE when    100000 then SR.COMPARE_COUNT else null end), 3) as "100000"
-  , round(avg(case SR.ARRAY_SIZE when   1000000 then SR.COMPARE_COUNT else null end), 3) as "1000000"
-  , round(avg(case SR.ARRAY_SIZE when  10000000 then SR.COMPARE_COUNT else null end), 3) as "10000000"
-  --, round(avg(case SR.ARRAY_SIZE when 100000000 then SR.COMPARE_COUNT else null end), 3) as "100000000"
-from TB_SORT_RESULT SR
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_TIME SR
 where
-  0=0
-  and SR.ARRAY_TYPE = 'Random'
---  and SR.ARRAY_TYPE = 'Ascending ordered'
---  and SR.ARRAY_TYPE = 'Descending ordered'
---  and SR.ARRAY_TYPE = 'Flat'
-group by SR.ARRAY_TYPE, SR.ALGORITHM
-order by SR.ARRAY_TYPE, 8;
+  SR.ARRAY_TYPE = 'Half sorted'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle ソート済み(実行時間)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_TIME SR
+where
+  SR.ARRAY_TYPE = 'Ascending ordered'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 逆順ソート済み(実行時間)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_TIME SR
+where
+  SR.ARRAY_TYPE = 'Descending ordered'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 全て同値(実行時間)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_TIME SR
+where
+  SR.ARRAY_TYPE = 'Flat'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 乱数データ(比較回数)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_COMPARE SR
+where
+  SR.ARRAY_TYPE = 'Random'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 前半ソート済み・後半乱数(比較回数)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_COMPARE SR
+where
+  SR.ARRAY_TYPE = 'Half sorted'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle ソート済み(比較回数)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_COMPARE SR
+where
+  SR.ARRAY_TYPE = 'Ascending ordered'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 逆順ソート済み(比較回数)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_COMPARE SR
+where
+  SR.ARRAY_TYPE = 'Descending ordered'
+order by 
+  SR."10000000"
+;
+
+--*DataTitle 全て同値(比較回数)
+select 
+  SR.ALGORITHM as "アルゴリズム"
+  , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
+  , SR."100"
+  , SR."1000"
+  , SR."10000"
+  , SR."100000"
+  , SR."1000000"
+  , SR."10000000"
+  --, SR."100000000"
+from
+  VW_SORT_REPORT_COMPARE SR
+where
+  SR.ARRAY_TYPE = 'Flat'
+order by 
+  SR."10000000"
+;
+
 
