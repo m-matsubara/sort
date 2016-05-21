@@ -162,12 +162,15 @@ public class No6Sort implements ISortAlgorithm {
 			return;
 		}
 
-		final int gap = range / 6;
-		final int p1 = from + gap;
-		final int p2 = p1 + gap;
-		final int p3 = from + range / 2;
+		// 以下、「÷7」の近似値
+		//final int gap = range / 7;
+		final int gap = (range >> 3) + (range >> 6) + 1;
+
+		final int p3 = from + (range >> 1);
+		final int p2 = p3 - gap;
+		final int p1 = p2 - gap;
 		final int p4 = p3 + gap;
-		final int p5 = to - gap;
+		final int p5 = p4 + gap;
 		//sort5(array, p1, p2, p3, p4, p5, comparator);
 		T v1 = array[p1];
 		T v2 = array[p2];
@@ -245,35 +248,42 @@ public class No6Sort implements ISortAlgorithm {
 				// v3 <= v4 <= v5
 			} else {
 				// v3 <= v5 < v4
-				temp = v5;
-				v5 = v4;
-				v4 = temp;
+				// 本当はコメントアウトした下3行なのだが、v5の値はどうでもよいので、 v4 = v5; だけする。
+				///temp = v5;
+				///v5 = v4;
+				///v4 = temp;
+				v4 = v5;
 			}
 		} else {
 			// v5 < v3
 			if (comparator.compare(v2, v5) <= 0) {
 				// v2 <= v5 < v3
-				temp = v5;
-				v5 = v4;
+				///temp = v5;
+				///v5 = v4;
+				///v4 = v3;
+				///v3 = temp;
 				v4 = v3;
-				v3 = temp;
 			} else {
 				// v5 < v2 <= v3
 				if (comparator.compare(v1, v5) <= 0) {
 					// v1 <= v5 < v2 <= v3
-					temp = v5;
-					v5 = v4;
+					///temp = v5;
+					///v5 = v4;
+					///v4 = v3;
+					///v3 = v2;
+					///v2 = temp;
 					v4 = v3;
-					v3 = v2;
-					v2 = temp;
+					v2 = v5;
 				} else {
 					// v5 < v1 <= v2 <= v3
-					temp = v5;
-					v5 = v4;
+					///temp = v5;
+					///v5 = v4;
+					///v4 = v3;
+					///v3 = v2;
+					///v2 = v1;
+					///v1 = temp;
 					v4 = v3;
-					v3 = v2;
 					v2 = v1;
-					v1 = temp;
 				}
 			}
 		}
@@ -292,7 +302,7 @@ public class No6Sort implements ISortAlgorithm {
 			for (; idx < to; idx++) {
 				T value = array[idx];
 				if (comparator.compare(value, pivot1) <= 0) {
-					array[idx1A++] = value;
+					array[idx1A++] = value;		// TODO ここで余計な代入が発生するケースがあるが、下手に最適化すると逆に遅くなってしまう…。
 				} else if (comparator.compare(value, pivot2) < 0) {
 					works[idx2W++] = value;
 				} else {
@@ -300,16 +310,20 @@ public class No6Sort implements ISortAlgorithm {
 				}
 			}
 			int idxTo = idx1A;
+			// ピボット1より大きく、ピボット2より小さいオブジェクトを works から array へ書き戻し
 			for (idx = 0; idx < idx2W; idx++) {
 				array[idxTo++] = works[idx];
 			}
+			// ピボット2以上のオブジェクトを works から array へ書き戻し
 			for (idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = works[idx];
 			}
-
-			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
-			no6Sort(array, idx1A,         idx1A + idx2W, works, depthRemain - 1, comparator);
+			// ピボット2以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
 			no6Sort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
+			// ピボット1より大きく、ピボット2より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
+			no6Sort(array, idx1A,         idx1A + idx2W, works, depthRemain - 1, comparator);
+			// ピボット1以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
+			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
 		} else {
 			// pivot1 とpivot2が同じ値(pivot1のみ使用)
 			// 3 way partition ベース
@@ -329,17 +343,21 @@ public class No6Sort implements ISortAlgorithm {
 					works[idx2W++] = value;
 				}
 			}
-			// works配列から array 配列へ書き戻し
+
 			int idxTo = idx1A;
+			// ピボット値と同じキーのオブジェクトを works から array へ書き戻し
 			for (idx = 0; idx < idx2W; idx++) {
 				array[idxTo++] = works[idx];
 			}
+			// ピボット値よりも大きいオブジェクトを works から array へ書き戻し
 			for (idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = works[idx];
 			}
 
-			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
+			// ピボット値より大きいオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
 			no6Sort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
+			// ピボット値より小さいオブジェクトをあとにソート（CPUキャッシュヒット率がたぶん低い）
+			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
 		}
 	}
 
@@ -353,7 +371,7 @@ public class No6Sort implements ISortAlgorithm {
 		T[] works = (T[])new Object[range];
 
 		// 呼び出し深さの許容値 (log2(range))
-		// 安全クイックソートやIntroSortでは 1.5や2.0などの係数をかけるが、このソートではDual-pivot quicksortをベースとしているため、
+		// 安全クイックソートやIntroSortでは 1.5や2.0などの係数をかけるが、このソートではDual-pivot Quicksort をベースとしているため、
 		// 係数をかけなくともlog2(range)で十分な値となる。
 		int depthRemain = (int)(Math.log(range) / Math.log(2.0));
 
