@@ -454,6 +454,6 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 	@Override
 	public String getName()
 	{
-		return "Quick sort (3 Way & Median of 5)";
+		return "Quick Sort (3 Way & Median of 5)";
 	}
 }
