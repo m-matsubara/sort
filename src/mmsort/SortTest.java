@@ -215,9 +215,11 @@ public class SortTest {
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem(i / SAME_NUMBER);
 		}
-		shuffleArray(array, 0);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、0を乱数の種とすることで疑似乱数配列を固定化する。
+		//	配列の要素がきれいに並んでいる場合と、ランダムな位置のオブジェクトを指しているのではアクセス速度に差が出る。
+		//	テストのケースによっては初回と２回目以降に差が出るため、最初にすべてシャッフルすることでアクセス速度を均一にする。
+		shuffleArray(array, 0);
 
-		//System.out.println("times	algorithm	array type	array size	time	compare count");
+		//System.out.println("times	algorithm	array type	array size	time	compare count	stable");
 		for (int idx = 1; idx <= times; idx++) {
 			//	配列の準備
 			String arrayTypeName = "";
@@ -257,6 +259,7 @@ public class SortTest {
 
 			String sortName = sorter.getName();
 			boolean stable = sorter.isStable();
+			String stableStr = stable ? "stable" : "unstable";
 			SortTest.compareCount = 0;
 
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
@@ -266,7 +269,7 @@ public class SortTest {
 			endTime = System.currentTimeMillis();
 
 			compareCount = SortTest.compareCount;
-			System.out.printf("%d	%s	%s	%d	%f	%d\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount);
+			System.out.printf("%d	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount, stableStr);
 			validateArray(array, stable);
 		}
 	}
