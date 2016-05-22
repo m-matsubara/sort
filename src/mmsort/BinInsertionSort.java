@@ -21,10 +21,10 @@ public class BinInsertionSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static <T> void binInsertionSort(T[] array, int from, int to, Comparator<? super T> comparator)
+	public static <T> void binInsertionSort(final T[] array, final int from, final int to, Comparator<? super T> comparator)
 	{
+/* 必要に応じてコメントアウト解除
 		final int range = to - from;
-
 		//	ソート対象配列サイズが３以下のときは特別扱い
 		if (range <= 1) {
 			return;
@@ -53,11 +53,13 @@ public class BinInsertionSort implements ISortAlgorithm {
 			}
 			return;
 		}
+*/
+		int startIdx = from + 1;
+/* 必要に応じてコメントアウト解除
 		// Omit the alignment already part
 		// If the reverse order of the column continues to invert the part
 		// 既に整列済みの部分を省く
 		// 逆順の列が続く場合はその部分を反転
-		int startIdx = from + 1;
 		if (comparator.compare(array[startIdx - 1], array[startIdx]) <= 0) {			// virtual code : ((array[startIdx] < array[startIdx - 1]) == false)
 			for (startIdx++; startIdx < to; startIdx++) {
 				if (comparator.compare(array[startIdx - 1], array[startIdx]) > 0) {		// virtual code : array[startIdx] < array[startIdx - 1]
@@ -80,26 +82,28 @@ public class BinInsertionSort implements ISortAlgorithm {
 				toIdx--;
 			}
 		}
-
+*/
 		// Binary Insertion Sort body
 		// バイナリインサーションソート本体
 		for (int i = startIdx; i < to; i++) {
 			T key = array[i];
 			int fromIdx = from;
 			int toIdx = i;
-			int curIdx = fromIdx + (toIdx - fromIdx) / 2;
+			int curIdx = fromIdx + ((toIdx - fromIdx) >> 1);
 			while (fromIdx < toIdx) {
 				if (comparator.compare(key, array[curIdx]) < 0) {
 					toIdx = curIdx;
 				} else {
 					fromIdx = curIdx + 1;
 				}
-				curIdx = fromIdx + (toIdx - fromIdx) / 2;
+				curIdx = fromIdx + ((toIdx - fromIdx) >> 1);
 			}
-			for (int j = i - 1; j >= curIdx; j--) {
-				array[j + 1] = array[j];
+			if (i != curIdx) {
+				for (int j = i - 1; j >= curIdx; j--) {
+					array[j + 1] = array[j];
+				}
+				array[curIdx] = key;
 			}
-			array[curIdx] = key;
 		}
 	}
 
