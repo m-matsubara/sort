@@ -1,7 +1,7 @@
 /*
- * No6 Sort
+ * dbpSort
  *
- * Stable Dual-pivot Quicksort
+ * Dual-pivot Stable Quicksort
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -13,12 +13,13 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class No6Sort implements ISortAlgorithm {
+public class DpsSort implements ISortAlgorithm {
 	/**
-	 * No6 Sort
+	 * Dual-pivot Stable Quicksort
 	 *
-	 * 基本的には「 ５つのメディアン」だが、５つの中央値を選択したときに、小さい値２つを配列の先頭側に、大きい２つを配列の最後側に
-	 * 退避し、パーティション操作から除外することで高速化を図ったアルゴリズム
+	 * Dual-pibot Quicksort を安定ソートにしたソートアルゴリズム
+	 * 対象配列と同じサイズのワークエリアを使用する。
+	 * 3 way partition Quicksort も併用
 	 *
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
@@ -27,7 +28,7 @@ public class No6Sort implements ISortAlgorithm {
 	 * @param depthRemain The remaining number of times of the depth of the call / 呼び出しの深さの残り回数
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void no6Sort(final T[] array, final int from, final int to, final T[] works, final int depthRemain, final Comparator<? super T> comparator)
+	public static final <T> void dpsSort(final T[] array, final int from, final int to, final T[] works, final int depthRemain, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
@@ -200,11 +201,11 @@ public class No6Sort implements ISortAlgorithm {
 				array[idxTo++] = works[idx];
 			}
 			// ピボット2以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			no6Sort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
+			dpsSort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
 			// ピボット1より大きく、ピボット2より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
-			no6Sort(array, idx1A,         idx1A + idx2W, works, depthRemain - 1, comparator);
+			dpsSort(array, idx1A,         idx1A + idx2W, works, depthRemain - 1, comparator);
 			// ピボット1以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
-			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
+			dpsSort(array, from,          idx1A,         works, depthRemain - 1, comparator);
 		} else {
 			// pivot1 とpivot2が同じ値(pivot1のみ使用)
 			// 3 way partition ベース
@@ -236,13 +237,13 @@ public class No6Sort implements ISortAlgorithm {
 			}
 
 			// ピボット値より大きいオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			no6Sort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
+			dpsSort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
 			// ピボット値より小さいオブジェクトをあとにソート（CPUキャッシュヒット率がたぶん低い）
-			no6Sort(array, from,          idx1A,         works, depthRemain - 1, comparator);
+			dpsSort(array, from,          idx1A,         works, depthRemain - 1, comparator);
 		}
 	}
 
-	public static final <T> void no6Sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void dpsSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		// 要素数
 		int range = to - from;
@@ -257,14 +258,14 @@ public class No6Sort implements ISortAlgorithm {
 		int depthRemain = (int)(Math.log(range) / Math.log(2.0));
 
 		// ソート本体呼び出し
-		no6Sort(array, from, to, works, depthRemain, comparator);
+		dpsSort(array, from, to, works, depthRemain, comparator);
 	}
 
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		no6Sort(array, from, to, comparator);
+		dpsSort(array, from, to, comparator);
 	}
 
 	@Override
@@ -276,6 +277,6 @@ public class No6Sort implements ISortAlgorithm {
 	@Override
 	public String getName()
 	{
-		return "No6 Sort";
+		return "dpsSort";
 	}
 }
