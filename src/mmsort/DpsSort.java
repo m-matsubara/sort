@@ -218,6 +218,10 @@ public class DpsSort implements ISortAlgorithm {
 			int idx3W = range - 1;	// pivot1 < value へのインデックス(worksへの配置用)
 			int idx = from;
 
+			// 先頭から後方に向かってパーティション操作を行う。（一般的なクイックソートのように前後からではない）
+			//   ピボット値より大きい値は配列の前方に詰めていく
+			//   ピボット値より小さい値は作業領域の後方に詰めていく
+			//   ピボット値と同じキー値の値は、作業領域の前方に詰めていく
 			for (; idx < to; idx++) {
 				T value = array[idx];
 				int compareVal = comparator.compare(value, pivot1);
