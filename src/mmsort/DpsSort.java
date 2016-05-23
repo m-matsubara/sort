@@ -170,8 +170,8 @@ public class DpsSort implements ISortAlgorithm {
 			}
 		}
 
-		final T pivot1 = v2;	//	ピボット値1
-		final T pivot2 = v4;	//	ピボット値2
+		final T pivot1 = v2;	//	ピボット１
+		final T pivot2 = v4;	//	ピボット２
 
 		if (comparator.compare(pivot1, pivot2) != 0) {
 			// pivot1 とpivot2は異なる値
@@ -180,6 +180,10 @@ public class DpsSort implements ISortAlgorithm {
 			int idx2W = 0;			//	pivot1 < value < pivot2の要素へのインデックス(worksへの配置用)
 			int idx3W = range - 1;	//	pivot2 <= value へのインデックス(worksへの配置用)
 
+			// 先頭から後方に向かってパーティション操作を行う。（一般的なクイックソートのように前後からではない）
+			//   ピボット１以下の値は配列の前方に詰めていく
+			//   ピボット２以上の値は作業領域の後方に詰めていく
+			//   ピボット１より大きくピボット２より小さい値は、作業領域の前方に詰めていく
 			int idx = from;
 			for (; idx < to; idx++) {
 				T value = array[idx];
@@ -192,19 +196,19 @@ public class DpsSort implements ISortAlgorithm {
 				}
 			}
 			int idxTo = idx1A;
-			// ピボット1より大きく、ピボット2より小さいオブジェクトを works から array へ書き戻し
+			// ピボット１より大きく、ピボット２より小さいオブジェクトを works から array へ書き戻し
 			for (idx = 0; idx < idx2W; idx++) {
 				array[idxTo++] = works[idx];
 			}
-			// ピボット2以上のオブジェクトを works から array へ書き戻し
+			// ピボット２以上のオブジェクトを works から array へ書き戻し
 			for (idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = works[idx];
 			}
-			// ピボット2以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
+			// ピボット２以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
 			dpsSort(array, idx1A + idx2W, to,            works, depthRemain - 1, comparator);
-			// ピボット1より大きく、ピボット2より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
+			// ピボット１より大きく、ピボット２より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
 			dpsSort(array, idx1A,         idx1A + idx2W, works, depthRemain - 1, comparator);
-			// ピボット1以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
+			// ピボット１以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
 			dpsSort(array, from,          idx1A,         works, depthRemain - 1, comparator);
 		} else {
 			// pivot1 とpivot2が同じ値(pivot1のみ使用)
