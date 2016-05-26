@@ -169,9 +169,11 @@ public class MmSort implements ISortAlgorithm {
 
 		final T pivot = array[p3];	//	ピボット値
 
-		T work = array[from + 1];
-		array[from + 1] = array[p2];
-		array[p2] = work;
+		{
+			final T work = array[from + 1];
+			array[from + 1] = array[p2];
+			array[p2] = work;
+		}
 
 		//work = array[from + 2];
 		//array[from + 2] = array[p3];
@@ -179,9 +181,11 @@ public class MmSort implements ISortAlgorithm {
 		array[p3] = array[from + 2];
 		array[from + 2] = pivot;
 
-		work = array[to - 2];
-		array[to - 2] = array[p4];
-		array[p4] = work;
+		{
+			final T work = array[to - 2];
+			array[to - 2] = array[p4];
+			array[p4] = work;
+		}
 
 		//	パーティション操作
 		int curFrom = from + 3;			//	min index / 現在処理中位置の小さい方の位置
@@ -193,7 +197,7 @@ public class MmSort implements ISortAlgorithm {
 			curTo++;
 			if (curFrom >= curTo)
 				break;
-			work = array[curFrom];
+			final T work = array[curFrom];
 			array[curFrom++] = array[curTo];
 			array[curTo--] = work;
 		};
