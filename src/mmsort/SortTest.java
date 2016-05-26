@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class SortTest {
-	protected static int SAME_NUMBER = 2;
+	protected static int DUPLICATE_VALUES = 2;
 	protected static long compareCount = 0;									//	比較された回数
 
 	/**
@@ -42,10 +42,10 @@ public class SortTest {
 	 * 配列を昇順の値で初期化する
 	 * @param array 対象配列
 	 */
-	public static void initArray(SortItem[] array)
+	public static void initArray(SortItem[] array, int duplicate)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = i / SAME_NUMBER;
+			array[i].key = i / duplicate;
 		}
 	}
 
@@ -54,10 +54,10 @@ public class SortTest {
 	 * 配列を降順の値で初期化する
 	 * @param array 対象配列
 	 */
-	public static void initReverseArray(SortItem[] array)
+	public static void initReverseArray(SortItem[] array, int duplicate)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = (array.length - i - 1) / SAME_NUMBER;
+			array[i].key = (array.length - i - 1) / duplicate;
 		}
 	}
 
@@ -79,14 +79,14 @@ public class SortTest {
 	 * @param randSeed 乱数の種
 	 * @param array 対象配列
 	 */
-	public static void initHalfSortedArray(SortItem[] array, long randSeed)
+	public static void initHalfSortedArray(SortItem[] array, long randSeed, int duplicate)
 	{
 		int half = array.length / 2;
 		for (int i = 0; i < half; i++) {
-			array[i].key = (i * 2) / SAME_NUMBER ;
+			array[i].key = (i * 2) / duplicate;
 		}
 		for (int i = half; i < array.length; i++) {
-			array[i].key = ((i - half) * 2 + 1) / SAME_NUMBER ;
+			array[i].key = ((i - half) * 2 + 1) / duplicate;
 		}
 		Random rand = new Random(randSeed);
 		for (int i = half; i < array.length; i++) {
@@ -112,6 +112,7 @@ public class SortTest {
 			array[j] = work;
 		}
 	}
+
 
 	/**
 	 * ソート前順序の値を確定
@@ -157,7 +158,7 @@ public class SortTest {
 
 
 	public static void main(String[] args) throws Exception {
-		//	Arguments : MatSort(1/10) 10000000 R
+		//	Arguments : mmsort.MatSort 10000000 R 10
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 		SortItem[] array;
@@ -190,6 +191,7 @@ public class SortTest {
 
 		//	ソート対象種類（ランダム・昇順ソート済み・降順ソート済み・同じ値（キー値）・半分ソート済み）
 		int arrayType = 0;
+		int duplicate = DUPLICATE_VALUES;
 		if (args.length >= 3) {
 			if (args[2].equals("R"))	//	Random
 				arrayType = 0;
@@ -201,6 +203,10 @@ public class SortTest {
 				arrayType = 3;
 			else if (args[2].equals("H"))	//	Half sorted
 				arrayType = 4;
+			else if (args[2].equals("RD10")) {	//	Duplicate value 10
+				arrayType = 0;
+				duplicate = 10;
+			}
 			else
 				throw new Exception("arguments error ");
 		}
@@ -213,7 +219,7 @@ public class SortTest {
 		//	ソート対象配列の初期化
 		array = new SortItem[arraySize];
 		for (int i = 0; i < array.length; i++) {
-			array[i] = new SortItem(i / SAME_NUMBER);
+			array[i] = new SortItem(i / duplicate);
 		}
 		//	配列の要素がきれいに並んでいる場合と、ランダムな位置のオブジェクトを指しているのではアクセス速度に差が出る。
 		//	テストのケースによっては初回と２回目以降に差が出るため、最初にすべてシャッフルすることでアクセス速度を均一にする。
@@ -232,13 +238,13 @@ public class SortTest {
 				}
 				case 1:
 				{
-					initArray(array);
+					initArray(array, DUPLICATE_VALUES);
 					arrayTypeName = "Ascending ordered";
 					break;
 				}
 				case 2:
 				{
-					initReverseArray(array);
+					initReverseArray(array, DUPLICATE_VALUES);
 					arrayTypeName = "Descending ordered";
 					break;
 				}
@@ -250,7 +256,7 @@ public class SortTest {
 				}
 				case 4:
 				{
-					initHalfSortedArray(array, idx);
+					initHalfSortedArray(array, idx, DUPLICATE_VALUES);
 					arrayTypeName = "Half sorted";
 					break;
 				}
