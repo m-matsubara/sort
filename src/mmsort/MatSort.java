@@ -57,6 +57,119 @@ public class MatSort implements ISortAlgorithm {
 		return curIdx;
 	}
 
+	/**
+	 * MatSort
+	 *
+	 * @param array sort target / ソート対象
+	 * @param from index of first element / ソート対象の開始位置
+	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
+	 * @param comparator comparator of array element / 比較器
+	 * @param workArray work area / 作業領域
+	 * @param workSize work area size / 作業領域サイズ
+	 */
+	public static <T> void matSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator, final T[] workArray, final int workSize) {
+		// Sort the final block
+		// 最終ブロックをソート                                                                                                                       Sort !!
+		//                                                              |
+		// array                                                        v
+		// +-----------------------------------------------------------------+
+		// | Block   | Block   | Block   | ... | Block   | Block   | Block   |
+		// +-----------------------------------------------------------------+
+		// ^                                                       ^          ^
+		// |                                                       |          |
+		// from                                                fromIdx        to
+		int fromIdx = to - workSize;
+		// MasSort or No6Sort
+		//   many cases dpsSort faster, but fewer number of comparisons of MasSort.
+		//   多くの場合 dpsSortの方が高速だが、MasSortの方が比較回数が少ない。
+		System.arraycopy(array, fromIdx, workArray, 0, workSize);
+		MasSort.masSort(workArray, array, 0, workSize, fromIdx, comparator);
+		//int depthRemain = (int)(Math.log(workSize) / Math.log(2.0));
+		//Dps6Sort.dpsSort(array, fromIdx, to, workArray, depthRemain, comparator);
+
+		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
+		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
+		while (fromIdx > from) {
+			// Sort the previous block (fromIdx ～ midIdx), to temporary area
+			// ひとつ前のブロックをソート (fromIdx ～ midIdx)してテンポラリエリアに格納
+			//
+			// array
+			// +-----------------------------------------------------------------+
+			// | Block   | Block   | Block   | ... | Block   | Block   | sorted  |
+			// +-----------------------------------------------------------------+
+			// ^                                             ^    |     ^         ^
+			// |                                             |    |     |         |
+			// from                                     fromIdx   |   midIdx      to
+			//       +------------------ sort --------------------+
+			//       |
+			// temp  v
+			// +---------+
+			// | sorted  |
+			// +---------+
+			final int midIdx = fromIdx;
+			fromIdx = fromIdx - workSize;
+			if (fromIdx < from)
+				fromIdx = from;
+			// MasSort or dpsSort
+			//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
+			//   多くの場合 dpsSortの方が高速だが、MasSortの方が比較回数が少ない。
+			System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
+			MasSort.masSort(array, workArray, fromIdx, midIdx, 0, comparator);
+			//DpsSort.dpsSort(array, fromIdx, midIdx, workArray, depthRemain, comparator);
+			//System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
+
+			int idx1 = fromIdx;
+			int idx2 = midIdx;
+
+			if (comparator.compare(workArray[midIdx - fromIdx - 1], array[midIdx]) < 0) {
+//				範囲１の値はすべて範囲２の値より小さかった
+				System.arraycopy(workArray, 0, array, fromIdx, midIdx - fromIdx);
+				continue;
+			}
+
+			// Merging the last block and that front of the block to create a new big block. This repeated until the block is one.
+			// 最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
+			// temp
+			// +---------+
+			// | sorted  |
+			// +---------+
+			//      |
+			//      +----------------- merge ---------------------+
+			//                                                    |
+			// array                                              v
+			// +-----------------------------------------------------------------+
+			// | Block   | Block   | Block   | ... | Block   | merging <- sorted |
+			// +-----------------------------------------------------------------+
+			//                                              ← expansion of sorted area
+
+			int idx = idx1;	//	Position currently being processed / 現在処理中の位置を設定
+			while (idx1 < midIdx && idx2 < to)  {
+				final T value1 = workArray[idx1 - fromIdx];
+
+				final int toIdx = searchFowardingBinSearch(value1, array, idx2, to, comparator);
+				if (toIdx != idx2) {
+					// getting multi values from back block, stored to sorted area (Because back block is large)
+					// 後方のブロックから値をいくつか取り出して、ソート済み領域に格納（後ろのブロックが大きいため、後ろのブロックから連続して値が採用される可能性が高い）
+					System.arraycopy(array, idx2, array, idx, toIdx - idx2);
+					idx += (toIdx - idx2);
+					idx2 = toIdx;
+				}
+				if (toIdx < to) {
+					// getting single value from forward block, stored to sorted area
+					// 前方のブロックから値を１つ取り出して、ソート済み領域に格納
+					array[idx] = value1;
+					idx1++;
+					idx++;
+				}
+			}
+
+			// remaining temporary data to array
+			// 残った一時領域のデータをソート対象へ詰める
+			while (idx1 < midIdx)  {
+				array[idx++] = workArray[idx1++ - fromIdx];
+			}
+		}
+	}
 
 	/**
 	 * MatSort
@@ -98,109 +211,9 @@ public class MatSort implements ISortAlgorithm {
 		else if (workSize < 1)
 			workSize = 1;
 		@SuppressWarnings("unchecked")
-		final T[] temp = (T[])new Object[workSize];
+		final T[] workArray = (T[])new Object[workSize];
 
-		// Sort the final block
-		// 最終ブロックをソート                                                                                                                       Sort !!
-		//                                                              |
-		// array                                                        v
-		// +-----------------------------------------------------------------+
-		// | Block   | Block   | Block   | ... | Block   | Block   | Block   |
-		// +-----------------------------------------------------------------+
-		// ^                                                       ^          ^
-		// |                                                       |          |
-		// from                                                fromIdx        to
-		int fromIdx = to - workSize;
-		// MasSort or No6Sort
-		//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
-		//   多くの場合 No6Sortの方が高速だが、MasSortの方が比較回数が少ない。
-		System.arraycopy(array, fromIdx, temp, 0, workSize);
-		MasSort.masSort(temp, array, 0, workSize, fromIdx, comparator);
-		//int depthRemain = (int)(Math.log(workSize) / Math.log(2.0));
-		//No6Sort.no6Sort(array, fromIdx, to, temp, depthRemain, comparator);
-
-		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
-		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
-		while (fromIdx > from) {
-			// Sort the previous block (fromIdx ～ midIdx), to temporary area
-			// ひとつ前のブロックをソート (fromIdx ～ midIdx)してテンポラリエリアに格納
-			//
-			// array
-			// +-----------------------------------------------------------------+
-			// | Block   | Block   | Block   | ... | Block   | Block   | sorted  |
-			// +-----------------------------------------------------------------+
-			// ^                                             ^    |     ^         ^
-			// |                                             |    |     |         |
-			// from                                     fromIdx   |   midIdx      to
-			//       +------------------ sort --------------------+
-			//       |
-			// temp  v
-			// +---------+
-			// | sorted  |
-			// +---------+
-			final int midIdx = fromIdx;
-			fromIdx = fromIdx - workSize;
-			if (fromIdx < from)
-				fromIdx = from;
-			// MasSort or No6Sort
-			//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
-			//   多くの場合 No6Sortの方が高速だが、MasSortの方が比較回数が少ない。
-			System.arraycopy(array, fromIdx, temp, 0, midIdx - fromIdx);
-			MasSort.masSort(array, temp, fromIdx, midIdx, 0, comparator);
-			//No6Sort.no6Sort(array, fromIdx, midIdx, temp, depthRemain, comparator);
-			//System.arraycopy(array, fromIdx, temp, 0, midIdx - fromIdx);
-
-			int idx1 = fromIdx;
-			int idx2 = midIdx;
-
-			if (comparator.compare(temp[midIdx - fromIdx - 1], array[midIdx]) < 0) {
-//				範囲１の値はすべて範囲２の値より小さかった
-				System.arraycopy(temp, 0, array, fromIdx, midIdx - fromIdx);
-				continue;
-			}
-
-			// Merging the last block and that front of the block to create a new big block. This repeated until the block is one.
-			// 最後のブロックとその１つ手前のブロックをマージして新しい（大きな）ブロックを作る。これをブロックが１つになるまで繰り返す。
-			// temp
-			// +---------+
-			// | sorted  |
-			// +---------+
-			//      |
-			//      +----------------- merge ---------------------+
-			//                                                    |
-			// array                                              v
-			// +-----------------------------------------------------------------+
-			// | Block   | Block   | Block   | ... | Block   | merging <- sorted |
-			// +-----------------------------------------------------------------+
-			//                                              ← expansion of sorted area
-
-			int idx = idx1;	//	Position currently being processed / 現在処理中の位置を設定
-			while (idx1 < midIdx && idx2 < to)  {
-				final T value1 = temp[idx1 - fromIdx];
-
-				final int toIdx = searchFowardingBinSearch(value1, array, idx2, to, comparator);
-				if (toIdx != idx2) {
-					// getting multi values from back block, stored to sorted area (Because back block is large)
-					// 後方のブロックから値をいくつか取り出して、ソート済み領域に格納（後ろのブロックが大きいため、後ろのブロックから連続して値が採用される可能性が高い）
-					System.arraycopy(array, idx2, array, idx, toIdx - idx2);
-					idx += (toIdx - idx2);
-					idx2 = toIdx;
-				}
-				if (toIdx < to) {
-					// getting single value from forward block, stored to sorted area
-					// 前方のブロックから値を１つ取り出して、ソート済み領域に格納
-					array[idx] = value1;
-					idx1++;
-					idx++;
-				}
-			}
-
-			// remaining temporary data to array
-			// 残った一時領域のデータをソート対象へ詰める
-			while (idx1 < midIdx)  {
-				array[idx++] = temp[idx1++ - fromIdx];
-			}
-		}
+		matSort(array, from, to, comparator, workArray, workSize);
 	}
 
 	@Override
