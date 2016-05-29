@@ -14,6 +14,7 @@ package mmsort;
 import java.util.Comparator;
 
 public class DpsSort implements ISortAlgorithm {
+	// Insersion Sortなどに切り替える要素数
 	public static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
@@ -38,13 +39,15 @@ public class DpsSort implements ISortAlgorithm {
 
 		// ソート対象配列サイズが一定数以下のときは特別扱い
 		if (range < ALGORITHM_THRESHOLD) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			InsertionSort.insertionSort(array, from, to, comparator);
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
 		// 呼び出し深さが限度を超えたら別（MergeSortベース）のアルゴリズムに切り替え
 		if (depthRemainder < 0) {
 			MatSort.matSort(array, from, to, comparator, workArray, (range + 9) / 10);
+			//MergeSort.mergeSort(array, from, to, workArray, comparator);
 			return;
 		}
 
@@ -115,25 +118,25 @@ public class DpsSort implements ISortAlgorithm {
 				// v3 <= v4 <= v5
 			} else {
 				// v3 <= v5 < v4
-				///final T temp = v5; v5 = v4; v4 = temp;
-				v4 = v5;
+				////final T temp = v5; v5 = v4; v4 = temp;
+				v4 = v5;	// v2とv4だけ正しければよい。
 			}
 		} else {
 			// v5 < v3
 			if (comparator.compare(v2, v5) <= 0) {
 				// v2 <= v5 < v3
-				///final T temp = v5; v5 = v4; v4 = v3; v3 = temp;
-				v4 = v3;
+				////final T temp = v5; v5 = v4; v4 = v3; v3 = temp;
+				v4 = v3;	// v2とv4だけ正しければよい。
 			} else {
 				// v5 < v2 <= v3
 				if (comparator.compare(v1, v5) <= 0) {
 					// v1 <= v5 < v2 <= v3
-					///final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = temp;
-					v4 = v3; v2 = v5;
+					////final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = temp;
+					v4 = v3; v2 = v5;	// v2とv4だけ正しければよい。
 				} else {
 					// v5 < v1 <= v2 <= v3
-					///final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = v1; v1 = temp;
-					v4 = v3; v2 = v1;
+					////final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = v1; v1 = temp;
+					v4 = v3; v2 = v1;	// v2とv4だけ正しければよい。
 				}
 			}
 		}
@@ -161,6 +164,7 @@ public class DpsSort implements ISortAlgorithm {
 					workArray[idx2W++] = value;
 				}
 			}
+
 			int idxTo = idx1A;
 			// ピボット１より大きく、ピボット２より小さいオブジェクトを works から array へ書き戻し
 			//for (int idx = 0; idx < idx2W; idx++) {
@@ -240,6 +244,7 @@ public class DpsSort implements ISortAlgorithm {
 
 		// ソート本体呼び出し
 		dpsSort(array, from, to, workArray, depthRemainder, comparator);
+		//InsertionSort.insertionSort(array, from, to, comparator);
 	}
 
 
