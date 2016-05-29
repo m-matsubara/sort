@@ -14,7 +14,13 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class SortTest {
-	protected static int DUPLICATE_VALUES = 2;
+	protected static final int ARRAY_TYPE_RANDOM = 0;
+	protected static final int ARRAY_TYPE_UNIQUE_RANDOM = 1;
+	protected static final int ARRAY_TYPE_HALF_SORTED = 2;
+	protected static final int ARRAY_TYPE_ASC = 3;
+	protected static final int ARRAY_TYPE_DESC = 4;
+	protected static final int ARRAY_TYPE_FLAT = 5;
+
 	protected static long compareCount = 0;									//	比較された回数
 
 	/**
@@ -81,17 +87,17 @@ public class SortTest {
 	 */
 	public static void initHalfSortedArray(SortItem[] array, long randSeed, int duplicate)
 	{
-		int half = array.length / 2;
+		final int half = array.length / 2;
 		for (int i = 0; i < half; i++) {
 			array[i].key = (i * 2) / duplicate;
 		}
 		for (int i = half; i < array.length; i++) {
 			array[i].key = ((i - half) * 2 + 1) / duplicate;
 		}
-		Random rand = new Random(randSeed);
+		final Random rand = new Random(randSeed);
 		for (int i = half; i < array.length; i++) {
-			int j = half + rand.nextInt(half);
-			SortItem work = array[i];
+			final int j = half + rand.nextInt(array.length - half);
+			final SortItem work = array[i];
 			array[i] = array[j];
 			array[j] = work;
 		}
@@ -104,10 +110,10 @@ public class SortTest {
 	 */
 	public static void shuffleArray(SortItem[] array, long randSeed)
 	{
-		Random rand = new Random(randSeed);
+		final Random rand = new Random(randSeed);
 		for (int i = 0; i < array.length; i++) {
-			int j = rand.nextInt(array.length);
-			SortItem work = array[i];
+			final int j = rand.nextInt(array.length);
+			final SortItem work = array[i];
 			array[i] = array[j];
 			array[j] = work;
 		}
@@ -163,10 +169,6 @@ public class SortTest {
 
 		SortItem[] array;
 
-		long startTime;			//	開始時刻（ミリ秒のカウンタ）
-		long endTime;			//	終了時刻（ミリ秒のカウンタ）
-		long compareCount;		//	ソート中に比較を行った回数
-
 		//	比較器
 		Comparator<SortItem> comparator = new Comparator<SortItem>() {
 			@Override
@@ -191,21 +193,21 @@ public class SortTest {
 
 		//	ソート対象種類（ランダム・昇順ソート済み・降順ソート済み・同じ値（キー値）・半分ソート済み）
 		int arrayType = 0;
-		int duplicate = DUPLICATE_VALUES;
+		int duplicate = 10;
 		if (args.length >= 3) {
-			if (args[2].equals("R"))	//	Random
-				arrayType = 0;
-			else if (args[2].equals("A"))	//	Ascending ordered
-				arrayType = 1;
-			else if (args[2].equals("D"))	//	Deccending ordered
-				arrayType = 2;
-			else if (args[2].equals("F"))	//	Flat values
-				arrayType = 3;
-			else if (args[2].equals("H"))	//	Half sorted
-				arrayType = 4;
-			else if (args[2].equals("RD10")) {	//	Duplicate value 10
-				arrayType = 0;
-				duplicate = 10;
+			if (args[2].equals("R")) {	//	Random
+				arrayType = ARRAY_TYPE_RANDOM;
+			} else if (args[2].equals("U")) {	//	Unique Random
+				arrayType = ARRAY_TYPE_UNIQUE_RANDOM;
+				duplicate = 1;
+			} else if (args[2].equals("H")) {	//	Half sorted
+				arrayType = ARRAY_TYPE_HALF_SORTED;
+			} else if (args[2].equals("A")) {	//	Ascending ordered
+				arrayType = ARRAY_TYPE_ASC;
+			} else if (args[2].equals("D")) {	//	Deccending ordered
+				arrayType = ARRAY_TYPE_DESC;
+			} else if (args[2].equals("F")) {	//	Flat values
+				arrayType = ARRAY_TYPE_FLAT;
 			}
 			else
 				throw new Exception("arguments error ");
@@ -230,51 +232,57 @@ public class SortTest {
 			//	配列の準備
 			String arrayTypeName = "";
 			switch (arrayType) {
-				case 0:
+				case ARRAY_TYPE_RANDOM:
 				{
 					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
 					arrayTypeName = "Random";
 					break;
 				}
-				case 1:
+				case ARRAY_TYPE_UNIQUE_RANDOM:
 				{
-					initArray(array, DUPLICATE_VALUES);
+					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					arrayTypeName = "Unique Random";
+					break;
+				}
+				case ARRAY_TYPE_HALF_SORTED:
+				{
+					initHalfSortedArray(array, idx, duplicate);
+					arrayTypeName = "Half sorted";
+					break;
+				}
+				case ARRAY_TYPE_ASC:
+				{
+					initArray(array, duplicate);
 					arrayTypeName = "Ascending ordered";
 					break;
 				}
-				case 2:
+				case ARRAY_TYPE_DESC:
 				{
-					initReverseArray(array, DUPLICATE_VALUES);
+					initReverseArray(array, duplicate);
 					arrayTypeName = "Descending ordered";
 					break;
 				}
-				case 3:
+				case ARRAY_TYPE_FLAT:
 				{
 					initFlatArray(array);
 					arrayTypeName = "Flat";
 					break;
 				}
-				case 4:
-				{
-					initHalfSortedArray(array, idx, DUPLICATE_VALUES);
-					arrayTypeName = "Half sorted";
-					break;
-				}
 			}
 			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
 
-			String sortName = sorter.getName();
-			boolean stable = sorter.isStable();
-			String stableStr = stable ? "stable" : "unstable";
+			final String sortName = sorter.getName();
+			final boolean stable = sorter.isStable();
+			final String stableStr = stable ? "stable" : "unstable";
 			SortTest.compareCount = 0;
 
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-			startTime = System.currentTimeMillis();
+			final long startTime = System.currentTimeMillis();
 			sorter.sort(array, 0, array.length, comparator);
-			endTime = System.currentTimeMillis();
+			final long endTime = System.currentTimeMillis();
 
-			compareCount = SortTest.compareCount;
+			final long compareCount = SortTest.compareCount;
 			System.out.printf("%d	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount, stableStr);
 			validateArray(array, stable);
 		}
