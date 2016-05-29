@@ -2,6 +2,8 @@
  * Quick sort
  * (Nothing ingenuity)
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -25,41 +27,6 @@ public class QuickSort implements ISortAlgorithm {
 	public static final <T> void quickSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
-
-		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
-				T work = array[from + 1];
-				array[from + 1] = array[from + 2];
-				array[from + 2] = work;
-				if (comparator.compare(array[from + 1], array[from]) < 0) {
-					work = array[from];
-					array[from] = array[from + 1];
-					array[from + 1] = work;
-				}
-			}
-			return;
-		}
-/*
-		if (range < 50) {
-			combSort(array, from, to, comparator);
-			return;
-		}
-*/
 
 		final T pivot = array[from + range / 2];		//	ピボット値（ソート対象の中央位置）
 

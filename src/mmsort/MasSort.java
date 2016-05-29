@@ -2,6 +2,8 @@
  * MasSort
  * Faster version of the merge sort.
  *
+ * http://www.mmatsubara.com/developer/sort/
+ *
  * Copyright (c) 2015 masakazu matsubara
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
@@ -35,8 +37,11 @@ public class MasSort implements ISortAlgorithm {
 		final int range = to - from;			//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range < 200) {
-			BinInsertionSort.binInsertionSort(arrayFrom, from, to, comparator);
+		if (range <= 1) {
+			return;
+		}
+		if (range < 100) {
+			MergeSort.mergeSort(arrayFrom, from, to, comparator);
 			System.arraycopy(arrayFrom, from, arrayTo, destIdx, to - from);
 			return;
 		}
@@ -265,9 +270,9 @@ public class MasSort implements ISortAlgorithm {
 	{
 		final int range = to - from;
 		@SuppressWarnings("unchecked")
-		final T[] works = (T[])new Object[range];
-		System.arraycopy(array, from, works, 0, range);
-		masSort(works, array, 0, range, from, comparator);
+		final T[] workArray = (T[])new Object[range];
+		System.arraycopy(array, from, workArray, 0, range);
+		masSort(workArray, array, 0, range, from, comparator);
 	}
 
 	@Override

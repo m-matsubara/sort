@@ -5,22 +5,26 @@
 ■概要
 　クイックソート・マージソートの改良アルゴリズムを提案してみます。
 
-Many Pivot Sort クイックソートのピボット値選択方法改善アルゴリズム
-MasSort         メモリの操作回数低減を狙ったマージソートの改善アルゴリズム
-MatSort         作業領域のメモリ使用料量削減を狙ったマージソートの改善アルゴリズム
-               （MasSort等、他のマージソート系アルゴリズムを内部的に併用する） 
+No5Sort         Quicksortの比較回数削減を狙ったアルゴリズム
+                Median of 5 Quicksort をベースとしている。
 
-　Many Pivot Sort, MasSortはクイックソート、マージソートの改善版でそれぞれ、
-元のアルゴリズムから10-15%程度高速化している。
+No6Sort         Stable Dual-pivot Quicksortとでもいうべきアルゴリズム
+                Merge Sort のように作業領域を用いて安定ソートにしている。
+                3 way patition Quicksort アルゴリズムも併用する。
 
-　MatSortは一般的なマージソートと比較して作業領域を数分の１程度に縮小しても、
-元のマージソートよりも高速となる場合もある。作業領域サイズをソート対象の1/100
-まで圧縮しても、元のマージソートと同程度の速度を確保できた。
+Many Pivot Sort Quicksortのピボット値選択方法改善アルゴリズム（No5Sortに少し劣る）
+
+MasSort         メモリの操作回数低減を狙ったMerge Sortの改善アルゴリズム
+
+MatSort         作業領域のメモリ使用料量削減を狙ったMerge Sortの改善アルゴリズム
+                MasSort等、他のMerge Sort系アルゴリズムを内部的に併用する。
+                作業領域サイズを配列サイズの1/10程度に圧縮してもわずかな性能低下
+                で済む。むしろ高速になるケースもある。
 
 
 ■詳細
 詳細は以下より参照のこと
-http://www.wind.sannet.ne.jp/m_matsu/developer/sort/
+http://www.mmatsubara.com/developer/sort/
 
 
 ■このコンテンツの扱いについて（著作権・ライセンス・アルゴリズムの利用について）
