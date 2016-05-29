@@ -270,9 +270,9 @@ public class MasSort implements ISortAlgorithm {
 	{
 		final int range = to - from;
 		@SuppressWarnings("unchecked")
-		final T[] works = (T[])new Object[range];
-		System.arraycopy(array, from, works, 0, range);
-		masSort(works, array, 0, range, from, comparator);
+		final T[] workArray = (T[])new Object[range];
+		System.arraycopy(array, from, workArray, 0, range);
+		masSort(workArray, array, 0, range, from, comparator);
 	}
 
 	@Override
