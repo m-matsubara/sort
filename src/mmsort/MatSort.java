@@ -79,13 +79,8 @@ public class MatSort implements ISortAlgorithm {
 		// |                                                       |          |
 		// from                                                fromIdx        to
 		int fromIdx = to - workSize;
-		// MasSort or No6Sort
-		//   many cases dpsSort faster, but fewer number of comparisons of MasSort.
-		//   多くの場合 dpsSortの方が高速だが、MasSortの方が比較回数が少ない。
 		System.arraycopy(array, fromIdx, workArray, 0, workSize);
 		MasSort.masSort(workArray, array, 0, workSize, fromIdx, comparator);
-		//int depthRemain = (int)(Math.log(workSize) / Math.log(2.0));
-		//Dps6Sort.dpsSort(array, fromIdx, to, workArray, depthRemain, comparator);
 
 		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
 		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
@@ -110,13 +105,8 @@ public class MatSort implements ISortAlgorithm {
 			fromIdx = fromIdx - workSize;
 			if (fromIdx < from)
 				fromIdx = from;
-			// MasSort or dpsSort
-			//   many cases No6Sort faster, but fewer number of comparisons of MasSort.
-			//   多くの場合 dpsSortの方が高速だが、MasSortの方が比較回数が少ない。
 			System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
 			MasSort.masSort(array, workArray, fromIdx, midIdx, 0, comparator);
-			//DpsSort.dpsSort(array, fromIdx, midIdx, workArray, depthRemain, comparator);
-			//System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
 
 			int idx1 = fromIdx;
 			int idx2 = midIdx;
