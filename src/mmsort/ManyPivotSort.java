@@ -16,7 +16,7 @@ import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 10000;							//	クイックソートに切り替えるサイズ
+	protected static final int ALGORITHM_THRESHOLD = 10000;							//	クイックソートに切り替えるサイズ
 	/**
 	 * Many pivot sort
 	 *
@@ -76,7 +76,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		//	ソート対象配列サイズが一定以下のときは特別扱い
-		if (range < SWITCH_SIZE) {
+		if (range < ALGORITHM_THRESHOLD) {
 			// しきい値以下ではクイックソート（５つのメディアン）に切り替える。
 			QuickSortM5.quickSortMedian5(array, from, to, comparator);
 			return;
