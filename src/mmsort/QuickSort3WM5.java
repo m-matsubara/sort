@@ -13,7 +13,7 @@ import java.util.Comparator;
 
 public class QuickSort3WM5 implements ISortAlgorithm {
 	protected static final int PIVOTS_SIZE = 31;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int SWITCH_SIZE = 50;							// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
+	protected static final int ALGORITHM_THRESHOLD = 20;					// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
 
 	public static final <T> void sort5(final T[] array, final int p1, final int p2, final int p3, final int p4, final int p5, final Comparator<? super T> comparator)
 	{
@@ -151,9 +151,9 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
-		if (range < 40) {
-			//InsertionSort.insertionSort(array, from, to, comparator);
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+		if (range < ALGORITHM_THRESHOLD) {
+			InsertionSort.insertionSort(array, from, to, comparator);
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
