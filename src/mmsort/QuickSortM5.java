@@ -12,6 +12,8 @@ package mmsort;
 import java.util.Comparator;
 
 public class QuickSortM5 implements ISortAlgorithm {
+	// Insersion Sortなどに切り替える要素数
+	public static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
 	 * 5つの値から中央値を得る
@@ -217,9 +219,9 @@ public class QuickSortM5 implements ISortAlgorithm {
 		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが一定数以下のときは特別扱い
-		if (range < 20) {
-			//InsertionSort.insertionSort(array, from, to, comparator);
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+		if (range < ALGORITHM_THRESHOLD) {
+			InsertionSort.insertionSort(array, from, to, comparator);
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
