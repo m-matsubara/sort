@@ -29,6 +29,7 @@ MatSort         作業領域のメモリ使用料量削減を狙ったMerge Sort
 
 #■詳細
 詳細は以下より参照のこと
+
 [sort](http://www.mmatsubara.com/developer/sort/)
 
 
