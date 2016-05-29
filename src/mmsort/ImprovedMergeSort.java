@@ -119,10 +119,10 @@ public class ImprovedMergeSort implements ISortAlgorithm {
 	public static final <T> void improvedMergeSort(final T[] array, final int from, final int to, Comparator<? super T> comparator)
 	{
 		@SuppressWarnings("unchecked")
-		final T[] works = (T[])new Object[array.length];
+		final T[] workArray = (T[])new Object[array.length];
 
-		System.arraycopy(array, from, works, from, to - from);
-		improvedMergeSort(works, array, from, to, comparator);
+		System.arraycopy(array, from, workArray, from, to - from);
+		improvedMergeSort(workArray, array, from, to, comparator);
 	}
 
 	@Override
