@@ -18,10 +18,10 @@ public class MergeSort implements ISortAlgorithm {
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
-	 * @param works work area / 作業用一時領域
+	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void mergeSort(final T[] array, final int from, final int to, final T[] works, final Comparator<? super T> comparator)
+	public static final <T> void mergeSort(final T[] array, final int from, final int to, final T[] workArray, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 
@@ -55,8 +55,8 @@ public class MergeSort implements ISortAlgorithm {
 		}
 
 		int mid = from + (to - from) / 2;	//	中央位置（範囲１と範囲２の境界）
-		mergeSort(array, from, mid, works, comparator);	//	範囲１（最小位置～中間位置）のソート
-		mergeSort(array, mid, to, works, comparator);	//	範囲２（中間位置～最大位置）のソート
+		mergeSort(array, from, mid, workArray, comparator);	//	範囲１（最小位置～中間位置）のソート
+		mergeSort(array, mid, to, workArray, comparator);	//	範囲２（中間位置～最大位置）のソート
 
 		int idx = from;		//	現在処理中の位置（範囲１と範囲２の小さい方をこの位置へ配置（移動）する）
 		int idx1 = from;		//	範囲１の次の値のインデックス
@@ -67,13 +67,13 @@ public class MergeSort implements ISortAlgorithm {
 
 		//	範囲１をワーク配列にコピー
 		if (mid - idx1 > 0) {
-			System.arraycopy(array, idx1, works, idx1 - from, mid - idx1);
+			System.arraycopy(array, idx1, workArray, idx1 - from, mid - idx1);
 		}
 
 		//	ワーク領域（範囲１のコピー）と範囲２をマージしてソート対象(array)の先頭から詰めていく
 		idx = idx1;	//	現在処理中の位置を設定
 		while (idx1 < mid && idx2 < to)  {
-			final T value1 = works[idx1 - from];
+			final T value1 = workArray[idx1 - from];
 			final T value2 = array[idx2];
 			if (comparator.compare(value1, value2) <= 0) {	// virtual code : (value2 < value1) == false
 				array[idx] = value1;
@@ -87,7 +87,7 @@ public class MergeSort implements ISortAlgorithm {
 
 		//	残ったワーク領域をソート対象へ詰める
 		while (idx1 < mid)  {
-			array[idx] = works[idx1 - from];
+			array[idx] = workArray[idx1 - from];
 			idx++;
 			idx1++;
 		}
@@ -108,9 +108,9 @@ public class MergeSort implements ISortAlgorithm {
 	public static final <T> void mergeSort(T[] array, int from, int to, Comparator<? super T> comparator)
 	{
 		@SuppressWarnings("unchecked")
-		final T[] works = (T[])new Object[(to - from) / 2];
+		final T[] workArray = (T[])new Object[(to - from) / 2];
 
-		mergeSort(array, from, to, works, comparator);
+		mergeSort(array, from, to, workArray, comparator);
 	}
 
 	@Override
