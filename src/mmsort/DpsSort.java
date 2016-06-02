@@ -51,18 +51,33 @@ public class DpsSort implements ISortAlgorithm {
 			return;
 		}
 
-		// 以下、「÷7」の近似値
-		//final int gap = range / 7;
-		final int gap = (range >> 3) + (range >> 6) + 1;
+		final int gap = range / 10;
 
 		// ピボット候補値の添え字
-		final int p3 = from + (range >> 1);
+		final int center = from + (range >> 1);
+		final int p4 = center - gap;
+		final int p3 = p4 - gap;
 		final int p2 = p3 - gap;
 		final int p1 = p2 - gap;
-		final int p4 = p3 + gap;
-		final int p5 = p4 + gap;
+		final int p5 = center + gap;
+		final int p6 = p5 + gap;
+		final int p7 = p6 + gap;
+		final int p8 = p7 + gap;
+		// 2016/06/03 TODO まだ雑な実装なので後で何とかする
+		workArray[0] = array[p1];
+		workArray[1] = array[p2];
+		workArray[2] = array[p3];
+		workArray[3] = array[p4];
+		workArray[4] = array[p5];
+		workArray[5] = array[p6];
+		workArray[6] = array[p7];
+		workArray[7] = array[p8];
+		BinInsertionSort.binInsertionSort(workArray, 0, 8, comparator);
+		final T v2 = workArray[2];
+		final T v4 = workArray[5];
 
 		// ピボット候補値（ソートして、2番目と4番目をピボット値として用いる）
+/*
 		T v1 = array[p1];
 		T v2 = array[p2];
 		T v3 = array[p3];
@@ -140,7 +155,7 @@ public class DpsSort implements ISortAlgorithm {
 				}
 			}
 		}
-
+*/
 		if (comparator.compare(v2, v4) != 0) {
 			// v2 とv4は異なる値
 			// dual pivot quick sort ベースの処理
