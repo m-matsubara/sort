@@ -198,7 +198,6 @@ public class DpsSort implements ISortAlgorithm {
 
 		// ソート本体呼び出し
 		dpsSort(array, from, to, workArray, depthRemainder, comparator);
-		//InsertionSort.insertionSort(array, from, to, comparator);
 	}
 
 
