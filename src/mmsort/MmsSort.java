@@ -1,7 +1,7 @@
 /*
- * dbpSort
+ * mmsSort
  *
- * Dual-pivot Stable Quicksort
+ * Stable Dual-pivot Quicksort
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -13,14 +13,14 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class DpsSort implements ISortAlgorithm {
+public class MmsSort implements ISortAlgorithm {
 	// Insersion Sortなどに切り替える要素数
 	public static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
-	 * dpsSort
+	 * mmsSort
 	 *
-	 * Dual-pivot Stable Quicksort
+	 * Stable Dual-pivot Quicksort
 	 *
 	 * Dual-pibot Quicksort を安定ソートにしたソートアルゴリズム
 	 * 対象配列と同じサイズのワークエリアを使用する。
@@ -33,7 +33,7 @@ public class DpsSort implements ISortAlgorithm {
 	 * @param depthRemainder The remaining number of times of the depth of the call / 呼び出しの深さの残り回数
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void dpsSort(final T[] array, final int from, final int to, final T[] workArray, final int depthRemainder, final Comparator<? super T> comparator)
+	public static final <T> void mmsSort(final T[] array, final int from, final int to, final T[] workArray, final int depthRemainder, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
@@ -51,101 +51,56 @@ public class DpsSort implements ISortAlgorithm {
 			return;
 		}
 
-		// 以下、「÷7」の近似値
-		//final int gap = range / 7;
-		final int gap = (range >> 3) + (range >> 6) + 1;
+		T pivot1;	//	ピボット１
+		T pivot2;	//	ピボット２
+		if (range >= 150) {
+			// ピボット候補値の添え字の差分
+			final int gap = range / 12;
+			// ピボット候補値の添え字
+			final int center = from + (range >> 1);
+			final int p4 = center - gap;
+			final int p3 = p4 - gap;
+			final int p2 = p3 - gap;
+			final int p1 = p2 - gap;
+			final int p5 = center + gap;
+			final int p6 = p5 + gap;
+			final int p7 = p6 + gap;
+			final int p8 = p7 + gap;
+			workArray[0] = array[p1];
+			workArray[1] = array[p2];
+			workArray[2] = array[p3];
+			workArray[3] = array[p4];
+			workArray[4] = array[p5];
+			workArray[5] = array[p6];
+			workArray[6] = array[p7];
+			workArray[7] = array[p8];
+			BinInsertionSort.binInsertionSort(workArray, 0, 8, comparator);
 
-		// ピボット候補値の添え字
-		final int p3 = from + (range >> 1);
-		final int p2 = p3 - gap;
-		final int p1 = p2 - gap;
-		final int p4 = p3 + gap;
-		final int p5 = p4 + gap;
-
-		// ピボット候補値（ソートして、2番目と4番目をピボット値として用いる）
-		T v1 = array[p1];
-		T v2 = array[p2];
-		T v3 = array[p3];
-		T v4 = array[p4];
-		T v5 = array[p5];
-		//	まず、先頭３つのソート
-		if (comparator.compare(v1, v2) <= 0) {
-			if (comparator.compare(v2, v3) <= 0) {
-				// v1 <= v2 <= v3
-			} else if (comparator.compare(v1, v3) <= 0) {
-				// v1 <= v3 <= v2
-				final T temp = v2; v2 = v3; v3 = temp;
-			} else {
-				// v3 <= v1 <= v2
-				final T temp = v1; v1 = v3; v3 = v2; v2 = temp;
-			}
+			pivot1 = workArray[2];
+			pivot2 = workArray[5];
 		} else {
-			if (comparator.compare(v1, v3) <= 0) {
-				// v2 <= v1 <= v3
-				final T temp = v1; v1 = v2; v2 = temp;
-			} else if (comparator.compare(v2, v3) <= 0) {
-				// v2 <= v3 <= v1
-				final T temp = v1; v1 = v2; v2 = v3; v3 = temp;
-			} else {
-				// v3 <= v2 <= v1
-				final T temp = v1; v1 = v3; v3 = temp;
-			}
+			// ピボット候補値の添え字の差分
+			final int gap = range / 6;
+			// ピボット候補値の添え字
+			final int p3 = from + (range >> 1);
+			final int p4 = p3 + gap;
+			final int p5 = p4 + gap;
+			final int p2 = p3 - gap;
+			final int p1 = p2 - gap;
+			workArray[0] = array[p1];
+			workArray[1] = array[p2];
+			workArray[2] = array[p3];
+			workArray[3] = array[p4];
+			workArray[4] = array[p5];
+			BinInsertionSort.binInsertionSort(workArray, 0, 5, comparator);
+
+			pivot1 = workArray[1];
+			pivot2 = workArray[3];
 		}
 
-		// v4  を挿入ソートっぽく指定位置に挿入
-		if (comparator.compare(v2, v4) <= 0) {
-			if (comparator.compare(v3, v4) <= 0) {
-				// v3 <= v4
-			} else {
-				// v2 <= v4 < v3;
-				final T temp = v4; v4 = v3; v3 = temp;
-			}
-		} else {
-			if (comparator.compare(v1, v4) <= 0) {
-				// v1 <= v4 < v2;
-				final T temp = v4; v4 = v3; v3 = v2; v2 = temp;
-			} else {
-				// v4 < v1 <= v2;
-				final T temp = v4; v4 = v3; v3 = v2; v2 = v1; v1 = temp;
-			}
-		}
-
-		// v5  を挿入ソートっぽく指定位置に挿入
-		// v2とv4だけ正しければよい。
-		if (comparator.compare(v3, v5) <= 0) {
-			// v3 <= v5
-			if (comparator.compare(v4, v5) <= 0) {
-				// v3 <= v4 <= v5
-			} else {
-				// v3 <= v5 < v4
-				////final T temp = v5; v5 = v4; v4 = temp;
-				v4 = v5;	// v2とv4だけ正しければよい。
-			}
-		} else {
-			// v5 < v3
-			if (comparator.compare(v2, v5) <= 0) {
-				// v2 <= v5 < v3
-				////final T temp = v5; v5 = v4; v4 = v3; v3 = temp;
-				v4 = v3;	// v2とv4だけ正しければよい。
-			} else {
-				// v5 < v2 <= v3
-				if (comparator.compare(v1, v5) <= 0) {
-					// v1 <= v5 < v2 <= v3
-					////final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = temp;
-					v4 = v3; v2 = v5;	// v2とv4だけ正しければよい。
-				} else {
-					// v5 < v1 <= v2 <= v3
-					////final T temp = v5; v5 = v4; v4 = v3; v3 = v2; v2 = v1; v1 = temp;
-					v4 = v3; v2 = v1;	// v2とv4だけ正しければよい。
-				}
-			}
-		}
-
-		if (comparator.compare(v2, v4) != 0) {
+		if (comparator.compare(pivot1, pivot2) != 0) {
 			// v2 とv4は異なる値
 			// dual pivot quick sort ベースの処理
-			final T pivot1 = v2;	//	ピボット１
-			final T pivot2 = v4;	//	ピボット２
 			int idx1A = from;		//	value <= pivot1 の要素へのインデックス(arraysへの配置用)
 			int idx2W = 0;			//	pivot1 < value < pivot2の要素へのインデックス(worksへの配置用)
 			int idx3W = range - 1;	//	pivot2 <= value へのインデックス(worksへの配置用)
@@ -178,15 +133,14 @@ public class DpsSort implements ISortAlgorithm {
 				array[idxTo++] = workArray[idx];
 			}
 			// ピボット２以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			dpsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
 			// ピボット１より大きく、ピボット２より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
-			dpsSort(array, idx1A,         idx1A + idx2W, workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A,         idx1A + idx2W, workArray, depthRemainder - 1, comparator);
 			// ピボット１以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
-			dpsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
 		} else {
 			// pivot1 とpivot2が同じ値
 			// 3 way partition ベースの処理
-			final T pivot = v2;	//	ピボット値
 			int idx1A = from;		// value < pivot の要素へのインデックス(arrayへの配置用)
 			int idx2W = 0;			// value == pivot の要素へのインデックス(workArrayへの配置用)
 			int idx3W = range - 1;	// pivot < value へのインデックス(workArrayへの配置用)
@@ -197,7 +151,7 @@ public class DpsSort implements ISortAlgorithm {
 			//   ピボット値と同じキー値の値は、作業領域の前方に詰めていく
 			for (int idx = from; idx < to; idx++) {
 				final T value = array[idx];
-				final int compareVal = comparator.compare(value, pivot);
+				final int compareVal = comparator.compare(value, pivot1);
 				if (compareVal < 0) {
 					array[idx1A++] = value;
 				} else if (compareVal > 0) {
@@ -221,13 +175,13 @@ public class DpsSort implements ISortAlgorithm {
 			}
 
 			// ピボット値より大きいオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			dpsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
 			// ピボット値より小さいオブジェクトをあとにソート（CPUキャッシュヒット率がたぶん低い）
-			dpsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
 		}
 	}
 
-	public static final <T> void dpsSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void mmsSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		// 要素数
 		final int range = to - from;
@@ -243,15 +197,14 @@ public class DpsSort implements ISortAlgorithm {
 		final int depthRemainder = (int)(Math.log(range / ALGORITHM_THRESHOLD) / Math.log(3.0) * 2.2 * 1.2 + 2);
 
 		// ソート本体呼び出し
-		dpsSort(array, from, to, workArray, depthRemainder, comparator);
-		//InsertionSort.insertionSort(array, from, to, comparator);
+		mmsSort(array, from, to, workArray, depthRemainder, comparator);
 	}
 
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		dpsSort(array, from, to, comparator);
+		mmsSort(array, from, to, comparator);
 	}
 
 	@Override
@@ -263,6 +216,6 @@ public class DpsSort implements ISortAlgorithm {
 	@Override
 	public String getName()
 	{
-		return "dpsSort";
+		return "mmsSort";
 	}
 }
