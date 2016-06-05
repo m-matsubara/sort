@@ -1,7 +1,7 @@
 /*
- * dbpSort
+ * mmsSort
  *
- * Dual-pivot Stable Quicksort
+ * Stable Dual-pivot Quicksort
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -13,14 +13,14 @@ package mmsort;
 
 import java.util.Comparator;
 
-public class DpsSort implements ISortAlgorithm {
+public class MmsSort implements ISortAlgorithm {
 	// Insersion Sortなどに切り替える要素数
 	public static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
-	 * dpsSort
+	 * mmsSort
 	 *
-	 * Dual-pivot Stable Quicksort
+	 * Stable Dual-pivot Quicksort
 	 *
 	 * Dual-pibot Quicksort を安定ソートにしたソートアルゴリズム
 	 * 対象配列と同じサイズのワークエリアを使用する。
@@ -33,7 +33,7 @@ public class DpsSort implements ISortAlgorithm {
 	 * @param depthRemainder The remaining number of times of the depth of the call / 呼び出しの深さの残り回数
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void dpsSort(final T[] array, final int from, final int to, final T[] workArray, final int depthRemainder, final Comparator<? super T> comparator)
+	public static final <T> void mmsSort(final T[] array, final int from, final int to, final T[] workArray, final int depthRemainder, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
@@ -133,11 +133,11 @@ public class DpsSort implements ISortAlgorithm {
 				array[idxTo++] = workArray[idx];
 			}
 			// ピボット２以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			dpsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
 			// ピボット１より大きく、ピボット２より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
-			dpsSort(array, idx1A,         idx1A + idx2W, workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A,         idx1A + idx2W, workArray, depthRemainder - 1, comparator);
 			// ピボット１以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
-			dpsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
 		} else {
 			// pivot1 とpivot2が同じ値
 			// 3 way partition ベースの処理
@@ -175,13 +175,13 @@ public class DpsSort implements ISortAlgorithm {
 			}
 
 			// ピボット値より大きいオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			dpsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
+			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
 			// ピボット値より小さいオブジェクトをあとにソート（CPUキャッシュヒット率がたぶん低い）
-			dpsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
 		}
 	}
 
-	public static final <T> void dpsSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void mmsSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		// 要素数
 		final int range = to - from;
@@ -197,14 +197,14 @@ public class DpsSort implements ISortAlgorithm {
 		final int depthRemainder = (int)(Math.log(range / ALGORITHM_THRESHOLD) / Math.log(3.0) * 2.2 * 1.2 + 2);
 
 		// ソート本体呼び出し
-		dpsSort(array, from, to, workArray, depthRemainder, comparator);
+		mmsSort(array, from, to, workArray, depthRemainder, comparator);
 	}
 
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		dpsSort(array, from, to, comparator);
+		mmsSort(array, from, to, comparator);
 	}
 
 	@Override
@@ -216,6 +216,6 @@ public class DpsSort implements ISortAlgorithm {
 	@Override
 	public String getName()
 	{
-		return "dpsSort";
+		return "mmsSort";
 	}
 }
