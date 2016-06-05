@@ -12,7 +12,7 @@
     Median of 5 Quicksort をベースとしている。<br>
     不安定ソート
   </dd>
-  <dt>dpsSort</dt>
+  <dt>mmsSort</dt>
   <dd>
      Stable Dual-pivot Quicksortとでもいうべきアルゴリズム<br>
      Merge Sort のように作業領域を用いる。<br>
