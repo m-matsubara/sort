@@ -3,7 +3,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2016 masakazu matsubara
+ * Copyright (c) 2016 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */
@@ -13,7 +13,7 @@ import java.util.Comparator;
 
 public class MmSort implements ISortAlgorithm {
 	// Insersion Sortなどに切り替える要素数
-	public static final int ALGORITHM_THRESHOLD = 20;
+	private static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
 	 * mmSort
@@ -32,16 +32,16 @@ public class MmSort implements ISortAlgorithm {
 
 		//	ソート対象配列サイズが一定数以下のときは特別扱い
 		if (range < ALGORITHM_THRESHOLD) {
-			//InsertionSort.insertionSort(array, from, to, comparator);
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			InsertionSort.insertionSort(array, from, to, comparator);
+			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
 		final int p1 = from;
 		final int p5 = to - 1;
-		final int p3 = p1 + (p5 - p1) / 2;
-		final int p2 = p1 + (p3 - p1) / 2;
-		final int p4 = p3 + (p5 - p3) / 2;
+		final int p3 = p1 + ((p5 - p1) >>> 1);
+		final int p2 = p1 + ((p3 - p1) >>> 1);
+		final int p4 = p3 + ((p5 - p3) >>> 1);
 
 		//sort5 メソッドの呼び出しを手動でインライン展開
 		//sort5(array, p1, p2, p3, p4, p5, comparator);

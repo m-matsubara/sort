@@ -5,7 +5,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2016 masakazu matsubara
+ * Copyright (c) 2016 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */
@@ -15,7 +15,7 @@ import java.util.Comparator;
 
 public class MmsSort implements ISortAlgorithm {
 	// Insersion Sortなどに切り替える要素数
-	public static final int ALGORITHM_THRESHOLD = 20;
+	private static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
 	 * mmsSort
@@ -58,22 +58,22 @@ public class MmsSort implements ISortAlgorithm {
 			final int gap = range / 12;
 			// ピボット候補値の添え字
 			final int center = from + (range >> 1);
-			final int p4 = center - gap;
-			final int p3 = p4 - gap;
+			final int p3 = center - gap;
 			final int p2 = p3 - gap;
 			final int p1 = p2 - gap;
-			final int p5 = center + gap;
+			final int p0 = p1 - gap;
+			final int p4 = center + gap;
+			final int p5 = p4 + gap;
 			final int p6 = p5 + gap;
 			final int p7 = p6 + gap;
-			final int p8 = p7 + gap;
-			workArray[0] = array[p1];
-			workArray[1] = array[p2];
-			workArray[2] = array[p3];
-			workArray[3] = array[p4];
-			workArray[4] = array[p5];
-			workArray[5] = array[p6];
-			workArray[6] = array[p7];
-			workArray[7] = array[p8];
+			workArray[0] = array[p0];
+			workArray[1] = array[p1];
+			workArray[2] = array[p2];
+			workArray[3] = array[p3];
+			workArray[4] = array[p4];
+			workArray[5] = array[p5];
+			workArray[6] = array[p6];
+			workArray[7] = array[p7];
 			BinInsertionSort.binInsertionSort(workArray, 0, 8, comparator);
 
 			pivot1 = workArray[2];
@@ -82,16 +82,16 @@ public class MmsSort implements ISortAlgorithm {
 			// ピボット候補値の添え字の差分
 			final int gap = range / 6;
 			// ピボット候補値の添え字
-			final int p3 = from + (range >> 1);
+			final int p2 = from + (range >> 1);
+			final int p3 = p2 + gap;
 			final int p4 = p3 + gap;
-			final int p5 = p4 + gap;
-			final int p2 = p3 - gap;
 			final int p1 = p2 - gap;
-			workArray[0] = array[p1];
-			workArray[1] = array[p2];
-			workArray[2] = array[p3];
-			workArray[3] = array[p4];
-			workArray[4] = array[p5];
+			final int p0 = p1 - gap;
+			workArray[0] = array[p0];
+			workArray[1] = array[p1];
+			workArray[2] = array[p2];
+			workArray[3] = array[p3];
+			workArray[4] = array[p4];
 			BinInsertionSort.binInsertionSort(workArray, 0, 5, comparator);
 
 			pivot1 = workArray[1];
@@ -99,7 +99,7 @@ public class MmsSort implements ISortAlgorithm {
 		}
 
 		if (comparator.compare(pivot1, pivot2) != 0) {
-			// v2 とv4は異なる値
+			// pivot1 ≠ pivot2 のケース
 			// dual pivot quick sort ベースの処理
 			int idx1A = from;		//	value <= pivot1 の要素へのインデックス(arraysへの配置用)
 			int idx2W = 0;			//	pivot1 < value < pivot2の要素へのインデックス(worksへの配置用)
@@ -121,25 +121,26 @@ public class MmsSort implements ISortAlgorithm {
 			}
 
 			int idxTo = idx1A;
-			// ピボット１より大きく、ピボット２より小さいオブジェクトを works から array へ書き戻し
+			// ピボット１より大きく、ピボット２より小さいオブジェクト (pivot1 < value < pivot2) を works から array へ書き戻し
 			//for (int idx = 0; idx < idx2W; idx++) {
 			//	array[idxTo++] = works[idx];
 			//}
 			System.arraycopy(workArray, 0, array, idxTo, idx2W);
 			idxTo += idx2W;
+			// ピボット１より大きく、ピボット２より小さいオブジェクト(pivot1 < value < pivot2)をソート
+			mmsSort(array, idx1A, idx1A + idx2W, workArray, depthRemainder - 1, comparator);
 
-			// ピボット２以上のオブジェクトを works から array へ書き戻し
+			// ピボット２以上のオブジェクト(pivot2 ≦ value)を works から array へ書き戻し
 			for (int idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = workArray[idx];
 			}
-			// ピボット２以上のオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
-			// ピボット１より大きく、ピボット２より小さいオブジェクトを次にソート（まだCPUキャッシュに残っているかも？と期待して）
-			mmsSort(array, idx1A,         idx1A + idx2W, workArray, depthRemainder - 1, comparator);
-			// ピボット１以下のオブジェクトは最後にソート（CPUキャッシュに残っている可能性が一番低いので…。）
-			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			// ピボット２以上のオブジェクト(pivot2 ≦ value)をソート
+			mmsSort(array, idx1A + idx2W, to, workArray, depthRemainder - 1, comparator);
+
+			// ピボット１以下のオブジェクト(value ≦ pivot2)は最後にソート（CPUキャッシュに残っている可能性が低いので…。）
+			mmsSort(array, from, idx1A, workArray, depthRemainder - 1, comparator);
 		} else {
-			// pivot1 とpivot2が同じ値
+			// pivot1 ＝ pivot2 のケース
 			// 3 way partition ベースの処理
 			int idx1A = from;		// value < pivot の要素へのインデックス(arrayへの配置用)
 			int idx2W = 0;			// value == pivot の要素へのインデックス(workArrayへの配置用)
@@ -162,22 +163,22 @@ public class MmsSort implements ISortAlgorithm {
 			}
 
 			int idxTo = idx1A;
-			// ピボット値と同じキーのオブジェクトを works から array へ書き戻し
+			// ピボット値と同じキーのオブジェクト(value = pivot1)を works から array へ書き戻し
 			//for (int idx = 0; idx < idx2W; idx++) {
 			//	array[idxTo++] = works[idx];
 			//}
 			System.arraycopy(workArray, 0, array, idxTo, idx2W);
 			idxTo += idx2W;
 
-			// ピボット値よりも大きいオブジェクトを works から array へ書き戻し
+			// ピボット値よりも大きいオブジェクト(pivot1 < value)を works から array へ書き戻し
 			for (int idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = workArray[idx];
 			}
 
-			// ピボット値より大きいオブジェクトを先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
-			mmsSort(array, idx1A + idx2W, to,            workArray, depthRemainder - 1, comparator);
-			// ピボット値より小さいオブジェクトをあとにソート（CPUキャッシュヒット率がたぶん低い）
-			mmsSort(array, from,          idx1A,         workArray, depthRemainder - 1, comparator);
+			// ピボット値より大きいオブジェクト(pivot1 < value)を先にソート（直前に配列コピーを行っており、CPUキャッシュにヒットしやすいため）
+			mmsSort(array, idx1A + idx2W, to,    workArray, depthRemainder - 1, comparator);
+			// ピボット値より小さいオブジェクト(value < pivot1)をあとにソート（CPUキャッシュヒット率がたぶん低い）
+			mmsSort(array, from,          idx1A, workArray, depthRemainder - 1, comparator);
 		}
 	}
 
