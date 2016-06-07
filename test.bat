@@ -1,5 +1,5 @@
 @echo off
-rem Copyright (c) 2015 masakazu matsubara
+rem Copyright (c) 2015 matsubara masakazu
 rem Released under the MIT license
 rem https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
 
