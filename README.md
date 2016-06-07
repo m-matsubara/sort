@@ -1,6 +1,6 @@
 ﻿Project Name: ソート（クイックソート・マージソートの改良アルゴリズムの提案）
 
-松原正和(masakazu matsubara)
+松原正和(matsubara masakazu)
 
 #■概要
 　クイックソート・マージソートの改良アルゴリズムを提案してみます。
