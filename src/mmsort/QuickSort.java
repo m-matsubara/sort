@@ -35,19 +35,19 @@ public class QuickSort implements ISortAlgorithm {
 		int curFrom = from;			//	現在処理中位置の小さい方の位置
 		int curTo = to - 1;			//	現在処理中位置の大きい方の位置
 
-		for (;;) {
+		do {
 			while (comparator.compare(array[curFrom], pivot) < 0)
 				curFrom++;
 			while (comparator.compare(pivot, array[curTo]) < 0)
 				curTo--;
-			if (curFrom > curTo)
-				break;
-			final T work = array[curFrom];
-			array[curFrom] = array[curTo];
-			array[curTo] = work;
-			curFrom++;
-			curTo--;
-		};
+			if (curFrom <= curTo) {
+				final T work = array[curFrom];
+				array[curFrom] = array[curTo];
+				array[curTo] = work;
+				curFrom++;
+				curTo--;
+			}
+		} while (curFrom <= curTo);
 
 		quickSort(array, from, curTo + 1, comparator);
 		quickSort(array, curFrom, to, comparator);
