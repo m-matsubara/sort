@@ -3,7 +3,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2015 masakazu matsubara
+ * Copyright (c) 2015 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */
@@ -13,7 +13,7 @@ import java.util.Comparator;
 
 public class QuickSortM5 implements ISortAlgorithm {
 	// Insersion Sortなどに切り替える要素数
-	public static final int ALGORITHM_THRESHOLD = 20;
+	private static final int ALGORITHM_THRESHOLD = 20;
 
 	/**
 	 * 5つの値から中央値を得る

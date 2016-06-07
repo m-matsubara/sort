@@ -4,7 +4,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2015 masakazu matsubara
+ * Copyright (c) 2015 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */

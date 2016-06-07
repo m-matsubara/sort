@@ -6,7 +6,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2015 masakazu matsubara
+ * Copyright (c) 2015 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */
@@ -15,8 +15,8 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
-	protected static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	protected static final int ALGORITHM_THRESHOLD = 10000;							//	クイックソートに切り替えるサイズ
+	private static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	private static final int ALGORITHM_THRESHOLD = 10000;				//	クイックソートに切り替えるサイズ
 	/**
 	 * Many pivot sort
 	 *
