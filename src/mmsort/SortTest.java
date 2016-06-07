@@ -4,7 +4,7 @@
  *
  * http://www.mmatsubara.com/developer/sort/
  *
- * Copyright (c) 2015 masakazu matsubara
+ * Copyright (c) 2015 matsubara masakazu
  * Released under the MIT license
  * https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
  */
@@ -278,12 +278,12 @@ public class SortTest {
 
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-			final long startTime = System.currentTimeMillis();
+			final long startTime = System.nanoTime();
 			sorter.sort(array, 0, array.length, comparator);
-			final long endTime = System.currentTimeMillis();
+			final long endTime = System.nanoTime();
 
 			final long compareCount = SortTest.compareCount;
-			System.out.printf("%d	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000.0, compareCount, stableStr);
+			System.out.printf("%d	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000000000.0, compareCount, stableStr);
 			validateArray(array, stable);
 		}
 	}
