@@ -17,7 +17,7 @@ call test.bat mmsort.QuickSortM5 %1
 rem stable sort
 call test.bat mmsort.ArraysSort %1
 rem call test.bat mmsort.BinInsersionSort %1
-call test.bat mmsort.DpsSort %1
+call test.bat mmsort.MmsSort %1
 rem call test.bat mmsort.ImprovedMergeSort %1
 rem call test.bat mmsort.InsersionSort %1
 rem call test.bat mmsort.InplaceMergeSort %1
