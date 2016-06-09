@@ -61,7 +61,7 @@ public class InsertionSort implements ISortAlgorithm {
 				do {
 					array[j] = array[j - 1];
 					j--;
-				} while (j > 0 && comparator.compare(key, array[j - 1]) < 0);
+				} while (j > from && comparator.compare(key, array[j - 1]) < 0);
 				array[j] = key;
 			}
 		}
