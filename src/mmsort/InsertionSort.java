@@ -54,18 +54,20 @@ public class InsertionSort implements ISortAlgorithm {
 			return;
 		}
 
-		for (int i = from + 1; i < to; i++) {
-			final T key = array[i];
-			if (comparator.compare(key, array[i - 1]) < 0) {
-				int j = i;
+		for (int idx = from + 1; idx < to; idx++) {
+			final T value = array[idx];
+			T prevValue = array[idx - 1];
+			if (comparator.compare(value, prevValue) < 0) {
+				int insIdx = idx;
 				do {
-					array[j] = array[j - 1];
-					j--;
-				} while (j > from && comparator.compare(key, array[j - 1]) < 0);
-				array[j] = key;
+					array[insIdx] = prevValue;
+					if (--insIdx <= from)
+						break;
+					prevValue = array[insIdx - 1];
+				} while (comparator.compare(value, prevValue) < 0);
+				array[insIdx] = value;
 			}
 		}
-
 	}
 
 	@Override
