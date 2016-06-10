@@ -59,7 +59,7 @@ public class MergeSort implements ISortAlgorithm {
 		mergeSort(array, mid, to, workArray, comparator);	//	範囲２（中間位置～最大位置）のソート
 
 		int idx = from;		//	現在処理中の位置（範囲１と範囲２の小さい方をこの位置へ配置（移動）する）
-		int idx1 = from;		//	範囲１の次の値のインデックス
+		int idx1 = from;	//	範囲１の次の値のインデックス
 		int idx2 = mid;		//	範囲２の次の値のインデックス
 
 		if (comparator.compare(array[mid - 1], array[mid]) < 0)
