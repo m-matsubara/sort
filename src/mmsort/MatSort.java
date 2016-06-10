@@ -79,8 +79,11 @@ public class MatSort implements ISortAlgorithm {
 		// |                                                       |          |
 		// from                                                fromIdx        to
 		int fromIdx = to - workSize;
+		// MasSort版は以下２行
 		System.arraycopy(array, fromIdx, workArray, 0, workSize);
 		MasSort.masSort(workArray, array, 0, workSize, fromIdx, comparator);
+		// mmsSort版は以下１行
+		//MmsSort.mmsSort(array, fromIdx, to, workArray, 40, comparator);
 
 		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
 		// 最終ブロックの一つ手前のブロックをソートしてマージ…をすべてのブロックをマージするまで繰り返す。
@@ -105,8 +108,12 @@ public class MatSort implements ISortAlgorithm {
 			fromIdx = fromIdx - workSize;
 			if (fromIdx < from)
 				fromIdx = from;
+			// MasSort版は以下２行
 			System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
 			MasSort.masSort(array, workArray, fromIdx, midIdx, 0, comparator);
+			// mmsSort版は以下２行
+			//MmsSort.mmsSort(array, fromIdx, midIdx, workArray, 40, comparator);
+			//System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
 
 			int idx1 = fromIdx;
 			int idx2 = midIdx;
