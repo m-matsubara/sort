@@ -8,26 +8,40 @@
 <dl>
   <dt>mmSort</dt>
   <dd>
-    Quicksortの比較回数削減を狙ったアルゴリズム<br>
+    Quicksortの比較回数削減を狙ったアルゴリズム。<br>
     Median of 5 Quicksort をベースとしている。<br>
     不安定ソート
   </dd>
   <dt>mmsSort</dt>
   <dd>
-     Stable Dual-pivot Quicksortとでもいうべきアルゴリズム<br>
+     Stable Dual-pivot Quicksortとでもいうべきアルゴリズム。<br>
      Merge Sort のように作業領域を用いる。<br>
      3 way patition Quicksort アルゴリズムも併用する。<br>
      安定ソート
   </dd>
-
+  <dt>MatMmsSort</dt>
+  <dd>
+     MatSortとmmsSort を組み合わせたアルゴリズム<br>
+     作業領域の使用量は対象配列の1/10程度（任意に指定可能）<br>
+     速度的にはmmsSortにやや劣る。<br>
+     安定ソート
+  </dd>
+  <dt>mmsSort (Half memory)</dt>
+  <dd>
+     mmsSort をメモリ使用量を半分に削減したアルゴリズム。<br>
+     MergeSortを併用する。<br>
+     安定ソート
+  </dd>
   <dt>Many Pivot Sort</dt>
   <dd>
      Quicksortのピボット値選択方法改善アルゴリズム（mmSortに少し劣る）<br>
+     事前に多くのピボット値候補を決めておく。精度の高い（中央値に近い）ピボット値を得ることができる。<br>
      不安定ソート
   </dd>
   <dt>MasSort</dt>
   <dd>
     メモリの操作回数低減を狙ったMerge Sortの改善アルゴリズム<br>
+    あまり速くならなかった…。<br>
     安定ソート
   </dd>
   <dt>MatSort</dt>
