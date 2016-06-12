@@ -15,8 +15,9 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort3W implements ISortAlgorithm {
-	private static final int PIVOTS_SIZE = 31;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
-	private static final int SWITCH_SIZE = 50;							// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
+	private static final int PIVOTS_SIZE = 127;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	private static final int PIVOTS_REBUILD_THRESHOLD = 3;				//	（現在の再起で）ピボットリストの数がこの数字以下のときはピボットリストを作り直す。
+	private static final int ALGORITHM_THRESHOLD = 10000;							// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
 	/**
 	 * Many pivot sort (3 Way partition)
 	 *
@@ -161,19 +162,23 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 				throw new RuntimeException("ccc");
 		}
 */
-		if (from < curFrom - 1) {
-			if (fromPivots >= pivotIdx - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, from, curFrom, comparator);
-			else
-				mpSort(array, from, curFrom, pivots, fromPivots, pivotIdx, comparator);
+/*
+		if (toPivots - fromPivots <= 15) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+			mpSort(array, from, curFrom, comparator);
+			mpSort(array, curTo + 1, to, comparator);
+		} else {
+			mpSort(array, from, curFrom, pivots, fromPivots, pivotIdx, comparator);
+			mpSort(array, curTo + 1, to, pivots, pivotIdx + 1, toPivots, comparator);
+		}
+*/
+		if (toPivots - fromPivots <= PIVOTS_REBUILD_THRESHOLD) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+			mpSort(array, from, curTo + 1, comparator);
+			mpSort(array, curFrom, to, comparator);
+		} else {
+			mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
+			mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 
-		if (curTo < to - 1) {
-			if (pivotIdx + 1 >= toPivots - 3)	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-				mpSort(array, curTo + 1, to, comparator);
-			else
-				mpSort(array, curTo + 1, to, pivots, pivotIdx + 1, toPivots, comparator);
-		}
 	}
 
 	/**
@@ -189,7 +194,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	{
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
-		if (range < SWITCH_SIZE) {
+		if (range < ALGORITHM_THRESHOLD) {
 			// Please replace with your favorite sorting algorithm...
 
 			// BinInsertionSort.binInsertionSort(array, from, to, comparator);

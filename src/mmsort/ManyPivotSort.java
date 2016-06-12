@@ -16,6 +16,7 @@ import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
 	private static final int PIVOTS_SIZE = 127;							//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	private static final int PIVOTS_REBUILD_THRESHOLD = 3;				//	（現在の再起で）ピボットリストの数がこの数字以下のときはピボットリストを作り直す。
 	private static final int ALGORITHM_THRESHOLD = 10000;				//	クイックソートに切り替えるサイズ
 	/**
 	 * Many pivot sort
@@ -53,7 +54,7 @@ public class ManyPivotSort implements ISortAlgorithm {
 			array[curTo--] = work;
 		}
 
-		if (toPivots - fromPivots <= 3) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
+		if (toPivots - fromPivots <= PIVOTS_REBUILD_THRESHOLD) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
 			mpSort(array, from, curTo + 1, comparator);
 			mpSort(array, curFrom, to, comparator);
 		} else {
