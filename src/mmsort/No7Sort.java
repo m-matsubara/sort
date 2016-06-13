@@ -1,5 +1,5 @@
 /*
- * Merge sort
+ * No7Sort
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -28,14 +28,24 @@ public class No7Sort implements ISortAlgorithm {
 	private static final int MODE_2 = 13;
 	private static final int MODE_3 = 14;
 
-	public static final <T> void merge(final T[] array, int p1, int p2, int p3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
+	/**
+	 * マージ処理
+	 * @param array マージ先
+	 * @param pos1 array配列の第１レーンの開始位置
+	 * @param pos2 array配列の第２レーンの開始位置
+	 * @param pos3 array配列の第３レーンの開始位置
+	 * @param to ソート対象の終了位置（含まない位置）
+	 * @param workArray work area / 作業用一時領域
+	 * @param comparator comparator of array element / 比較器
+	 */
+	public static final <T> void merge(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
 		int mode;
-		if (comparator.compare(array[p1], array[p2]) <= 0) {
+		if (comparator.compare(array[pos1], array[pos2]) <= 0) {
 			// array[p1] <= array[p2]
-			if (comparator.compare(array[p2], array[p3]) <= 0) {
+			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p1] <= array[p2] <= array[p3]
 				mode = MODE_123;
-			} else if (comparator.compare(array[p1], array[p3]) <= 0) {
+			} else if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p1] <= array[p3] <= array[p2]
 				mode = MODE_132;
 			} else {
@@ -44,10 +54,10 @@ public class No7Sort implements ISortAlgorithm {
 			}
 		} else {
 			// array[p2] < array[p1]
-			if (comparator.compare(array[p1], array[p3]) <= 0) {
+			if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p2] < array[p1] <= array[p3]
 				mode = MODE_213;
-			} else if (comparator.compare(array[p2], array[p3]) <= 0) {
+			} else if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p2] <= array[p3] < array[p1]
 				mode = MODE_231;
 			} else {
@@ -56,181 +66,182 @@ public class No7Sort implements ISortAlgorithm {
 			}
 		}
 
-		System.arraycopy(array, p1, workArray, 0, p3 - p1);
-		int idx = p1;
-		final int p1to = p2 - idx;
-		final int p2to = p3 - idx;
+		System.arraycopy(array, pos1, workArray, 0, pos3 - pos1);
+		int idx = pos1;
+		final int p1to = pos2 - idx;
+		final int p2to = pos3 - idx;
 		final int p3to = to;
-		p1 = 0;
-		p2 -= idx;
+		pos1 = 0;
+		pos2 -= idx;
 
 		ThreeLane:
 		for (; idx < to; idx++) {
-			switch (mode) {
-			case MODE_123:
-				array[idx] = workArray[p1++];
-				if (p1 >= p1to) {
-					mode = MODE_23;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					mode = MODE_213;
-				else
-					mode = MODE_231;
-				break;
-			case MODE_132:
-				array[idx] = workArray[p1++];
-				if (p1 >= p1to) {
-					mode = MODE_32;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					mode = MODE_312;
-				else
-					mode = MODE_321;
-				break;
-			case MODE_213:
-				array[idx] = workArray[p2++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("3");
-				if (p2 >= p2to) {
-					mode = MODE_13;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					mode = MODE_123;
-				else
-					mode = MODE_132;
-				break;
-			case MODE_231:
-				array[idx] = workArray[p2++];
-				if (p2 >= p2to) {
-					mode = MODE_31;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					mode = MODE_321;
-				else
-					mode = MODE_312;
-				break;
-			case MODE_312:
-				array[idx] = array[p3++];
-				if (p3 >= p3to) {
-					mode = MODE_12;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					mode = MODE_132;
-				else
-					mode = MODE_123;
-				break;
-			case MODE_321:
-				array[idx] = array[p3++];
-				if (p3 >= p3to) {
-					mode = MODE_21;
-					idx++;
-					break ThreeLane;
-				} else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					mode = MODE_231;
-				else
-					mode = MODE_213;
-				break;
+			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
+			if (mode < MODE_213 ) {
+				// 0-1
+				if (mode == MODE_123) {	// 0 MODE_123
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						mode = MODE_23;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+						; // モード変更なし
+					else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
+						mode = MODE_213;
+					else
+						mode = MODE_231;
+				} else { 				// 1 MODE_132
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						mode = MODE_32;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
+						; // モード変更なし
+					else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+						mode = MODE_312;
+					else
+						mode = MODE_321;
+				}
+			} else if (mode < MODE_312) {
+				if (mode == MODE_213) {	// 2 MODE_213
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						mode = MODE_13;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+						; // モード変更なし
+					else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
+						mode = MODE_123;
+					else
+						mode = MODE_132;
+				} else { // MODE_231	// 3 MODE_231
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						mode = MODE_31;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
+						; // モード変更なし
+					else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+						mode = MODE_321;
+					else
+						mode = MODE_312;
+				}
+			} else {
+				if (mode == MODE_312) {	// 4 MODE_312
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						mode = MODE_12;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
+						; // モード変更なし
+					else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
+						mode = MODE_132;
+					else
+						mode = MODE_123;
+				} else { 				// 5 MODE_321
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						mode = MODE_21;
+						idx++;
+						break ThreeLane;
+					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
+						; // モード変更なし
+					else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
+						mode = MODE_231;
+					else
+						mode = MODE_213;
+				}
 			}
 		}
+
 		TwoLane:
 		for (; idx < to; idx++) {
-			switch (mode) {
-			case MODE_12:
-				array[idx] = workArray[p1++];
-				if (p1 >= p1to) {
-					mode = MODE_2;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_21;
-				break;
-			case MODE_13:
-				array[idx] = workArray[p1++];
-				if (p1 >= p1to) {
-					mode = MODE_3;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_31;
-				break;
-			case MODE_21:
-				array[idx] = workArray[p2++];
-				if (p2 >= p2to) {
-					mode = MODE_1;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_12;
-				break;
-			case MODE_23:
-				array[idx] = workArray[p2++];
-				if (p2 >= p2to) {
-					mode = MODE_3;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_32;
-				break;
-			case MODE_31:
-				array[idx] = array[p3++];
-				if (p3 >= p3to) {
-					mode = MODE_1;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_13;
-				break;
-			case MODE_32:
-				array[idx] = array[p3++];
-				if (p3 >= p3to) {
-					mode = MODE_2;
-					idx++;
-					break TwoLane;
-				} else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_23;
-				break;
+			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
+			if (mode < MODE_21) {
+				if (mode == MODE_12) {	// 6 MODE_12
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						mode = MODE_2;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+						; // モード変更なし
+					else
+						mode = MODE_21;
+				} else { 				// 7 MODE_13
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						mode = MODE_3;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
+						; // モード変更なし
+					else
+						mode = MODE_31;
+				}
+			} else if (mode < MODE_31) {
+				if (mode == MODE_21) {	// 8 MODE_21
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						mode = MODE_1;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+						; // モード変更なし
+					else
+						mode = MODE_12;
+				} else { 				// 9 MODE_23
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						mode = MODE_3;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
+						; // ���[�h�ύX�Ȃ�
+					else
+						mode = MODE_32;
+				}
+			} else {
+				if (mode == MODE_31) {	// 10 MODE_31
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						mode = MODE_1;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
+						; // モード変更なし
+					else
+						mode = MODE_13;
+				} else { 				// 11 MODE_32
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						mode = MODE_2;
+						idx++;
+						break TwoLane;
+					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
+						; // モード変更なし
+					else
+						mode = MODE_23;
+				}
 			}
 		}
 		if (mode == MODE_1) {
-			System.arraycopy(workArray, p1, array, idx, p1to - p1);
+			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
 		} else if (mode == MODE_2) {
-			System.arraycopy(workArray, p2, array, idx, p2to - p2);
+			System.arraycopy(workArray, pos2, array, idx, p2to - pos2);
 		}
 	}
 
 
 	/**
 	 * No7Sort
-	 * 作業用一時領域はソート対象の範囲サイズと同サイズ必要
+	 *
+	 * 作業用一時領域はソート対象の範囲サイズの2/3(切り捨て)程度必要
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
@@ -271,237 +282,25 @@ public class No7Sort implements ISortAlgorithm {
 		}
 
 		final int gap = range / 3;
-		int p1 = from;
-		int p2 = p1 + gap;
-		int p3 = p2 + gap;
-		no7Sort(array, from, p2, workArray, comparator);
-		no7Sort(array, p2,   p3, workArray, comparator);
-		no7Sort(array, p3,   to, workArray, comparator);
+		final int pos1 = from;
+		final int pos2 = pos1 + gap;
+		final int pos3 = pos2 + gap;
+		no7Sort(array, from, pos2, workArray, comparator);
+		no7Sort(array, pos2, pos3, workArray, comparator);
+		no7Sort(array, pos3, to,   workArray, comparator);
 
-		merge(array, p1, p2, p3, to, workArray, comparator);
-/*
-		final int p1to = p2;
-		final int p2to = p3;
-		final int p3to = to;
-		int mode;
-		if (comparator.compare(array[p1], array[p2]) <= 0) {
-			// array[p1] <= array[p2]
-			if (comparator.compare(array[p2], array[p3]) <= 0) {
-				// array[p1] <= array[p2] <= array[p3]
-				mode = MODE_123;
-			} else if (comparator.compare(array[p1], array[p3]) <= 0) {
-				// array[p1] <= array[p3] <= array[p2]
-				mode = MODE_132;
-			} else {
-				// array[p3] < array[p1] <= array[p2]
-				mode = MODE_312;
-			}
-		} else {
-			// array[p2] < array[p1]
-			if (comparator.compare(array[p1], array[p3]) <= 0) {
-				// array[p2] < array[p1] <= array[p3]
-				mode = MODE_213;
-			} else if (comparator.compare(array[p2], array[p3]) <= 0) {
-				// array[p2] <= array[p3] < array[p1]
-				mode = MODE_231;
-			} else {
-				// array[p3] < array[p2] < array[p1]
-				mode = MODE_321;
-			}
-		}
+		// ソート済み配列の場合の高速化
+		if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
+			return;
 
-		System.arraycopy(array, from, workArray, from, gap * 2);
-		int idx = from;
-		ThreeLean:
-		for (; idx < to; idx++) {
-			switch (mode) {
-			case MODE_123:
-				array[idx] = workArray[p1++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("1");
-				if (p1 >= p1to) {
-					mode = MODE_23;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					mode = MODE_213;
-				else
-					mode = MODE_231;
-				break;
-			case MODE_132:
-				array[idx] = workArray[p1++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("2");
-				if (p1 >= p1to) {
-					mode = MODE_32;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					mode = MODE_312;
-				else
-					mode = MODE_321;
-				break;
-			case MODE_213:
-				array[idx] = workArray[p2++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("3");
-				if (p2 >= p2to) {
-					mode = MODE_13;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					mode = MODE_123;
-				else
-					mode = MODE_132;
-				break;
-			case MODE_231:
-				array[idx] = workArray[p2++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("4");
-				if (p2 >= p2to) {
-					mode = MODE_31;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					; // モード変更なし
-				else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					mode = MODE_321;
-				else
-					mode = MODE_312;
-				break;
-			case MODE_312:
-				array[idx] = array[p3++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("5");
-				if (p3 >= p3to) {
-					mode = MODE_12;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					mode = MODE_132;
-				else
-					mode = MODE_123;
-				break;
-			case MODE_321:
-				array[idx] = array[p3++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("6");
-				if (p3 >= p3to) {
-					mode = MODE_21;
-					idx++;
-					break ThreeLean;
-				} else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					; // モード変更なし
-				else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					mode = MODE_231;
-				else
-					mode = MODE_213;
-				break;
-			}
-		}
-		TwoLean:
-		for (; idx < to; idx++) {
-			switch (mode) {
-			case MODE_12:
-				array[idx] = workArray[p1++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("7");
-				if (p1 >= p1to) {
-					mode = MODE_2;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(workArray[p1], workArray[p2]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_21;
-				break;
-			case MODE_13:
-				array[idx] = workArray[p1++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("8");
-				if (p1 >= p1to) {
-					mode = MODE_3;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(workArray[p1], array[p3]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_31;
-				break;
-			case MODE_21:
-				array[idx] = workArray[p2++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("9");
-				if (p2 >= p2to) {
-					mode = MODE_1;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(workArray[p2], workArray[p1]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_12;
-				break;
-			case MODE_23:
-				array[idx] = workArray[p2++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("10");
-				if (p2 >= p2to) {
-					mode = MODE_3;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(workArray[p2], array[p3]) <= 0)
-					; // モード変更なし
-				else
-					mode = MODE_32;
-				break;
-			case MODE_31:
-				array[idx] = array[p3++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("11");
-				if (p3 >= p3to) {
-					mode = MODE_1;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(array[p3], workArray[p1]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_13;
-				break;
-			case MODE_32:
-				array[idx] = array[p3++];
-				//if (array[idx] == null)
-				//	throw new RuntimeException("12");
-				if (p3 >= p3to) {
-					mode = MODE_2;
-					idx++;
-					break TwoLean;
-				} else if (comparator.compare(array[p3], workArray[p2]) < 0)
-					; // モード変更なし
-				else
-					mode = MODE_23;
-				break;
-			}
-		}
-		if (mode == MODE_1) {
-			System.arraycopy(workArray, p1, array, idx, p1to - p1);
-		} else if (mode == MODE_2) {
-			System.arraycopy(workArray, p2, array, idx, p2to - p2);
-		}
-*/
+		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、大きな範囲を処理するころにはコンパイル済みになるため)
+		merge(array, pos1, pos2, pos3, to, workArray, comparator);
 	}
 
 
 	/**
 	 * No7Sort
-	 * No7ソート
+	 *
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
@@ -510,7 +309,7 @@ public class No7Sort implements ISortAlgorithm {
 	public static final <T> void no7Sort(T[] array, int from, int to, Comparator<? super T> comparator)
 	{
 		@SuppressWarnings("unchecked")
-		final T[] workArray = (T[])new Object[to - from];
+		final T[] workArray = (T[])new Object[(to - from) / 3 * 2];
 
 		no7Sort(array, from, to, workArray, comparator);
 	}
