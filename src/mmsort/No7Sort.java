@@ -293,7 +293,7 @@ public class No7Sort implements ISortAlgorithm {
 		if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
 			return;
 
-		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、大きな範囲を処理するころにはコンパイル済みになるため)
+		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、結果的に高速化できる)
 		merge(array, pos1, pos2, pos3, to, workArray, comparator);
 	}
 
