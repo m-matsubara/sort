@@ -14,6 +14,11 @@ import java.util.Comparator;
 
 public class MatSort implements ISortAlgorithm {
 	/**
+	 * 作業領域サイズ(対象配列の 1/WORK_SIZE_RATIO のサイズで作業領域を用意する)
+	 */
+	public static final int WORK_SIZE_RATIO = 5;
+
+	/**
 	 * 前方優先バイナリサーチ
 	 * 先頭から範囲を２倍ずつ拡張しながら、ある程度位置を絞り込む。その後絞り込んだ範囲内でバイナリサーチ
 	 * @param key 検索値
@@ -79,9 +84,8 @@ public class MatSort implements ISortAlgorithm {
 		// |                                                       |          |
 		// from                                                fromIdx        to
 		int fromIdx = to - workSize;
-		// MasSort版は以下２行
-		System.arraycopy(array, fromIdx, workArray, 0, workSize);
-		MasSort.masSort(workArray, array, 0, workSize, fromIdx, comparator);
+		// MasSort版は以下１行
+		MasSort.masSort(array, fromIdx, to, workArray, comparator);
 		// mmsSort版は以下１行
 		//MmsSort.mmsSort(array, fromIdx, to, workArray, 40, comparator);
 
@@ -109,8 +113,8 @@ public class MatSort implements ISortAlgorithm {
 			if (fromIdx < from)
 				fromIdx = from;
 			// MasSort版は以下２行
+			MasSort.masSort(array, fromIdx, midIdx, workArray, comparator);
 			System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
-			MasSort.masSort(array, workArray, fromIdx, midIdx, 0, comparator);
 			// mmsSort版は以下２行
 			//MmsSort.mmsSort(array, fromIdx, midIdx, workArray, 40, comparator);
 			//System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
@@ -198,7 +202,7 @@ public class MatSort implements ISortAlgorithm {
 			return ;
 		//	作業領域サイズの決定
 		if (workSize == 0)
-			workSize = (range + 9) / 10;		// round up / 切り上げ
+			workSize = (range + WORK_SIZE_RATIO - 1) / WORK_SIZE_RATIO;		// round up / 切り上げ
 		if (workSize > range)
 			workSize = range;					//	作業領域サイズがソート範囲のサイズより大きい場合、ソート範囲のサイズにする。
 		else if (workSize == range)
