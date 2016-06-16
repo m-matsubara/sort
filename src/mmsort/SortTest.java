@@ -1,6 +1,15 @@
 /*
- * Benchmark of Sorting algorithm
- * ソートのベンチマークプログラム
+ * Sort Algorithm Benchmark Program
+ * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <Times>
+ *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R 10
+ *   ArrayType:
+ *     R: Random Data
+ *     U: Unique Random Data
+ *     H: Half Sorted (Half Random)
+ *     A: Ascending Ordered
+ *     D: Descending Ordered
+ *     F: Flat Data
+ *
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -51,7 +60,7 @@ public class SortTest {
 	public static void initArray(SortItem[] array, int duplicate)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = i / duplicate;
+			array[i] = new SortItem(i / duplicate);
 		}
 	}
 
@@ -63,7 +72,7 @@ public class SortTest {
 	public static void initReverseArray(SortItem[] array, int duplicate)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = (array.length - i - 1) / duplicate;
+			array[i] = new SortItem((array.length - i - 1) / duplicate);
 		}
 	}
 
@@ -75,7 +84,7 @@ public class SortTest {
 	public static void initFlatArray(SortItem[] array)
 	{
 		for (int i = 0; i < array.length; i++) {
-			array[i].key = 0;
+			array[i] = new SortItem(0);
 		}
 	}
 
@@ -89,17 +98,17 @@ public class SortTest {
 	{
 		final int half = array.length / 2;
 		for (int i = 0; i < half; i++) {
-			array[i].key = (i * 2) / duplicate;
+			array[i] = new SortItem((i * 2) / duplicate);
 		}
 		for (int i = half; i < array.length; i++) {
-			array[i].key = ((i - half) * 2 + 1) / duplicate;
+			array[i] = new SortItem(((i - half) * 2 + 1) / duplicate);
 		}
 		final Random rand = new Random(randSeed);
 		for (int i = half; i < array.length; i++) {
 			final int j = half + rand.nextInt(array.length - half);
-			final SortItem work = array[i];
-			array[i] = array[j];
-			array[j] = work;
+			final int work = array[i].key;
+			array[i].key = array[j].key;
+			array[j].key = work;
 		}
 	}
 
@@ -113,9 +122,9 @@ public class SortTest {
 		final Random rand = new Random(randSeed);
 		for (int i = 0; i < array.length; i++) {
 			final int j = rand.nextInt(array.length);
-			final SortItem work = array[i];
-			array[i] = array[j];
-			array[j] = work;
+			final int work = array[i].key;
+			array[i].key = array[j].key;
+			array[j].key = work;
 		}
 	}
 
@@ -162,12 +171,24 @@ public class SortTest {
 	}
 
 
-
+	/**
+	 * Sort Algorithm Benchmark Program
+	 * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <Times>
+	 *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R 10
+	 *   ArrayType:
+	 *     R: Random Data
+	 *     U: Unique Random Data
+	 *     H: Half Sorted (Half Random)
+	 *     A: Ascending Ordered
+	 *     D: Descending Ordered
+	 *     F: Flat Data
+	 *
+	 * @param args arguments
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
-		//	Arguments : mmsort.MatSort 10000000 R 10
+		//	Arguments : mmsort.MmsSort 10000000 R 10
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-
-		SortItem[] array;
 
 		//	比較器
 		Comparator<SortItem> comparator = new Comparator<SortItem>() {
@@ -218,14 +239,7 @@ public class SortTest {
 			times = Integer.parseInt(args[3]);
 		}
 
-		//	ソート対象配列の初期化
-		array = new SortItem[arraySize];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = new SortItem(i / duplicate);
-		}
-		//	配列の要素がきれいに並んでいる場合と、ランダムな位置のオブジェクトを指しているのではアクセス速度に差が出る。
-		//	テストのケースによっては初回と２回目以降に差が出るため、最初にすべてシャッフルすることでアクセス速度を均一にする。
-		shuffleArray(array, 0);
+		SortItem[] array = new SortItem[arraySize];
 
 		//System.out.println("times	algorithm	array type	array size	time	compare count	stable");
 		for (int idx = 1; idx <= times; idx++) {
@@ -234,12 +248,14 @@ public class SortTest {
 			switch (arrayType) {
 				case ARRAY_TYPE_RANDOM:
 				{
+					initArray(array, duplicate);
 					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
 					arrayTypeName = "Random";
 					break;
 				}
 				case ARRAY_TYPE_UNIQUE_RANDOM:
 				{
+					initArray(array, 1);
 					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
 					arrayTypeName = "Unique Random";
 					break;
@@ -277,7 +293,6 @@ public class SortTest {
 			SortTest.compareCount = 0;
 
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
-			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			final long startTime = System.nanoTime();
 			sorter.sort(array, 0, array.length, comparator);
 			final long endTime = System.nanoTime();
