@@ -201,7 +201,6 @@ public class SortTest {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		//	Arguments : mmsort.MmsSort 10000000 R 10
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 		//	ソートのタイプ（アルゴリズム）の決定
