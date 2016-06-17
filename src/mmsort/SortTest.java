@@ -32,6 +32,19 @@ public class SortTest {
 
 	protected static long compareCount = 0;									//	比較された回数
 
+	//	比較器
+	protected static Comparator<SortItem> comparator = new Comparator<SortItem>() {
+		@Override
+		public final int compare(SortItem o1, SortItem o2) {
+			//	マルチスレッド間の調停をしていないのでマルチスレッドのソートは正確な値にならないが、大まかな数値としては問題ない。
+			//	スレッドセーフにするとマルチスレッドの効果が分からなくなるのでやらない。
+			SortTest.compareCount++;
+			final int i1 = o1.key;
+			final int i2 = o2.key;
+			return (i1 < i2) ? -1 : (i1 > i2) ? 1 : 0;
+		}
+	};
+
 	/**
 	 * Sort element type
 	 * ソート対象配列の要素
@@ -113,7 +126,8 @@ public class SortTest {
 	}
 
 	/**
-	 * 配列の値をシャッフルする
+	 * 配列のキー値をシャッフルする
+	 * オブジェクトのキー値のみ入れ替え、オブジェクトの入れ替えは行わない。
 	 * @param array 対象配列
 	 * @param randSeed 乱数の種
 	 */
@@ -190,19 +204,6 @@ public class SortTest {
 		//	Arguments : mmsort.MmsSort 10000000 R 10
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
-		//	比較器
-		Comparator<SortItem> comparator = new Comparator<SortItem>() {
-			@Override
-			public final int compare(SortItem o1, SortItem o2) {
-				//	マルチスレッド間の調停をしていないのでマルチスレッドのソートは正確な値にならないが、大まかな数値としては問題ない。
-				//	スレッドセーフにするとマルチスレッドの効果が分からなくなるのでやらない。
-				SortTest.compareCount++;
-				final int i1 = o1.key;
-				final int i2 = o2.key;
-				return (i1 < i2) ? -1 : (i1 > i2) ? 1 : 0;
-			}
-		};
-
 		//	ソートのタイプ（アルゴリズム）の決定
 		String sortType = args[0];
 
@@ -249,14 +250,16 @@ public class SortTest {
 				case ARRAY_TYPE_RANDOM:
 				{
 					initArray(array, duplicate);
-					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					shuffleArray(array, idx);
 					arrayTypeName = "Random";
 					break;
 				}
 				case ARRAY_TYPE_UNIQUE_RANDOM:
 				{
 					initArray(array, 1);
-					shuffleArray(array, idx);	//	実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					shuffleArray(array, idx);
 					arrayTypeName = "Unique Random";
 					break;
 				}
