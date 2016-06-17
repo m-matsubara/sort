@@ -34,41 +34,6 @@ public class QuickSortM3 implements ISortAlgorithm {
 			return;
 		}
 
-		//	ソート対象配列サイズが３以下のときは特別扱い
-		if (range <= 1) {
-			return;
-		} else if (range == 2) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			return;
-		} else if (range == 3) {
-			if (comparator.compare(array[from + 1], array[from]) < 0) {
-				T work = array[from];
-				array[from] = array[from + 1];
-				array[from + 1] = work;
-			}
-			if (comparator.compare(array[from + 2], array[from + 1]) < 0) {
-				T work = array[from + 1];
-				array[from + 1] = array[from + 2];
-				array[from + 2] = work;
-				if (comparator.compare(array[from + 1], array[from]) < 0) {
-					work = array[from];
-					array[from] = array[from + 1];
-					array[from + 1] = work;
-				}
-			}
-			return;
-		}
-
-		if (range < 40) {
-			//InsertionSort.insertionSort(array, from, to, comparator);
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			return;
-		}
-
 		T pivot;							// pivot value / ピボット値
 //		pivot = array[from + range / 2];
 
