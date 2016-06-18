@@ -310,41 +310,27 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// ^                ^               ^         ^               ^                 ^
 			// |                |               |         |               |                 |
 			// from           eqFrom         curFrom   curTo            eqTo                to
-/*
-			int comp1;		// array[curFrom] と pivot の比較値
-			while ((comp1 = comparator.compare(array[curFrom], pivot)) < 0)
-				curFrom++;
-			int comp2;		// array[curTo] と pivot の比較値
-			while ((comp2 = comparator.compare(pivot, array[curTo])) < 0)
-				curTo--;
-*/
-			boolean notEqCurFrom = true;
+
+			int comp1;
 			for (;;) {
-				final int comp = comparator.compare(array[curFrom], pivot);
-				if (comp > 0)
+				comp1 = comparator.compare(array[curFrom++], pivot);
+				if (comp1 >= 0)
 					break;
-				else if (comp == 0) {
-					notEqCurFrom = false;
-					break;
-				}
-				curFrom++;
 			}
-			boolean notEqCurTo = true;
+			curFrom--;
+
+			int comp2;
 			for (;;) {
-				final int comp = comparator.compare(pivot, array[curTo]);
-				if (comp > 0)
+				comp2 = comparator.compare(pivot, array[curTo--]);
+				if (comp2 >= 0)
 					break;
-				else if (comp == 0) {
-					notEqCurTo = false;
-					break;
-				}
-				curTo--;
 			}
+			curTo++;
 
 			if (curFrom > curTo)
 				break;
 
-			if (notEqCurFrom || notEqCurTo) {
+			if (comp1 != 0 || comp2 != 0) {
 				final T work = array[curFrom];
 				array[curFrom] = array[curTo];
 				array[curTo] = work;
@@ -354,7 +340,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// array [curTo] is replaced with the array [eqTo], to collect the value equal to the pivot value in the rear.
 			// 比較時に array[curFrom] にあった要素はスワップによって array[curTo] に存在している
 			// array[curTo] と array[eqTo] を入れ替えて、ピボット値と等しい値を後方にいったん集める
-			if (!notEqCurFrom) {
+			if (comp1 == 0) {
 				final T work = array[curTo];
 				array[curTo] = array[eqTo];
 				array[eqTo--] = work;
@@ -363,7 +349,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// array [curFrom] is replaced with the array [eqFrom], to collect the value equal to the pivot value in the rear.
 			// 比較時に array[curTo] にあった要素はスワップによって array[curFrom] に存在している
 			// array[curFrom] と array[eqFrom] を入れ替えて、ピボット値と等しい値を後方にいったん集める
-			if (!notEqCurTo) {
+			if (comp2 == 0) {
 				final T work = array[curFrom];
 				array[curFrom] = array[eqFrom];
 				array[eqFrom++] = work;
