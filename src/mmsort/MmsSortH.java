@@ -64,7 +64,7 @@ public class MmsSortH implements ISortAlgorithm {
 		int idx1 = from;	//	範囲１の次の値のインデックス
 		int idx2 = mid;		//	範囲２の次の値のインデックス
 
-		if (comparator.compare(array[mid - 1], array[mid]) < 0)
+		if (comparator.compare(array[mid - 1], array[mid]) <= 0)
 			return;			//	範囲１の値はすべて範囲２の値より小さかった（再配置なし）…ソート済みの配列に対する高速化
 
 		//	範囲１をワーク配列にコピー
