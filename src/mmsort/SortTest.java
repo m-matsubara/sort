@@ -55,6 +55,21 @@ public class SortTest {
 	{
 		public int key;				//	sort key / ソートのキー
 		public int orginalOrder;	//	Sort pre-order (for confirmation of stable sort) / ソート前の順序（安定ソートの確認用）
+		public int filler1;
+		public int filler2;
+		public int filler3;
+		public int filler4;
+		public int filler5;
+		public int filler6;
+		public int filler7;
+		public int filler8;
+		public int filler9;
+		public int filler10;
+		public int filler11;
+		public int filler12;
+		public int filler13;
+		public int filler14;
+
 		public SortItem(int key)
 		{
 			this.key = key;
