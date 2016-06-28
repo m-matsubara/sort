@@ -12,7 +12,6 @@ package mmsort;
 import java.util.Comparator;
 
 public class QuickSort3WM5 implements ISortAlgorithm {
-	protected static final int PIVOTS_SIZE = 31;							// pivot list size / ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	protected static final int ALGORITHM_THRESHOLD = 20;					// size of switching to other algorithms / 他のアルゴリズムに切り替えるサイズ
 
 	public static final <T> void sort5(final T[] array, final int p1, final int p2, final int p3, final int p4, final int p5, final Comparator<? super T> comparator)
@@ -311,21 +310,23 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// |                |               |         |               |                 |
 			// from           eqFrom         curFrom   curTo            eqTo                to
 
-			int comp1;
-			for (;;) {
-				comp1 = comparator.compare(array[curFrom++], pivot);
-				if (comp1 >= 0)
-					break;
+			int comp1 = comparator.compare(array[curFrom], pivot);;
+			if (comp1 < 0) {
+				for (;;) {
+					comp1 = comparator.compare(array[++curFrom], pivot);
+					if (comp1 >= 0)
+						break;
+				}
 			}
-			curFrom--;
 
-			int comp2;
-			for (;;) {
-				comp2 = comparator.compare(pivot, array[curTo--]);
-				if (comp2 >= 0)
-					break;
+			int comp2 = comparator.compare(pivot, array[curTo]);
+			if (comp2 < 0) {
+				for (;;) {
+					comp2 = comparator.compare(pivot, array[--curTo]);
+					if (comp2 >= 0)
+						break;
+				}
 			}
-			curTo++;
 
 			if (curFrom > curTo)
 				break;
@@ -416,13 +417,8 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 				throw new RuntimeException("ccc");
 		}
 */
-		if (from < curFrom - 1) {
-			sort3WM5(array, from, curFrom, comparator);
-		}
-
-		if (curTo < to - 1) {
-			sort3WM5(array, curTo + 1, to, comparator);
-		}
+		sort3WM5(array, from, curFrom, comparator);
+		sort3WM5(array, curTo + 1, to, comparator);
 	}
 
 	@Override
