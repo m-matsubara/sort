@@ -47,30 +47,30 @@ public class MasSort implements ISortAlgorithm {
 	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void merge(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
-		int mode;
+		int state;
 		if (comparator.compare(array[pos1], array[pos2]) <= 0) {
 			// array[p1] <= array[p2]
 			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p1] <= array[p2] <= array[p3]
-				mode = STATE_123;
+				state = STATE_123;
 			} else if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p1] <= array[p3] <= array[p2]
-				mode = STATE_132;
+				state = STATE_132;
 			} else {
 				// array[p3] < array[p1] <= array[p2]
-				mode = STATE_312;
+				state = STATE_312;
 			}
 		} else {
 			// array[p2] < array[p1]
 			if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p2] < array[p1] <= array[p3]
-				mode = STATE_213;
+				state = STATE_213;
 			} else if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p2] <= array[p3] < array[p1]
-				mode = STATE_231;
+				state = STATE_231;
 			} else {
 				// array[p3] < array[p2] < array[p1]
-				mode = STATE_321;
+				state = STATE_321;
 			}
 		}
 
@@ -85,77 +85,77 @@ public class MasSort implements ISortAlgorithm {
 		ThreeLane:
 		for (; idx < to; idx++) {
 			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
-			if (mode < STATE_213) {
+			if (state < STATE_213) {
 				// 0-1
 				array[idx] = workArray[pos1++];
-				if (mode == STATE_123) {	// 0 STATE_123
+				if (state == STATE_123) {	// 0 STATE_123
 					if (pos1 >= p1to) {
-						mode = STATE_23;
+						state = STATE_23;
 						break ThreeLane;
 					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
-						mode = STATE_213;
+						state = STATE_213;
 					else
-						mode = STATE_231;
+						state = STATE_231;
 				} else { 				// 1 STATE_132
 					if (pos1 >= p1to) {
-						mode = STATE_32;
+						state = STATE_32;
 						break ThreeLane;
 					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
-						mode = STATE_312;
+						state = STATE_312;
 					else
-						mode = STATE_321;
+						state = STATE_321;
 				}
-			} else if (mode < STATE_312) {
+			} else if (state < STATE_312) {
 				// 2-3
 				array[idx] = workArray[pos2++];
-				if (mode == STATE_213) {	// 2 STATE_213
+				if (state == STATE_213) {	// 2 STATE_213
 					if (pos2 >= p2to) {
-						mode = STATE_13;
+						state = STATE_13;
 						break ThreeLane;
 					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
-						mode = STATE_123;
+						state = STATE_123;
 					else
-						mode = STATE_132;
+						state = STATE_132;
 				} else { // STATE_231	// 3 STATE_231
 					if (pos2 >= p2to) {
-						mode = STATE_31;
+						state = STATE_31;
 						break ThreeLane;
 					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
-						mode = STATE_321;
+						state = STATE_321;
 					else
-						mode = STATE_312;
+						state = STATE_312;
 				}
 			} else {
 				// 4-5
 				array[idx] = array[pos3++];
-				if (mode == STATE_312) {	// 4 STATE_312
+				if (state == STATE_312) {	// 4 STATE_312
 					if (pos3 >= p3to) {
-						mode = STATE_12;
+						state = STATE_12;
 						break ThreeLane;
 					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
-						mode = STATE_132;
+						state = STATE_132;
 					else
-						mode = STATE_123;
+						state = STATE_123;
 				} else { 				// 5 STATE_321
 					if (pos3 >= p3to) {
-						mode = STATE_21;
+						state = STATE_21;
 						break ThreeLane;
 					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
-						mode = STATE_231;
+						state = STATE_231;
 					else
-						mode = STATE_213;
+						state = STATE_213;
 				}
 			}
 		}
@@ -164,73 +164,73 @@ public class MasSort implements ISortAlgorithm {
 		TwoLane:
 		for (; idx < to; idx++) {
 			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
-			if (mode < STATE_21) {
-				if (mode == STATE_12) {	// 6 STATE_12
+			if (state < STATE_21) {
+				if (state == STATE_12) {	// 6 STATE_12
 					array[idx] = workArray[pos1++];
 					if (pos1 >= p1to) {
-						mode = STATE_2;
+						state = STATE_2;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
 						; // モード変更なし
 					else
-						mode = STATE_21;
+						state = STATE_21;
 				} else { 				// 7 STATE_13
 					array[idx] = workArray[pos1++];
 					if (pos1 >= p1to) {
-						mode = STATE_3;
+						state = STATE_3;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
 						; // モード変更なし
 					else
-						mode = STATE_31;
+						state = STATE_31;
 				}
-			} else if (mode < STATE_31) {
-				if (mode == STATE_21) {	// 8 STATE_21
+			} else if (state < STATE_31) {
+				if (state == STATE_21) {	// 8 STATE_21
 					array[idx] = workArray[pos2++];
 					if (pos2 >= p2to) {
-						mode = STATE_1;
+						state = STATE_1;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
-						mode = STATE_12;
+						state = STATE_12;
 				} else { 				// 9 STATE_23
 					array[idx] = workArray[pos2++];
 					if (pos2 >= p2to) {
-						mode = STATE_3;
+						state = STATE_3;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
 						; // モード変更なし
 					else
-						mode = STATE_32;
+						state = STATE_32;
 				}
 			} else {
-				if (mode == STATE_31) {	// 10 STATE_31
+				if (state == STATE_31) {	// 10 STATE_31
 					array[idx] = array[pos3++];
 					if (pos3 >= p3to) {
-						mode = STATE_1;
+						state = STATE_1;
 						break TwoLane;
 					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
-						mode = STATE_13;
+						state = STATE_13;
 				} else { 				// 11 STATE_32
 					array[idx] = array[pos3++];
 					if (pos3 >= p3to) {
-						mode = STATE_2;
+						state = STATE_2;
 						break TwoLane;
 					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
 						; // モード変更なし
 					else
-						mode = STATE_23;
+						state = STATE_23;
 				}
 			}
 		}
 		idx++;
 
-		if (mode == STATE_1) {
+		if (state == STATE_1) {
 			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
-		} else if (mode == STATE_2) {
+		} else if (state == STATE_2) {
 			System.arraycopy(workArray, pos2, array, idx, p2to - pos2);
 		}
 	}
@@ -306,8 +306,9 @@ public class MasSort implements ISortAlgorithm {
 	 */
 	public static final <T> void masSort(T[] array, int from, int to, Comparator<? super T> comparator)
 	{
+		final int range = to - from;
 		@SuppressWarnings("unchecked")
-		final T[] workArray = (T[])new Object[(to - from) / 3 * 2];
+		final T[] workArray = (T[])new Object[range / 3 * 2];
 
 		masSort(array, from, to, workArray, comparator);
 	}
