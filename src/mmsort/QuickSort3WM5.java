@@ -310,22 +310,18 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// |                |               |         |               |                 |
 			// from           eqFrom         curFrom   curTo            eqTo                to
 
-			int comp1 = comparator.compare(array[curFrom], pivot);;
+			int comp1 = comparator.compare(array[curFrom], pivot);
 			if (comp1 < 0) {
-				for (;;) {
+				do {
 					comp1 = comparator.compare(array[++curFrom], pivot);
-					if (comp1 >= 0)
-						break;
-				}
+				} while (comp1 < 0);
 			}
 
 			int comp2 = comparator.compare(pivot, array[curTo]);
 			if (comp2 < 0) {
-				for (;;) {
+				do {
 					comp2 = comparator.compare(pivot, array[--curTo]);
-					if (comp2 >= 0)
-						break;
-				}
+				} while (comp2 < 0);
 			}
 
 			if (curFrom > curTo)
@@ -380,6 +376,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 		// ^                 ^                                ^                         ^
 		// |                 |                                |                         |
 		// from            eqFrom                           eqTo                        to
+
 		if (curFrom != eqFrom) {
 			while (eqFrom > from) {
 				curFrom--;

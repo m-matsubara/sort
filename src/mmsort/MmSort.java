@@ -194,10 +194,10 @@ public class MmSort implements ISortAlgorithm {
 		int curFrom = from + 3;			//	min index / 現在処理中位置の小さい方の位置
 		int curTo = to - 1 - 2;			//	max index / 現在処理中位置の大きい方の位置
 		while (true) {
-			while (comparator.compare(array[curFrom++], pivot) < 0);
-			while (comparator.compare(pivot, array[curTo--]) < 0);
-			curFrom--;
-			curTo++;
+			if (comparator.compare(array[curFrom], pivot) < 0)
+				while (comparator.compare(array[++curFrom], pivot) < 0);
+			if (comparator.compare(pivot, array[curTo]) < 0)
+				while (comparator.compare(pivot, array[--curTo]) < 0);
 			if (curFrom >= curTo)
 				break;
 			final T work = array[curFrom];
