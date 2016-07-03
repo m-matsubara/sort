@@ -1,7 +1,7 @@
 /*
  * Sort Algorithm Benchmark Program
- * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <Times>
- *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R 10
+ * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <KeyType> <Times>
+ *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R I 10
  *   ArrayType:
  *     R: Random Data
  *     U: Unique Random Data
@@ -9,6 +9,9 @@
  *     A: Ascending Ordered
  *     D: Descending Ordered
  *     F: Flat Data
+ *   KeyType:
+ *     I: Integer
+ *     S: String
  *
  *
  * http://www.mmatsubara.com/developer/sort/
@@ -25,15 +28,20 @@ import java.util.Random;
 public class SortTest {
 	protected static final int ARRAY_TYPE_RANDOM = 0;
 	protected static final int ARRAY_TYPE_UNIQUE_RANDOM = 1;
-	protected static final int ARRAY_TYPE_HALF_SORTED = 2;
-	protected static final int ARRAY_TYPE_ASC = 3;
-	protected static final int ARRAY_TYPE_DESC = 4;
-	protected static final int ARRAY_TYPE_FLAT = 5;
+	protected static final int ARRAY_TYPE_NOISE_ON_SIN = 2;
+	protected static final int ARRAY_TYPE_HALF_SORTED = 3;
+	protected static final int ARRAY_TYPE_ASC = 4;
+	protected static final int ARRAY_TYPE_DESC = 5;
+	protected static final int ARRAY_TYPE_FLAT = 6;
+
+	protected static final int KEYTYPE_INT = 0;
+	protected static final int KEYTYPE_STRING = 1;
+
 
 	protected static long compareCount = 0;									//	比較された回数
 
 	//	比較器
-	protected static Comparator<SortItem> comparator = new Comparator<SortItem>() {
+	protected static Comparator<SortItem> intComparator = new Comparator<SortItem>() {
 		@Override
 		public final int compare(SortItem o1, SortItem o2) {
 			//	マルチスレッド間の調停をしていないのでマルチスレッドのソートは正確な値にならないが、大まかな数値としては問題ない。
@@ -42,6 +50,15 @@ public class SortTest {
 			final int i1 = o1.key;
 			final int i2 = o2.key;
 			return (i1 < i2) ? -1 : (i1 > i2) ? 1 : 0;
+		}
+	};
+	protected static Comparator<SortItem> strComparator = new Comparator<SortItem>() {
+		@Override
+		public final int compare(SortItem o1, SortItem o2) {
+			//	マルチスレッド間の調停をしていないのでマルチスレッドのソートは正確な値にならないが、大まかな数値としては問題ない。
+			//	スレッドセーフにするとマルチスレッドの効果が分からなくなるのでやらない。
+			SortTest.compareCount++;
+			return o1.keyStr.compareTo(o2.keyStr);
 		}
 	};
 
@@ -53,7 +70,8 @@ public class SortTest {
 	 */
 	static class SortItem
 	{
-		public int key;				//	sort key / ソートのキー
+		public int key;				//	sort key / ソートのキー（整数）
+		public String keyStr;		//	sort key / ソートのキー（文字列）
 		public int orginalOrder;	//	Sort pre-order (for confirmation of stable sort) / ソート前の順序（安定ソートの確認用）
 		public int filler1;
 		public int filler2;
@@ -68,11 +86,11 @@ public class SortTest {
 		public int filler11;
 		public int filler12;
 		public int filler13;
-		public int filler14;
 
 		public SortItem(int key)
 		{
 			this.key = key;
+			this.keyStr = null;
 			this.orginalOrder = 0;
 		}
 		public String toString() {
@@ -101,6 +119,21 @@ public class SortTest {
 	{
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem((array.length - i - 1) / duplicate);
+		}
+	}
+
+
+	/**
+	 * 配列を降順の値で初期化する
+	 * @param array 対象配列
+	 */
+	public static void initNoiseOnSin(SortItem[] array, long randSeed)
+	{
+		final Random rand = new Random(randSeed);
+		for (int i = 0; i < array.length; i++) {
+			int keyValue = (int)Math.round(Math.sin(2.0 * Math.PI / array.length * i) * 1000000.0);
+			keyValue = keyValue + rand.nextInt(100);
+			array[i] = new SortItem(keyValue);
 		}
 	}
 
@@ -162,6 +195,17 @@ public class SortTest {
 	 * ソート前順序の値を確定
 	 * @param array 対象配列
 	 */
+	public static void assignKeyStr(SortItem[] array)
+	{
+		for (int i = 0; i < array.length; i++) {
+			array[i].keyStr = String.format("%1$9d", array[i].key);
+		}
+	}
+
+	/**
+	 * ソート前順序の値を確定
+	 * @param array 対象配列
+	 */
 	public static void assignOriginalOrderArray(SortItem[] array)
 	{
 		for (int i = 0; i < array.length; i++) {
@@ -202,8 +246,8 @@ public class SortTest {
 
 	/**
 	 * Sort Algorithm Benchmark Program
-	 * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <Times>
-	 *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R 10
+	 * Command line Arguments : <SortClassName> <ArraySize> <ArrayType> <KeyType> <Times>
+	 *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R I 10
 	 *   ArrayType:
 	 *     R: Random Data
 	 *     U: Unique Random Data
@@ -211,6 +255,9 @@ public class SortTest {
 	 *     A: Ascending Ordered
 	 *     D: Descending Ordered
 	 *     F: Flat Data
+	 *   KeyType:
+	 *     I: Integer
+	 *     S: String
 	 *
 	 * @param args arguments
 	 * @throws Exception
@@ -236,6 +283,8 @@ public class SortTest {
 			} else if (args[2].equals("U")) {	//	Unique Random
 				arrayType = ARRAY_TYPE_UNIQUE_RANDOM;
 				duplicate = 1;
+			} else if (args[2].equals("S")) {	//	Noise on sin
+				arrayType = ARRAY_TYPE_NOISE_ON_SIN;
 			} else if (args[2].equals("H")) {	//	Half sorted
 				arrayType = ARRAY_TYPE_HALF_SORTED;
 			} else if (args[2].equals("A")) {	//	Ascending ordered
@@ -248,10 +297,23 @@ public class SortTest {
 			else
 				throw new Exception("arguments error ");
 		}
+
+		//	キーのタイプ
+		int keyType = KEYTYPE_INT;
+		if (args.length >= 4) {
+			if (args[3].equals("I")) {	//	Integer
+				keyType = KEYTYPE_INT;
+			} else if (args[3].equals("S")) {	//	String
+				keyType = KEYTYPE_STRING;
+			}
+			else
+				throw new Exception("arguments error ");
+		}
+
 		//	繰り返し数
 		int times = 10;
-		if (args.length >= 4) {
-			times = Integer.parseInt(args[3]);
+		if (args.length >= 5) {
+			times = Integer.parseInt(args[4]);
 		}
 
 		SortItem[] array = new SortItem[arraySize];
@@ -275,6 +337,13 @@ public class SortTest {
 					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
 					shuffleArray(array, idx);
 					arrayTypeName = "Unique Random";
+					break;
+				}
+				case ARRAY_TYPE_NOISE_ON_SIN:
+				{
+					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+					initNoiseOnSin(array, idx);
+					arrayTypeName = "Noise on sine curve";
 					break;
 				}
 				case ARRAY_TYPE_HALF_SORTED:
@@ -303,6 +372,9 @@ public class SortTest {
 				}
 			}
 			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
+			if (keyType == KEYTYPE_STRING) {
+				assignKeyStr(array);
+			}
 
 			final String sortName = sorter.getName();
 			final boolean stable = sorter.isStable();
@@ -311,11 +383,18 @@ public class SortTest {
 
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			final long startTime = System.nanoTime();
-			sorter.sort(array, 0, array.length, comparator);
+			if (keyType == KEYTYPE_INT)
+				sorter.sort(array, 0, array.length, intComparator);
+			else
+				sorter.sort(array, 0, array.length, strComparator);
 			final long endTime = System.nanoTime();
 
 			final long compareCount = SortTest.compareCount;
-			System.out.printf("%d	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, arraySize, (endTime - startTime) / 1000000000.0, compareCount, stableStr);
+			String keyTypeStr = "Integer";
+			if (keyType == KEYTYPE_STRING) {
+				keyTypeStr = "String";
+			}
+			System.out.printf("Java	%d	%s	%s	%s	%d	%f	%d	%s\n", idx, sortName, arrayTypeName, keyTypeStr, arraySize, (endTime - startTime) / 1000000000.0, compareCount, stableStr);
 			validateArray(array, stable);
 		}
 	}
