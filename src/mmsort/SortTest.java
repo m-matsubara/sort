@@ -318,7 +318,7 @@ public class SortTest {
 
 		SortItem[] array = new SortItem[arraySize];
 
-		//System.out.println("times	algorithm	array type	array size	time	compare count	stable");
+		//System.out.println("language	no	algorithm	array type	key type	array size	time	compare count	stable");
 		for (int idx = 1; idx <= times; idx++) {
 			//	配列の準備
 			String arrayTypeName = "";
