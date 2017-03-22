@@ -18,23 +18,23 @@ package mmsort;
 import java.util.Comparator;
 
 public class MasSort implements ISortAlgorithm {
-	private static final int STATE_123 = 0;
-	private static final int STATE_132 = 1;
-	private static final int STATE_213 = 2;
-	private static final int STATE_231 = 3;
-	private static final int STATE_312 = 4;
-	private static final int STATE_321 = 5;
+	private static final byte STATE_123 = 0;
+	private static final byte STATE_132 = 1;
+	private static final byte STATE_213 = 2;
+	private static final byte STATE_231 = 3;
+	private static final byte STATE_312 = 4;
+	private static final byte STATE_321 = 5;
 
-	private static final int STATE_12 = 6;
-	private static final int STATE_13 = 7;
-	private static final int STATE_21 = 8;
-	private static final int STATE_23 = 9;
-	private static final int STATE_31 = 10;
-	private static final int STATE_32 = 11;
+	private static final byte STATE_12 = 6;
+	private static final byte STATE_13 = 7;
+	private static final byte STATE_21 = 8;
+	private static final byte STATE_23 = 9;
+	private static final byte STATE_31 = 10;
+	private static final byte STATE_32 = 11;
 
-	private static final int STATE_1 = 12;
-	private static final int STATE_2 = 13;
-	private static final int STATE_3 = 14;
+	private static final byte STATE_1 = 12;
+	private static final byte STATE_2 = 13;
+	private static final byte STATE_3 = 14;
 
 	/**
 	 * マージ処理
@@ -47,7 +47,7 @@ public class MasSort implements ISortAlgorithm {
 	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void merge(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
-		int state;
+		byte state;	// state は int より　byte のほうが僅かに速い？
 		if (comparator.compare(array[pos1], array[pos2]) <= 0) {
 			// array[p1] <= array[p2]
 			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
