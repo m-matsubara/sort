@@ -164,13 +164,13 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void sort3WM5(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
 		if (range < ALGORITHM_THRESHOLD) {
-			InsertionSort.insertionSort(array, from, to, comparator);
-			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			InsertionSort.sortImpl(array, from, to, comparator);
+			//BinInsertionSort.sortImpl(array, from, to, comparator);
 			return;
 		}
 
@@ -318,14 +318,14 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 				throw new RuntimeException("ccc");
 		}
 */
-		sort3WM5(array, from, curFrom, comparator);
-		sort3WM5(array, curTo + 1, to, comparator);
+		sortImpl(array, from, curFrom, comparator);
+		sortImpl(array, curTo + 1, to, comparator);
 	}
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		sort3WM5(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

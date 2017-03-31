@@ -21,7 +21,7 @@ public class BinInsertionSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static <T> void binInsertionSort(final T[] array, final int from, final int to, Comparator<? super T> comparator)
+	public static <T> void sortImpl(final T[] array, final int from, final int to, Comparator<? super T> comparator)
 	{
 /* 必要に応じてコメントアウト解除
 		final int range = to - from;
@@ -110,7 +110,7 @@ public class BinInsertionSort implements ISortAlgorithm {
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		binInsertionSort(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

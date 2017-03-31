@@ -21,7 +21,7 @@ public class MergeSort implements ISortAlgorithm {
 	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void mergeSort(final T[] array, final int from, final int to, final T[] workArray, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final T[] workArray, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 
@@ -55,8 +55,8 @@ public class MergeSort implements ISortAlgorithm {
 		}
 
 		int mid = from + (to - from) / 2;	//	中央位置（範囲１と範囲２の境界）
-		mergeSort(array, from, mid, workArray, comparator);	//	範囲１（最小位置～中間位置）のソート
-		mergeSort(array, mid, to, workArray, comparator);	//	範囲２（中間位置～最大位置）のソート
+		sortImpl(array, from, mid, workArray, comparator);	//	範囲１（最小位置～中間位置）のソート
+		sortImpl(array, mid, to, workArray, comparator);	//	範囲２（中間位置～最大位置）のソート
 
 		int idx = from;		//	現在処理中の位置（範囲１と範囲２の小さい方をこの位置へ配置（移動）する）
 		int idx1 = from;	//	範囲１の次の値のインデックス
@@ -110,7 +110,7 @@ public class MergeSort implements ISortAlgorithm {
 		@SuppressWarnings("unchecked")
 		final T[] workArray = (T[])new Object[(to - from) / 2];
 
-		mergeSort(array, from, to, workArray, comparator);
+		sortImpl(array, from, to, workArray, comparator);
 	}
 
 	@Override

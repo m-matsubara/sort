@@ -23,14 +23,14 @@ public class QuickSortM3 implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void quickSortMedian3(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	ソート範囲サイズ
 
 		//	ソート対象配列サイズが一定数以下のときは特別扱い
 		if (range < ALGORITHM_THRESHOLD) {
-			InsertionSort.insertionSort(array, from, to, comparator);
-			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			InsertionSort.sortImpl(array, from, to, comparator);
+			//BinInsertionSort.sortImpl(array, from, to, comparator);
 			return;
 		}
 
@@ -76,14 +76,14 @@ public class QuickSortM3 implements ISortAlgorithm {
 		}
 
 		//	小さいパーティション・大きいパーティションそれぞれで再起
-		quickSortMedian3(array, from, curTo + 1, comparator);
-		quickSortMedian3(array, curFrom, to, comparator);
+		sortImpl(array, from, curTo + 1, comparator);
+		sortImpl(array, curFrom, to, comparator);
 	}
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		quickSortMedian3(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

@@ -103,10 +103,12 @@ public class SortTest {
 	 * 配列を昇順の値で初期化する
 	 * @param array 対象配列
 	 */
-	public static void initArray(SortItem[] array, int duplicate)
+	public static void initArray(SortItem[] array, int duplicate, int keyType)
 	{
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem(i / duplicate);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 	}
 
@@ -115,37 +117,43 @@ public class SortTest {
 	 * 配列を降順の値で初期化する
 	 * @param array 対象配列
 	 */
-	public static void initReverseArray(SortItem[] array, int duplicate)
+	public static void initReverseArray(SortItem[] array, int duplicate, int keyType)
 	{
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem((array.length - i - 1) / duplicate);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 	}
 
 
 	/**
-	 * 配列を降順の値で初期化する
+	 * ノイズの乗ったサインカーブで配列を初期化する
 	 * @param array 対象配列
 	 */
-	public static void initNoiseOnSin(SortItem[] array, long randSeed)
+	public static void initNoiseOnSin(SortItem[] array, long randSeed, int keyType)
 	{
 		final Random rand = new Random(randSeed);
 		for (int i = 0; i < array.length; i++) {
 			int keyValue = (int)Math.round(Math.sin(2.0 * Math.PI / array.length * i) * 1000000.0);
 			keyValue = keyValue + rand.nextInt(100);
 			array[i] = new SortItem(keyValue);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 	}
 
 
 	/**
-	 * 配列を降順の値で初期化する
+	 * 配列を全て同じ値で初期化する
 	 * @param array 対象配列
 	 */
-	public static void initFlatArray(SortItem[] array)
+	public static void initFlatArray(SortItem[] array, int keyType)
 	{
 		for (int i = 0; i < array.length; i++) {
 			array[i] = new SortItem(0);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 	}
 
@@ -155,14 +163,18 @@ public class SortTest {
 	 * @param randSeed 乱数の種
 	 * @param array 対象配列
 	 */
-	public static void initHalfSortedArray(SortItem[] array, long randSeed, int duplicate)
+	public static void initHalfSortedArray(SortItem[] array, long randSeed, int duplicate, int keyType)
 	{
 		final int half = array.length / 2;
 		for (int i = 0; i < half; i++) {
 			array[i] = new SortItem((i * 2) / duplicate);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 		for (int i = half; i < array.length; i++) {
 			array[i] = new SortItem(((i - half) * 2 + 1) / duplicate);
+			if (keyType == KEYTYPE_STRING)
+				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 		final Random rand = new Random(randSeed);
 		for (int i = half; i < array.length; i++) {
@@ -170,6 +182,11 @@ public class SortTest {
 			final int work = array[i].key;
 			array[i].key = array[j].key;
 			array[j].key = work;
+			if (keyType == KEYTYPE_STRING) {
+				final String workStr = array[i].keyStr;
+				array[i].keyStr = array[j].keyStr;
+				array[j].keyStr = workStr;
+			}
 		}
 	}
 
@@ -179,28 +196,28 @@ public class SortTest {
 	 * @param array 対象配列
 	 * @param randSeed 乱数の種
 	 */
-	public static void shuffleArray(SortItem[] array, long randSeed)
+	public static void shuffleArray(SortItem[] array, long randSeed, int keyType)
 	{
 		final Random rand = new Random(randSeed);
 		for (int i = 0; i < array.length; i++) {
 			final int j = rand.nextInt(array.length);
+
 			final int work = array[i].key;
 			array[i].key = array[j].key;
 			array[j].key = work;
+			if (keyType == KEYTYPE_STRING) {
+				final String workStr = array[i].keyStr;
+				array[i].keyStr = array[j].keyStr;
+				array[j].keyStr = workStr;
+			}
+/*
+			SortItem temp = array[i];
+			array[i] = array[j];
+			array[j] = temp;
+*/
 		}
 	}
 
-
-	/**
-	 * ソート前順序の値を確定
-	 * @param array 対象配列
-	 */
-	public static void assignKeyStr(SortItem[] array)
-	{
-		for (int i = 0; i < array.length; i++) {
-			array[i].keyStr = String.format("%1$9d", array[i].key);
-		}
-	}
 
 	/**
 	 * ソート前順序の値を確定
@@ -251,6 +268,7 @@ public class SortTest {
 	 *   ArrayType:
 	 *     R: Random Data
 	 *     U: Unique Random Data
+	 *     S: Noise on Sine Curve
 	 *     H: Half Sorted (Half Random)
 	 *     A: Ascending Ordered
 	 *     D: Descending Ordered
@@ -318,6 +336,7 @@ public class SortTest {
 
 		SortItem[] array = new SortItem[arraySize];
 
+
 		//System.out.println("language	no	algorithm	array type	key type	array size	time	compare count	stable");
 		for (int idx = 1; idx <= times; idx++) {
 			//	配列の準備
@@ -325,56 +344,53 @@ public class SortTest {
 			switch (arrayType) {
 				case ARRAY_TYPE_RANDOM:
 				{
-					initArray(array, duplicate);
+					initArray(array, duplicate, KEYTYPE_STRING);
 					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					shuffleArray(array, idx);
+					shuffleArray(array, idx, KEYTYPE_STRING);
 					arrayTypeName = "Random";
 					break;
 				}
 				case ARRAY_TYPE_UNIQUE_RANDOM:
 				{
-					initArray(array, 1);
+					initArray(array, 1, KEYTYPE_STRING);
 					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					shuffleArray(array, idx);
+					shuffleArray(array, idx, KEYTYPE_STRING);
 					arrayTypeName = "Unique Random";
 					break;
 				}
 				case ARRAY_TYPE_NOISE_ON_SIN:
 				{
 					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					initNoiseOnSin(array, idx);
+					initNoiseOnSin(array, idx, KEYTYPE_STRING);
 					arrayTypeName = "Noise on sine curve";
 					break;
 				}
 				case ARRAY_TYPE_HALF_SORTED:
 				{
-					initHalfSortedArray(array, idx, duplicate);
+					initHalfSortedArray(array, idx, duplicate, KEYTYPE_STRING);
 					arrayTypeName = "Half sorted";
 					break;
 				}
 				case ARRAY_TYPE_ASC:
 				{
-					initArray(array, duplicate);
+					initArray(array, duplicate, KEYTYPE_STRING);
 					arrayTypeName = "Ascending ordered";
 					break;
 				}
 				case ARRAY_TYPE_DESC:
 				{
-					initReverseArray(array, duplicate);
+					initReverseArray(array, duplicate, KEYTYPE_STRING);
 					arrayTypeName = "Descending ordered";
 					break;
 				}
 				case ARRAY_TYPE_FLAT:
 				{
-					initFlatArray(array);
+					initFlatArray(array, KEYTYPE_STRING);
 					arrayTypeName = "Flat";
 					break;
 				}
 			}
 			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
-			if (keyType == KEYTYPE_STRING) {
-				assignKeyStr(array);
-			}
 
 			final String sortName = sorter.getName();
 			final boolean stable = sorter.isStable();

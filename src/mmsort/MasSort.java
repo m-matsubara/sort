@@ -37,6 +37,145 @@ public class MasSort implements ISortAlgorithm {
 	private static final byte STATE_3 = 14;
 
 	/**
+	 * 配列中の任意の５か所をソートする
+	 * （３番目の要素からピボット値を得るために使用）
+	 * @param array sort target / ソート対象
+	 * @param p1 index 1 / 添え字1
+	 * @param p2 index 2 / 添え字2
+	 * @param p3 index 3 / 添え字3
+	 * @param p4 index 4 / 添え字4
+	 * @param p5 index 5 / 添え字5
+	 * @param comparator
+	 */
+	public static final <T> void sort5(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		final int range = to - from;
+
+		if (range <= 2) {
+			if (range == 2) {
+				if (comparator.compare(array[from], array[from + 1]) > 0) {
+					final T temp = array[from];
+					array[from] = array[from + 1];
+					array[from + 1] = temp;
+				}
+			}
+			return ;
+		}
+
+		final int p1 = from;
+		final int p2 = from + 1;
+		final int p3 = from + 2;
+		final int p4 = from + 3;
+		final int p5 = from + 4;
+		final T v1 = array[p1];
+		final T v2 = array[p2];
+		final T v3 = array[p3];
+		final T v4 = range >= 4 ? array[p4] : null;
+		final T v5 = range >= 5 ? array[p5] : null;
+
+		//	まず、先頭３つのソート
+		if (comparator.compare(v1, v2) <= 0) {
+			if (comparator.compare(v2, v3) <= 0) {
+				// v1 <= v2 <= v3
+				//array[p1] = v1;
+				//array[p2] = v2;
+				//array[p3] = v3;
+			} else if (comparator.compare(v1, v3) <= 0) {
+				// v1 <= v3 <= v2
+				//array[p1] = v1;
+				array[p2] = v3;
+				array[p3] = v2;
+			} else {
+				// v3 <= v1 <= v2
+				array[p1] = v3;
+				array[p2] = v1;
+				array[p3] = v2;
+			}
+		} else {
+			if (comparator.compare(v1, v3) <= 0) {
+				// v2 <= v1 <= v3
+				array[p1] = v2;
+				array[p2] = v1;
+				//array[p3] = v3;
+			} else if (comparator.compare(v2, v3) <= 0) {
+				// v2 <= v3 <= v1
+				array[p1] = v2;
+				array[p2] = v3;
+				array[p3] = v1;
+			} else {
+				// v3 <= v2 <= v1
+				array[p1] = v3;
+				//array[p2] = v2;
+				array[p3] = v1;
+			}
+		}
+
+		if (range >= 4) {
+			// v4 ( = array[p4]) を挿入ソートっぽく指定位置に挿入
+			if (comparator.compare(array[p2], v4) <= 0) {
+				if (comparator.compare(array[p3], v4) <= 0) {
+					// array[p3] <= v4
+				} else {
+					// array[p2] <= v4 < array[p3];
+					array[p4] = array[p3];
+					array[p3] = v4;
+				}
+			} else {
+				if (comparator.compare(array[p1], v4) <= 0) {
+					// array[p1] <= v4 < array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = v4;
+				} else {
+					// v4 < array[p1] <= array[p2];
+					array[p4] = array[p3];
+					array[p3] = array[p2];
+					array[p2] = array[p1];
+					array[p1] = v4;
+				}
+			}
+
+			if (range >= 5) {
+				// v5 ( = array[p5]) を挿入ソートっぽく指定位置に挿入
+				if (comparator.compare(array[p3], v5) <= 0) {
+					// array[p3] <= v5
+					if (comparator.compare(array[p4], v5) <= 0) {
+						// array[p3] <= array[4] <= v5
+					} else {
+						// array[p3] <= v5 < array[p4]
+						array[p5] = array[p4];
+						array[p4] = v5;
+					}
+				} else {
+					// v5 < array[p3]
+					if (comparator.compare(array[p2], v5) <= 0) {
+						// array[p2] <= v5 < array[p3]
+						array[p5] = array[p4];
+						array[p4] = array[p3];
+						array[p3] = v5;
+					} else {
+						// v5 < array[p2] <= array[p3]
+						if (comparator.compare(array[p1], v5) <= 0) {
+							// array[p1] <= v5 < array[p2] <= array[p3]
+							array[p5] = array[p4];
+							array[p4] = array[p3];
+							array[p3] = array[p2];
+							array[p2] = v5;
+						} else {
+							// v5 < array[p1] <= array[p2] <= array[p3]
+							array[p5] = array[p4];
+							array[p4] = array[p3];
+							array[p3] = array[p2];
+							array[p2] = array[p1];
+							array[p1] = v5;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * マージ処理
 	 * @param array マージ先
 	 * @param pos1 array配列の第１レーンの開始位置
@@ -47,7 +186,7 @@ public class MasSort implements ISortAlgorithm {
 	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void merge(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
-		byte state;	// state は int より　byte のほうが僅かに速い？
+		byte state;	// state は int より byte のほうが僅かに速い？
 		if (comparator.compare(array[pos1], array[pos2]) <= 0) {
 			// array[p1] <= array[p2]
 			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
@@ -246,25 +385,37 @@ public class MasSort implements ISortAlgorithm {
 	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void masSort(final T[] array, final int from, final int to, final T[] workArray, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final T[] workArray, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;
-		if (range < 30) {
-			InsertionSort.insertionSort(array, from, to, comparator);
+
+		// 比較キーが整数程度なら、insertionSortの方が速いが、複雑な比較関数の場合は、比較回数が少なくなる、binInsertionSortの方が有利
+
+		if (range <= 5) {
+			sort5(array, from, to, comparator);
+			//BinInsertionSort.sortImpl(array, from, to, comparator);
 			return;
 		}
-
+/*
+		if (range < 100) {
+			//sort5(array, from, to, comparator);
+			//InsertionSort.sortImpl(array, from, to, comparator);
+			BinInsertionSort.sortImpl(array, from, to, comparator);
+			//MergeSort.sortImpl(array, from, to, workArray, comparator);
+			return;
+		}
+*/
 		final int gap = range / 3;
 		final int pos1 = from;
 		final int pos2 = pos1 + gap;
 		final int pos3 = pos2 + gap;
-		masSort(array, pos3, to,   workArray, comparator);
-		masSort(array, pos2, pos3, workArray, comparator);
-		masSort(array, from, pos2, workArray, comparator);
+		sortImpl(array, pos3, to,   workArray, comparator);
+		sortImpl(array, pos2, pos3, workArray, comparator);
+		sortImpl(array, from, pos2, workArray, comparator);
 
 		// ソート済み配列の場合の高速化
-		if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
-			return;
+		//if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
+		//	return;
 
 		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、結果的に高速化できる)
 		merge(array, pos1, pos2, pos3, to, workArray, comparator);
@@ -279,19 +430,19 @@ public class MasSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void masSort(T[] array, int from, int to, Comparator<? super T> comparator)
+	public static final <T> void sortImpl(T[] array, int from, int to, Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 		@SuppressWarnings("unchecked")
 		final T[] workArray = (T[])new Object[range / 3 * 2];
 
-		masSort(array, from, to, workArray, comparator);
+		sortImpl(array, from, to, workArray, comparator);
 	}
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		masSort(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

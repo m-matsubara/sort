@@ -21,7 +21,7 @@ public class InsertionSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void insertionSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		for (int idx = from + 1; idx < to; idx++) {
 			final T value = array[idx];
@@ -42,8 +42,9 @@ public class InsertionSort implements ISortAlgorithm {
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		insertionSort(array, from, to, comparator);
+		InsertionSort.sortImpl(array, from, to, comparator);
 	}
+
 
 	@Override
 	public boolean isStable()

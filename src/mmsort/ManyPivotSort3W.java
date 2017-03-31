@@ -34,7 +34,7 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 * @param toPivots to index of pivots (last element of exclusive) / 使用対象となる pivots 配列の添え字の最大値 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final T[] pivots, final int fromPivots, final int toPivots, final Comparator<? super T> comparator)
 	{
 		final int pivotIdx = fromPivots + (toPivots - fromPivots) / 2;		//	using index from pivots (center position) / pivots配列の中で、今回使うべき要素の添え字
 		final T pivot = pivots[pivotIdx];									//	pivot value / ピボット値
@@ -172,11 +172,11 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		}
 */
 		if (toPivots - fromPivots <= PIVOTS_REBUILD_THRESHOLD) {	//	pivotsの残りが３つを切ったらpivotsを作り直す。（最後まで使い切らないのは、最後の１個は範囲内の中間値に近いとは言えないので）
-			mpSort(array, from, curTo + 1, comparator);
-			mpSort(array, curFrom, to, comparator);
+			sortImpl(array, from, curTo + 1, comparator);
+			sortImpl(array, curFrom, to, comparator);
 		} else {
-			mpSort(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
-			mpSort(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
+			sortImpl(array, from, curTo + 1, pivots, fromPivots, pivotIdx, comparator);
+			sortImpl(array, curFrom, to, pivots, pivotIdx + 1, toPivots, comparator);
 		}
 
 	}
@@ -190,15 +190,15 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 	 * @param to ソート対象の添え字の最大値 + 1
 	 * @param comparator 比較器
 	 */
-	public static final <T> void mpSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;		//	sort range / ソート範囲サイズ
 
 		if (range < ALGORITHM_THRESHOLD) {
 			// Please replace with your favorite sorting algorithm...
 
-			// BinInsertionSort.binInsertionSort(array, from, to, comparator);
-			QuickSortM3.quickSortMedian3(array, from, to, comparator);
+			// BinInsertionSort.sortImpl(array, from, to, comparator);
+			QuickSortM3.sortImpl(array, from, to, comparator);
 			return;
 		}
 
@@ -262,13 +262,13 @@ public class ManyPivotSort3W implements ISortAlgorithm {
 		}
 
 		//	ソート対象本体のソート
-		mpSort(array, from, to, pivots, 0, pivotCount, comparator);
+		sortImpl(array, from, to, pivots, 0, pivotCount, comparator);
 	}
 
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		mpSort(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

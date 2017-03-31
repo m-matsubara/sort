@@ -14,10 +14,15 @@ import java.util.Comparator;
 
 public class ArraysSort implements ISortAlgorithm {
 
+	public static <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	{
+		Arrays.sort(array, from, to, comparator);
+	}
+
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		Arrays.sort(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override

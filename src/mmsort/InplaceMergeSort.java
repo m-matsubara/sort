@@ -164,7 +164,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void ipMergeSort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
+	public static final <T> void sortImpl(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
 		final int range = to - from;
 
@@ -196,13 +196,13 @@ public class InplaceMergeSort implements ISortAlgorithm {
 			}
 			return;
 		} else if (range < 200) {
-			BinInsertionSort.binInsertionSort(array, from, to, comparator);
+			BinInsertionSort.sortImpl(array, from, to, comparator);
 			return;
 		}
 
 		int mid = from + (to - from) / 2;			//	center position (boundary of range1 and range2) / 中央位置（範囲１と範囲２の境界）
-		ipMergeSort(array, from, mid, comparator);	//	sort of range1(from - center) /  範囲１（最小位置～中間位置）のソート
-		ipMergeSort(array, mid, to, comparator);	//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
+		sortImpl(array, from, mid, comparator);	//	sort of range1(from - center) /  範囲１（最小位置～中間位置）のソート
+		sortImpl(array, mid, to, comparator);	//	sort of range2(center - to) / 範囲２（中間位置～最大位置）のソート
 
 		ipMerge(array, from, mid, to, comparator);
 	}
@@ -210,7 +210,7 @@ public class InplaceMergeSort implements ISortAlgorithm {
 	@Override
 	public <T> void sort(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
-		ipMergeSort(array, from, to, comparator);
+		sortImpl(array, from, to, comparator);
 	}
 
 	@Override
