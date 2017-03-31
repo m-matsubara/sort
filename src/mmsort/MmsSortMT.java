@@ -66,14 +66,14 @@ public class MmsSortMT implements ISortAlgorithm {
 
 		// ソート対象配列サイズが一定数以下のときは特別扱い
 		if (range < ALGORITHM_THRESHOLD) {
-			InsertionSort.insertionSort(array, from, to, comparator);
+			InsertionSort.sortImpl(array, from, to, comparator);
 			//BinInsertionSort.binInsertionSort(array, from, to, comparator);
 			return;
 		}
 
 		// 呼び出し深さが限度を超えたら別（MergeSortベース）のアルゴリズムに切り替え
 		if (depthRemainder < 0) {
-			MatSort.matSort(array, from, to, comparator, workArray, (range + 9) / 10);
+			MatSort.sortImpl(array, from, to, comparator, workArray, (range + 9) / 10);
 			//MergeSort.mergeSort(array, from, to, workArray, comparator);
 			return;
 		}
@@ -101,7 +101,7 @@ public class MmsSortMT implements ISortAlgorithm {
 			workArray[from + 5] = array[p5];
 			workArray[from + 6] = array[p6];
 			workArray[from + 7] = array[p7];
-			BinInsertionSort.binInsertionSort(workArray, from, from + 8, comparator);
+			BinInsertionSort.sortImpl(workArray, from, from + 8, comparator);
 
 			pivot1 = workArray[from + 2];
 			pivot2 = workArray[from + 5];
@@ -119,7 +119,7 @@ public class MmsSortMT implements ISortAlgorithm {
 			workArray[from + 2] = array[p2];
 			workArray[from + 3] = array[p3];
 			workArray[from + 4] = array[p4];
-			BinInsertionSort.binInsertionSort(workArray, from, from + 5, comparator);
+			BinInsertionSort.sortImpl(workArray, from, from + 5, comparator);
 
 			pivot1 = workArray[from + 1];
 			pivot2 = workArray[from + 3];
