@@ -175,8 +175,99 @@ public class MasSort implements ISortAlgorithm {
 		}
 	}
 
+
 	/**
-	 * マージ処理
+	 * ２つのレーンのマージ処理
+	 * @param array マージ先
+	 * @param pos1 array配列の第１レーンの開始位置
+	 * @param pos2 array配列の第２レーンの開始位置
+	 * @param pos3 array配列の第３レーンの開始位置
+	 * @param to ソート対象の終了位置（含まない位置）
+	 * @param workArray work area / 作業用一時領域
+	 * @param comparator comparator of array element / 比較器
+	 * @param state レーン先頭要素の並び
+	 * @param idx arrayへのインデックス
+	 * @param p1to レーン1の終了位置 (+1)
+	 * @param p2to レーン2の終了位置 (+1)
+	 * @param p3to レーン3の終了位置 (+1)
+	 */
+	public static final <T> void merge2(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator, int state, int idx, int p1to, int p2to, int p3to) {
+		TwoLane:
+		for (; idx < to; idx++) {
+			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
+			if (state < STATE_21) {
+				if (state == STATE_12) {	// 6 STATE_12
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						state = STATE_2;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+						; // モード変更なし
+					else
+						state = STATE_21;
+				} else { 				// 7 STATE_13
+					array[idx] = workArray[pos1++];
+					if (pos1 >= p1to) {
+						state = STATE_3;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
+						; // モード変更なし
+					else
+						state = STATE_31;
+				}
+			} else if (state < STATE_31) {
+				if (state == STATE_21) {	// 8 STATE_21
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						state = STATE_1;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+						; // モード変更なし
+					else
+						state = STATE_12;
+				} else { 				// 9 STATE_23
+					array[idx] = workArray[pos2++];
+					if (pos2 >= p2to) {
+						state = STATE_3;
+						break TwoLane;
+					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
+						; // モード変更なし
+					else
+						state = STATE_32;
+				}
+			} else {
+				if (state == STATE_31) {	// 10 STATE_31
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						state = STATE_1;
+						break TwoLane;
+					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
+						; // モード変更なし
+					else
+						state = STATE_13;
+				} else { 				// 11 STATE_32
+					array[idx] = array[pos3++];
+					if (pos3 >= p3to) {
+						state = STATE_2;
+						break TwoLane;
+					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
+						; // モード変更なし
+					else
+						state = STATE_23;
+				}
+			}
+		}
+		idx++;
+
+		if (state == STATE_1) {
+			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
+		} else if (state == STATE_2) {
+			System.arraycopy(workArray, pos2, array, idx, p2to - pos2);
+		}
+	}
+
+	/**
+	 * ３つのレーンのマージ処理
 	 * @param array マージ先
 	 * @param pos1 array配列の第１レーンの開始位置
 	 * @param pos2 array配列の第２レーンの開始位置
@@ -185,8 +276,8 @@ public class MasSort implements ISortAlgorithm {
 	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
 	 */
-	public static final <T> void merge(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
-		byte state;	// state は int より byte のほうが僅かに速い？
+	public static final <T> void merge3(final T[] array, int pos1, int pos2, int pos3, final int to, final T[] workArray, final Comparator<? super T> comparator) {
+		int state;
 		if (comparator.compare(array[pos1], array[pos2]) <= 0) {
 			// array[p1] <= array[p2]
 			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
@@ -300,78 +391,7 @@ public class MasSort implements ISortAlgorithm {
 		}
 		idx++;
 
-		TwoLane:
-		for (; idx < to; idx++) {
-			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
-			if (state < STATE_21) {
-				if (state == STATE_12) {	// 6 STATE_12
-					array[idx] = workArray[pos1++];
-					if (pos1 >= p1to) {
-						state = STATE_2;
-						break TwoLane;
-					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
-						; // モード変更なし
-					else
-						state = STATE_21;
-				} else { 				// 7 STATE_13
-					array[idx] = workArray[pos1++];
-					if (pos1 >= p1to) {
-						state = STATE_3;
-						break TwoLane;
-					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
-						; // モード変更なし
-					else
-						state = STATE_31;
-				}
-			} else if (state < STATE_31) {
-				if (state == STATE_21) {	// 8 STATE_21
-					array[idx] = workArray[pos2++];
-					if (pos2 >= p2to) {
-						state = STATE_1;
-						break TwoLane;
-					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
-						; // モード変更なし
-					else
-						state = STATE_12;
-				} else { 				// 9 STATE_23
-					array[idx] = workArray[pos2++];
-					if (pos2 >= p2to) {
-						state = STATE_3;
-						break TwoLane;
-					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
-						; // モード変更なし
-					else
-						state = STATE_32;
-				}
-			} else {
-				if (state == STATE_31) {	// 10 STATE_31
-					array[idx] = array[pos3++];
-					if (pos3 >= p3to) {
-						state = STATE_1;
-						break TwoLane;
-					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
-						; // モード変更なし
-					else
-						state = STATE_13;
-				} else { 				// 11 STATE_32
-					array[idx] = array[pos3++];
-					if (pos3 >= p3to) {
-						state = STATE_2;
-						break TwoLane;
-					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
-						; // モード変更なし
-					else
-						state = STATE_23;
-				}
-			}
-		}
-		idx++;
-
-		if (state == STATE_1) {
-			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
-		} else if (state == STATE_2) {
-			System.arraycopy(workArray, pos2, array, idx, p2to - pos2);
-		}
+		merge2(array, pos1, pos2, pos3, to, workArray, comparator, state, idx, p1to, p2to, p3to);	//	マージ処理を分割したほうが、初回実行が速くなる。
 	}
 
 
@@ -418,7 +438,7 @@ public class MasSort implements ISortAlgorithm {
 		//	return;
 
 		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、結果的に高速化できる)
-		merge(array, pos1, pos2, pos3, to, workArray, comparator);
+		merge3(array, pos1, pos2, pos3, to, workArray, comparator);
 	}
 
 
