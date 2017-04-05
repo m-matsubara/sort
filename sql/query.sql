@@ -9,6 +9,8 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Random' and FST.KEY_TYPE = 'Integer') as "RATIO"
+  
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -35,6 +37,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Random' and FST.KEY_TYPE = 'String') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -61,6 +64,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Unique Random' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -87,6 +91,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Half sorted' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -113,6 +118,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Ascending ordered' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -139,6 +145,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Descending ordered' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -165,6 +172,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_TIME FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Flat' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_TIME SR
 where
@@ -191,6 +199,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Random' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -217,6 +226,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Random' and FST.KEY_TYPE = 'String') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -243,6 +253,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Unique Random' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -269,6 +280,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Half sorted' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -295,6 +307,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Ascending ordered' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -321,6 +334,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Descending ordered' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
@@ -347,6 +361,7 @@ select
   , SR.N1000000 as "1000000"
   , SR.N10000000 as "10000000"
   /*, SR.N100000000 as "100000000"*/
+  , SR.N10000000 / (select min(FST.N10000000) from VW_SORT_REPORT_COMPARE FST where FST.LANG = 'Java' and FST.ARRAY_TYPE = 'Flat' and FST.KEY_TYPE = 'Integer') as "RATIO"
 from
   VW_SORT_REPORT_COMPARE SR
 where
