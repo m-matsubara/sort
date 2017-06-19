@@ -105,7 +105,7 @@ public class SortTest {
 	 */
 	public static void initArray(SortItem[] array, int duplicate, int keyType)
 	{
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			array[i] = new SortItem(i / duplicate);
 			if (keyType == KEYTYPE_STRING)
 				array[i].keyStr = String.format("%1$010d", array[i].key);
@@ -119,7 +119,7 @@ public class SortTest {
 	 */
 	public static void initReverseArray(SortItem[] array, int duplicate, int keyType)
 	{
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			array[i] = new SortItem((array.length - i - 1) / duplicate);
 			if (keyType == KEYTYPE_STRING)
 				array[i].keyStr = String.format("%1$010d", array[i].key);
@@ -134,7 +134,7 @@ public class SortTest {
 	public static void initNoiseOnSin(SortItem[] array, long randSeed, int keyType)
 	{
 		final Random rand = new Random(randSeed);
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			int keyValue = (int)Math.round(Math.sin(2.0 * Math.PI / array.length * i) * 1000000.0);
 			keyValue = keyValue + rand.nextInt(100);
 			array[i] = new SortItem(keyValue);
@@ -150,7 +150,7 @@ public class SortTest {
 	 */
 	public static void initFlatArray(SortItem[] array, int keyType)
 	{
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			array[i] = new SortItem(0);
 			if (keyType == KEYTYPE_STRING)
 				array[i].keyStr = String.format("%1$010d", array[i].key);
@@ -166,19 +166,19 @@ public class SortTest {
 	public static void initHalfSortedArray(SortItem[] array, long randSeed, int duplicate, int keyType)
 	{
 		final int half = array.length / 2;
-		for (int i = 0; i < half; i++) {
+		for (int i = 1; i < half; i++) {
 			array[i] = new SortItem((i * 2) / duplicate);
 			if (keyType == KEYTYPE_STRING)
 				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
-		for (int i = half; i < array.length; i++) {
+		for (int i = half; i < array.length - 1; i++) {
 			array[i] = new SortItem(((i - half) * 2 + 1) / duplicate);
 			if (keyType == KEYTYPE_STRING)
 				array[i].keyStr = String.format("%1$010d", array[i].key);
 		}
 		final Random rand = new Random(randSeed);
-		for (int i = half; i < array.length; i++) {
-			final int j = half + rand.nextInt(array.length - half);
+		for (int i = half; i < array.length - 1; i++) {
+			final int j = half + rand.nextInt(array.length - half - 1);
 			final int work = array[i].key;
 			array[i].key = array[j].key;
 			array[j].key = work;
@@ -199,8 +199,8 @@ public class SortTest {
 	public static void shuffleArray(SortItem[] array, long randSeed, int keyType)
 	{
 		final Random rand = new Random(randSeed);
-		for (int i = 0; i < array.length; i++) {
-			final int j = rand.nextInt(array.length);
+		for (int i = 1; i < array.length - 1; i++) {
+			final int j = rand.nextInt(array.length - 2) + 1;
 
 			final int work = array[i].key;
 			array[i].key = array[j].key;
@@ -225,7 +225,7 @@ public class SortTest {
 	 */
 	public static void assignOriginalOrderArray(SortItem[] array)
 	{
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			array[i].orginalOrder = i;
 		}
 	}
@@ -237,15 +237,20 @@ public class SortTest {
 	 */
 	public static void validateArray(SortItem[] array, boolean stable)
 	{
+		if (array[0] != null)
+			throw new RuntimeException("array validation error. (out of range) : 0");
+		if (array[array.length - 1] != null)
+			throw new RuntimeException("array validation error. (out of range) : " + (array.length - 1));
+
 		if (stable) {
 			//	安定ソート用
-			for (int i = 0; i < array.length - 1; i++) {
+			for (int i = 1; i < array.length - 2; i++) {
 				if (array[i].key > array[i + 1].key || ((array[i].key == array[i + 1].key) && (array[i].orginalOrder > array[i + 1].orginalOrder)))
 					throw new RuntimeException("array validation error. (stable mode) : " + i);
 			}
 		} else {
 			//	非安定ソート用
-			for (int i = 0; i < array.length - 1; i++) {
+			for (int i = 1; i < array.length - 2; i++) {
 				if (array[i].key > array[i + 1].key)
 					throw new RuntimeException("array validation error. (unstable mode) : " + i);
 			}
@@ -253,10 +258,10 @@ public class SortTest {
 
 		//	originalOrderの合計値確認（オブジェクトが入れ替えでなく、上書きとかされていないか）
 		long sum = 0;
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length - 1; i++) {
 			sum += array[i].orginalOrder;
 		}
-		if (sum != ((long)array.length - 1) * array.length / 2)	//	ガウスの方式とかいうやつ
+		if (sum != ((long)array.length - 1) * array.length / 2 - 0 - (array.length - 1))	//	ガウスの方式とかいうやつ
 			throw new RuntimeException("array validation error.");
 	}
 
@@ -334,7 +339,7 @@ public class SortTest {
 			times = Integer.parseInt(args[4]);
 		}
 
-		SortItem[] array = new SortItem[arraySize];
+		SortItem[] array = new SortItem[arraySize + 2];
 
 
 		//System.out.println("language	no	algorithm	array type	key type	array size	time	compare count	stable");
@@ -400,9 +405,9 @@ public class SortTest {
 			System.gc();	//	ソート中にGCが（できるだけ）発生しないように
 			final long startTime = System.nanoTime();
 			if (keyType == KEYTYPE_INT)
-				sorter.sort(array, 0, array.length, intComparator);
+				sorter.sort(array, 1, array.length - 1, intComparator);
 			else
-				sorter.sort(array, 0, array.length, strComparator);
+				sorter.sort(array, 1, array.length - 1, strComparator);
 			final long endTime = System.nanoTime();
 
 			final long compareCount = SortTest.compareCount;
