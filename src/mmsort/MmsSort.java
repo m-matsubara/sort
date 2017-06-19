@@ -166,7 +166,7 @@ public class MmsSort implements ISortAlgorithm {
 		final int range = to - from;		//	ソート範囲サイズ
 
 		// ソート対象配列サイズが一定数以下のときは特別扱い
-		if (range <= 5) {
+		if (range <= 10) {
 			//sort5(array, from, to, comparator);
 			InsertionSort.sortImpl(array, from, to, comparator);
 			//BinInsertionSort.sortImpl(array, from, to, comparator);
@@ -188,7 +188,27 @@ public class MmsSort implements ISortAlgorithm {
 
 		T pivot1;	//	ピボット１
 		T pivot2;	//	ピボット２
-		if (range >= 150) {
+		if (range >= 300) {
+			// ピボット候補値の添え字の差分
+			final int gap = range / 12;
+			// ピボット候補値の添え字
+			final int center = from + (range >> 1);
+			workArray[0]  = array[center - gap * 5];
+			workArray[1]  = array[center - (gap << 2)];
+			workArray[2]  = array[center - gap * 3];
+			workArray[3]  = array[center - (gap << 1)];
+			workArray[4]  = array[center - gap];
+			workArray[5]  = array[center];
+			workArray[6]  = array[center + gap];
+			workArray[7]  = array[center + (gap << 1)];
+			workArray[8]  = array[center + gap * 3];
+			workArray[9]  = array[center + (gap << 2)];
+			workArray[10] = array[center + gap * 5];
+			InsertionSort.sortImpl(workArray, 0, 11, comparator);
+
+			pivot1 = workArray[3];
+			pivot2 = workArray[7];
+		} else if (range >= 150) {
 			// ピボット候補値の添え字の差分
 			final int gap = range / 12;
 			// ピボット候補値の添え字
