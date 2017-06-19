@@ -4,8 +4,7 @@
  * 2016/06
  * 以前のバージョンのMasSortは配列を32個ほどの区画にわけマージしていたが、
  * コードが複雑になりすぎて速度が思ったほど上がらなかったため、３つの区画に分け、
- * ３つの区画の大小関係を STATE_XXX のような整数型変数１つで管理する方式に
- * 変更した。
+ * ３つの区画の大小関係を state のような整数型変数１つで管理する方式に変更した。
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -18,34 +17,13 @@ package mmsort;
 import java.util.Comparator;
 
 public class MasSort implements ISortAlgorithm {
-	private static final byte STATE_123 = 0;
-	private static final byte STATE_132 = 1;
-	private static final byte STATE_213 = 2;
-	private static final byte STATE_231 = 3;
-	private static final byte STATE_312 = 4;
-	private static final byte STATE_321 = 5;
-
-	private static final byte STATE_12 = 6;
-	private static final byte STATE_13 = 7;
-	private static final byte STATE_21 = 8;
-	private static final byte STATE_23 = 9;
-	private static final byte STATE_31 = 10;
-	private static final byte STATE_32 = 11;
-
-	private static final byte STATE_1 = 12;
-	private static final byte STATE_2 = 13;
-	private static final byte STATE_3 = 14;
-
 	/**
-	 * 配列中の任意の５か所をソートする
-	 * （３番目の要素からピボット値を得るために使用）
+	 * 最大サイズ５のソート
+	 *
 	 * @param array sort target / ソート対象
-	 * @param p1 index 1 / 添え字1
-	 * @param p2 index 2 / 添え字2
-	 * @param p3 index 3 / 添え字3
-	 * @param p4 index 4 / 添え字4
-	 * @param p5 index 5 / 添え字5
-	 * @param comparator
+	 * @param from index of first element / ソート対象の開始位置
+	 * @param to index of last element (exclusive) / ソート対象の終了位置 + 1
+	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void sort5(final T[] array, final int from, final int to, final Comparator<? super T> comparator)
 	{
@@ -179,9 +157,9 @@ public class MasSort implements ISortAlgorithm {
 	/**
 	 * ２つのレーンのマージ処理
 	 * @param array マージ先
-	 * @param pos1 array配列の第１レーンの開始位置
-	 * @param pos2 array配列の第２レーンの開始位置
-	 * @param pos3 array配列の第３レーンの開始位置
+	 * @param pos1 array配列のレーン1の開始位置
+	 * @param pos2 array配列のレーン2の開始位置
+	 * @param pos3 array配列のレーン3の開始位置
 	 * @param to ソート対象の終了位置（含まない位置）
 	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
@@ -195,73 +173,79 @@ public class MasSort implements ISortAlgorithm {
 		TwoLane:
 		for (; idx < to; idx++) {
 			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
-			if (state < STATE_21) {
-				if (state == STATE_12) {	// 6 STATE_12
+			if (state < 0x21) {
+				if (state == 0x12) {
+					// state = 0x12
 					array[idx] = workArray[pos1++];
 					if (pos1 >= p1to) {
-						state = STATE_2;
+						state = 0x2;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
 						; // モード変更なし
 					else
-						state = STATE_21;
-				} else { 				// 7 STATE_13
+						state = 0x21;
+				} else {
+					// state = 0x13
 					array[idx] = workArray[pos1++];
 					if (pos1 >= p1to) {
-						state = STATE_3;
+						state = 0x3;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
 						; // モード変更なし
 					else
-						state = STATE_31;
+						state = 0x31;
 				}
-			} else if (state < STATE_31) {
-				if (state == STATE_21) {	// 8 STATE_21
+			} else if (state < 0x31) {
+				if (state == 0x21) {
+					// state = 0x21
 					array[idx] = workArray[pos2++];
 					if (pos2 >= p2to) {
-						state = STATE_1;
+						state = 0x1;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
-						state = STATE_12;
-				} else { 				// 9 STATE_23
+						state = 0x12;
+				} else {
+					// state = 0x23
 					array[idx] = workArray[pos2++];
 					if (pos2 >= p2to) {
-						state = STATE_3;
+						state = 0x3;
 						break TwoLane;
 					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
 						; // モード変更なし
 					else
-						state = STATE_32;
+						state = 0x32;
 				}
 			} else {
-				if (state == STATE_31) {	// 10 STATE_31
+				if (state == 0x31) {
+					// state = 0x31
 					array[idx] = array[pos3++];
 					if (pos3 >= p3to) {
-						state = STATE_1;
+						state = 0x1;
 						break TwoLane;
 					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
-						state = STATE_13;
-				} else { 				// 11 STATE_32
+						state = 0x13;
+				} else {
+					// state = 0x32
 					array[idx] = array[pos3++];
 					if (pos3 >= p3to) {
-						state = STATE_2;
+						state = 0x2;
 						break TwoLane;
 					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
 						; // モード変更なし
 					else
-						state = STATE_23;
+						state = 0x23;
 				}
 			}
 		}
 		idx++;
 
-		if (state == STATE_1) {
+		if (state == 0x1) {
 			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
-		} else if (state == STATE_2) {
+		} else if (state == 0x2) {
 			System.arraycopy(workArray, pos2, array, idx, p2to - pos2);
 		}
 	}
@@ -269,9 +253,9 @@ public class MasSort implements ISortAlgorithm {
 	/**
 	 * ３つのレーンのマージ処理
 	 * @param array マージ先
-	 * @param pos1 array配列の第１レーンの開始位置
-	 * @param pos2 array配列の第２レーンの開始位置
-	 * @param pos3 array配列の第３レーンの開始位置
+	 * @param pos1 array配列のレーン1の開始位置
+	 * @param pos2 array配列のレーン2の開始位置
+	 * @param pos3 array配列のレーン3の開始位置
 	 * @param to ソート対象の終了位置（含まない位置）
 	 * @param workArray work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
@@ -282,25 +266,25 @@ public class MasSort implements ISortAlgorithm {
 			// array[p1] <= array[p2]
 			if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p1] <= array[p2] <= array[p3]
-				state = STATE_123;
+				state = 0x123;
 			} else if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p1] <= array[p3] <= array[p2]
-				state = STATE_132;
+				state = 0x132;
 			} else {
 				// array[p3] < array[p1] <= array[p2]
-				state = STATE_312;
+				state = 0x312;
 			}
 		} else {
 			// array[p2] < array[p1]
 			if (comparator.compare(array[pos1], array[pos3]) <= 0) {
 				// array[p2] < array[p1] <= array[p3]
-				state = STATE_213;
+				state = 0x213;
 			} else if (comparator.compare(array[pos2], array[pos3]) <= 0) {
 				// array[p2] <= array[p3] < array[p1]
-				state = STATE_231;
+				state = 0x231;
 			} else {
 				// array[p3] < array[p2] < array[p1]
-				state = STATE_321;
+				state = 0x321;
 			}
 		}
 
@@ -315,81 +299,79 @@ public class MasSort implements ISortAlgorithm {
 		ThreeLane:
 		for (; idx < to; idx++) {
 			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
-			if (state < STATE_213) {
-				// 0-1
+			if (state < 0x200) {
+				// state = 0x1??
 				array[idx] = workArray[pos1++];
-				if (state == STATE_123) {	// 0 STATE_123
-					if (pos1 >= p1to) {
-						state = STATE_23;
-						break ThreeLane;
-					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+				if (pos1 >= p1to) {
+					break ThreeLane;
+				}
+				if (state == 0x123) {
+					// state = 0x123
+					if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
-						state = STATE_213;
+						state = 0x213;
 					else
-						state = STATE_231;
-				} else { 				// 1 STATE_132
-					if (pos1 >= p1to) {
-						state = STATE_32;
-						break ThreeLane;
-					} else if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
+						state = 0x231;
+				} else {
+					// state = 0x132
+					if (comparator.compare(workArray[pos1], array[pos3]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
-						state = STATE_312;
+						state = 0x312;
 					else
-						state = STATE_321;
+						state = 0x321;
 				}
-			} else if (state < STATE_312) {
-				// 2-3
+			} else if (state < 0x300) {
+				// state = 0x2??
 				array[idx] = workArray[pos2++];
-				if (state == STATE_213) {	// 2 STATE_213
-					if (pos2 >= p2to) {
-						state = STATE_13;
-						break ThreeLane;
-					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+				if (pos2 >= p2to) {
+					break ThreeLane;
+				}
+				if (state == 0x213) {
+					// state = 0x213
+					if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
-						state = STATE_123;
+						state = 0x123;
 					else
-						state = STATE_132;
-				} else { // STATE_231	// 3 STATE_231
-					if (pos2 >= p2to) {
-						state = STATE_31;
-						break ThreeLane;
-					} else if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
+						state = 0x132;
+				} else {
+					// state = 0x231
+					if (comparator.compare(workArray[pos2], array[pos3]) <= 0)
 						; // モード変更なし
 					else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
-						state = STATE_321;
+						state = 0x321;
 					else
-						state = STATE_312;
+						state = 0x312;
 				}
 			} else {
-				// 4-5
+				// state = 0x3??
 				array[idx] = array[pos3++];
-				if (state == STATE_312) {	// 4 STATE_312
-					if (pos3 >= p3to) {
-						state = STATE_12;
-						break ThreeLane;
-					} else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
+				if (pos3 >= p3to) {
+					break ThreeLane;
+				}
+				if (state == 0x312) {
+					// state = 0x312
+					if (comparator.compare(array[pos3], workArray[pos1]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
-						state = STATE_132;
+						state = 0x132;
 					else
-						state = STATE_123;
-				} else { 				// 5 STATE_321
-					if (pos3 >= p3to) {
-						state = STATE_21;
-						break ThreeLane;
-					} else if (comparator.compare(array[pos3], workArray[pos2]) < 0)
+						state = 0x123;
+				} else {
+					// state = 0x321
+					if (comparator.compare(array[pos3], workArray[pos2]) < 0)
 						; // モード変更なし
 					else if (comparator.compare(array[pos3], workArray[pos1]) < 0)
-						state = STATE_231;
+						state = 0x231;
 					else
-						state = STATE_213;
+						state = 0x213;
 				}
 			}
 		}
 		idx++;
+		state &= 0xff;
 
 		merge2(array, pos1, pos2, pos3, to, workArray, comparator, state, idx, p1to, p2to, p3to);	//	マージ処理を分割したほうが、初回実行が速くなる。
 	}
@@ -434,8 +416,8 @@ public class MasSort implements ISortAlgorithm {
 		sortImpl(array, from, pos2, workArray, comparator);
 
 		// ソート済み配列の場合の高速化
-		//if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
-		//	return;
+		if (comparator.compare(array[pos2 - 1], array[pos2]) <= 0 && comparator.compare(array[pos3 - 1], array[pos3]) <= 0)
+			return;
 
 		// マージ処理は外出しにしたほうが初回実行時に速い(再起で小さい範囲を処理している間にJITコンパイラに処理されて、結果的に高速化できる)
 		merge3(array, pos1, pos2, pos3, to, workArray, comparator);
