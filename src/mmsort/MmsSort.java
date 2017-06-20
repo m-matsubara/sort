@@ -206,24 +206,25 @@ public class MmsSort implements ISortAlgorithm {
 			workArray[10] = array[center + gap * 5];
 			InsertionSort.sortImpl(workArray, 0, 11, comparator);
 
-			pivot1 = workArray[3];
-			pivot2 = workArray[7];
+			// 3等分ではなく、2:1:1位で分割されるようにpivot1, pivot2を選択する。（そのほうが比較回数が少なくなり、速度も速くなる）
+			pivot1 = workArray[5];
+			pivot2 = workArray[8];
 		} else if (range >= 150) {
 			// ピボット候補値の添え字の差分
 			final int gap = range / 12;
 			// ピボット候補値の添え字
 			final int center = from + (range >> 1);
-			workArray[0] = array[center - (gap << 2)];
-			workArray[1] = array[center - gap * 3];
-			workArray[2] = array[center - (gap << 1)];
-			workArray[3] = array[center - gap];
+			workArray[0] = array[center - gap * 3];
+			workArray[1] = array[center - (gap << 1)];
+			workArray[2] = array[center - gap];
+			workArray[3] = array[center];
 			workArray[4] = array[center + gap];
 			workArray[5] = array[center + (gap << 1)];
 			workArray[6] = array[center + gap * 3];
-			workArray[7] = array[center + (gap << 2)];
 			InsertionSort.sortImpl(workArray, 0, 8, comparator);
 
-			pivot1 = workArray[2];
+			// 3等分ではなく、2:1:1位で分割されるようにpivot1, pivot2を選択する。（そのほうが比較回数が少なくなり、速度も速くなる）
+			pivot1 = workArray[3];
 			pivot2 = workArray[5];
 		} else {
 			// ピボット候補値の添え字の差分
@@ -241,7 +242,8 @@ public class MmsSort implements ISortAlgorithm {
 			workArray[4] = array[p4];
 			InsertionSort.sortImpl(workArray, 0, 5, comparator);
 
-			pivot1 = workArray[1];
+			// 3等分ではなく、2:1:1位で分割されるようにpivot1, pivot2を選択する。（そのほうが比較回数が少なくなり、速度も速くなる）
+			pivot1 = workArray[2];
 			pivot2 = workArray[3];
 		}
 
