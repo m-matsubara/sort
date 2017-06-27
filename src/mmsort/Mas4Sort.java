@@ -172,117 +172,81 @@ public class Mas4Sort implements ISortAlgorithm {
 		for (; idx < to; idx++) {
 			// 以下のif文のネストは、本来なら switch case で処理するべきだが、if のネストのほうが速かったので、このような書き方にしている。
 			if (state < 0x20) {
+				array[idx] = workArray[pos1++];
+				if (pos1 >= p1to)
+					break;
 				if (state == 0x12) {
-					array[idx] = workArray[pos1++];
-					if (pos1 >= p1to) {
-						state = 0x2;
-						break;
-					} else if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
+					if (comparator.compare(workArray[pos1], workArray[pos2]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x21;
 				} else if (state == 0x13) {
-					array[idx] = workArray[pos1++];
-					if (pos1 >= p1to) {
-						state = 0x3;
-						break;
-					} else if (comparator.compare(workArray[pos1], workArray[pos3]) <= 0)
+					if (comparator.compare(workArray[pos1], workArray[pos3]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x31;
 				} else if (state == 0x14) {
-					array[idx] = workArray[pos1++];
-					if (pos1 >= p1to) {
-						state = 0x4;
-						break;
-					} else if (comparator.compare(workArray[pos1], array[pos4]) <= 0)
+					if (comparator.compare(workArray[pos1], array[pos4]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x41;
 				}
 			} else if (state < 0x30) {
+				array[idx] = workArray[pos2++];
+				if (pos2 >= p2to)
+					break;
 				if (state == 0x21) {
-					array[idx] = workArray[pos2++];
-					if (pos2 >= p2to) {
-						state = 0x1;
-						break;
-					} else if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
+					if (comparator.compare(workArray[pos2], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
 						state = 0x12;
 				} else if (state == 0x23) {
-					array[idx] = workArray[pos2++];
-					if (pos2 >= p2to) {
-						state = 0x3;
-						break;
-					} else if (comparator.compare(workArray[pos2], workArray[pos3]) <= 0)
+					if (comparator.compare(workArray[pos2], workArray[pos3]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x32;
 				} else if (state == 0x24) {
-					array[idx] = workArray[pos2++];
-					if (pos2 >= p2to) {
-						state = 0x4;
-						break;
-					} else if (comparator.compare(workArray[pos2], array[pos4]) <= 0)
+					if (comparator.compare(workArray[pos2], array[pos4]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x42;
 				}
 			} else if (state < 0x40) {
+				array[idx] = workArray[pos3++];
+				if (pos3 >= p3to)
+					break;
 				if (state == 0x31) {
-					array[idx] = workArray[pos3++];
-					if (pos3 >= p3to) {
-						state = 0x1;
-						break;
-					} else if (comparator.compare(workArray[pos3], workArray[pos1]) < 0)
+					if (comparator.compare(workArray[pos3], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
 						state = 0x13;
 				} else if (state == 0x32) {
-					array[idx] = workArray[pos3++];
-					if (pos3 >= p3to) {
-						state = 0x2;
-						break;
-					} else if (comparator.compare(workArray[pos3], workArray[pos2]) < 0)
+					if (comparator.compare(workArray[pos3], workArray[pos2]) < 0)
 						; // モード変更なし
 					else
 						state = 0x23;
 				} else if (state == 0x34) {
-					array[idx] = workArray[pos3++];
-					if (pos3 >= p3to) {
-						state = 0x4;
-						break;
-					} else if (comparator.compare(workArray[pos3], array[pos4]) <= 0)
+					if (comparator.compare(workArray[pos3], array[pos4]) <= 0)
 						; // モード変更なし
 					else
 						state = 0x43;
 				}
 			} else {
+				array[idx] = array[pos4++];
+				if (pos4 >= p4to)
+					break;
 				if (state == 0x41) {
-					array[idx] = array[pos4++];
-					if (pos4 >= p4to) {
-						state = 0x1;
-						break;
-					} else if (comparator.compare(array[pos4], workArray[pos1]) < 0)
+					if (comparator.compare(array[pos4], workArray[pos1]) < 0)
 						; // モード変更なし
 					else
 						state = 0x14;
 				} else if (state == 0x42) {
-					array[idx] = array[pos4++];
-					if (pos4 >= p4to) {
-						state = 0x2;
-						break;
-					} else if (comparator.compare(array[pos4], workArray[pos2]) < 0)
+					if (comparator.compare(array[pos4], workArray[pos2]) < 0)
 						; // モード変更なし
 					else
 						state = 0x24;
 				} else if (state == 0x43) {
-					array[idx] = array[pos4++];
-					if (pos4 >= p4to) {
-						state = 0x3;
-						break;
-					} else if (comparator.compare(array[pos4], workArray[pos3]) < 0)
+					if (comparator.compare(array[pos4], workArray[pos3]) < 0)
 						; // モード変更なし
 					else
 						state = 0x34;
@@ -290,6 +254,7 @@ public class Mas4Sort implements ISortAlgorithm {
 			}
 		}
 		idx++;
+		state &= 0xf;
 
 		if (state == 0x1) {
 			System.arraycopy(workArray, pos1, array, idx, p1to - pos1);
