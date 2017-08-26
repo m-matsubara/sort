@@ -15,9 +15,11 @@ package mmsort;
 import java.util.Comparator;
 
 public class ManyPivotSort implements ISortAlgorithm {
-	private static final int PIVOTS_SIZE = 3071;						//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	//private static final int PIVOTS_SIZE = 1535;						//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
+	private static final int PIVOTS_SIZE = 1023;						//	ピボットリストのサイズ。大きすぎなければ何でもよいが、2のベぎ乗 - 1が無駄がなくてよい。
 	private static final int PIVOTS_REBUILD_THRESHOLD = 3;				//	（現在の再起で）ピボットリストの数がこの数字以下のときはピボットリストを作り直す。
-	private static final int ALGORITHM_THRESHOLD = 100000;				//	クイックソートに切り替えるサイズ
+	//private static final int ALGORITHM_THRESHOLD = 100000;				//	クイックソートに切り替えるサイズ
+	private static final int ALGORITHM_THRESHOLD = 1000;				//	クイックソートに切り替えるサイズ
 	/**
 	 * Many pivot sort
 	 *
@@ -83,7 +85,12 @@ public class ManyPivotSort implements ISortAlgorithm {
 			return;
 		}
 
-		int pivotsSize = PIVOTS_SIZE;	//	ソート要素数によって変えてみたり…。
+		//int pivotsSize = PIVOTS_SIZE;	//	ソート要素数によって変えてみたり…。
+		int pivotsSize = 16;
+		while (pivotsSize < range / 5000)
+			pivotsSize *= 2;
+		pivotsSize--;
+
 
 		@SuppressWarnings("unchecked")
 		final T[] pivots = (T[])new Object[pivotsSize];		//	pivot candidates / ピボット候補の配列
