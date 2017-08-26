@@ -152,21 +152,21 @@ public class Mas4Sort implements ISortAlgorithm {
 
 
 	/**
-	 * ２つのレーンのマージ処理
-	 * @param array マージ先
-	 * @param pos1 array配列のレーン1の開始位置
-	 * @param pos2 array配列のレーン2の開始位置
-	 * @param pos3 array配列のレーン3の開始位置
-	 * @param pos4 array配列のレーン4の開始位置
-	 * @param to ソート対象の終了位置（含まない位置）
-	 * @param workArray work area / 作業用一時領域
+	 * Merge two sublists / ２つのサブリストのマージ処理
+	 * @param array      Merge destination / マージ先
+	 * @param pos1       Index of Sublists1 / array配列のサブリスト1の開始位置
+	 * @param pos2       Index of Sublists2 / array配列のサブリスト2の開始位置
+	 * @param pos3       Index of Sublists3 / array配列のサブリスト3の開始位置
+	 * @param pos4       Index of Sublists4 / array配列のサブリスト4の開始位置
+	 * @param to         List end / ソート対象の終了位置（含まない位置）
+	 * @param workArray  work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
-	 * @param state レーン先頭要素の並び
-	 * @param idx arrayへのインデックス
-	 * @param p1to レーン1の終了位置 (+1)
-	 * @param p2to レーン2の終了位置 (+1)
-	 * @param p3to レーン3の終了位置 (+1)
-	 * @param p4to レーン4の終了位置 (+1)
+	 * @param state      サブリスト先頭要素の並び
+	 * @param idx        Index of array / arrayへのインデックス
+	 * @param p1to       Index of last Sublists1 element (exclusive) / サブリスト1の終了位置 (+1)
+	 * @param p2to       Index of last Sublists2 element (exclusive) / サブリスト2の終了位置 (+1)
+	 * @param p3to       Index of last Sublists3 element (exclusive) / サブリスト3の終了位置 (+1)
+	 * @param p4to       Index of last Sublists4 element (exclusive) / サブリスト4の終了位置 (+1)
 	 */
 	public static final <T> void merge2(final T[] array, int pos1, int pos2, int pos3, int pos4, final int to, final T[] workArray, final Comparator<? super T> comparator, int state, int idx, int p1to, int p2to, int p3to, int p4to) {
 		for (; idx < to; idx++) {
@@ -266,21 +266,21 @@ public class Mas4Sort implements ISortAlgorithm {
 	}
 
 	/**
-	 * ３つのレーンのマージ処理
-	 * @param array マージ先
-	 * @param pos1 array配列のレーン1の開始位置
-	 * @param pos2 array配列のレーン2の開始位置
-	 * @param pos3 array配列のレーン3の開始位置
-	 * @param pos4 array配列のレーン4の開始位置
-	 * @param to ソート対象の終了位置（含まない位置）
-	 * @param workArray work area / 作業用一時領域
+	 * Merge three sublists / ３つのサブリストのマージ処理
+	 * @param array      Merge destination / マージ先
+	 * @param pos1       Index of Sublists1 / array配列のサブリスト1の開始位置
+	 * @param pos2       Index of Sublists2 / array配列のサブリスト2の開始位置
+	 * @param pos3       Index of Sublists3 / array配列のサブリスト3の開始位置
+	 * @param pos4       Index of Sublists4 / array配列のサブリスト4の開始位置
+	 * @param to         List end / ソート対象の終了位置（含まない位置）
+	 * @param workArray  work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
-	 * @param state レーン先頭要素の並び
-	 * @param idx arrayへのインデックス
-	 * @param p1to レーン1の終了位置 (+1)
-	 * @param p2to レーン2の終了位置 (+1)
-	 * @param p3to レーン3の終了位置 (+1)
-	 * @param p4to レーン4の終了位置 (+1)
+	 * @param state      サブリスト先頭要素の並び
+	 * @param idx        Index of array / arrayへのインデックス
+	 * @param p1to       Index of last Sublists1 element (exclusive) / サブリスト1の終了位置 (+1)
+	 * @param p2to       Index of last Sublists2 element (exclusive) / サブリスト2の終了位置 (+1)
+	 * @param p3to       Index of last Sublists3 element (exclusive) / サブリスト3の終了位置 (+1)
+	 * @param p4to       Index of last Sublists4 element (exclusive) / サブリスト4の終了位置 (+1)
 	 */
 	public static final <T> void merge3(final T[] array, int pos1, int pos2, int pos3, int pos4, final int to, final T[] workArray, final Comparator<? super T> comparator, int state, int idx, int p1to, int p2to, int p3to, int p4to) {
 		for (; idx < to; idx++) {
@@ -506,14 +506,14 @@ public class Mas4Sort implements ISortAlgorithm {
 	}
 
 	/**
-	 * ４つのレーンのマージ処理
-	 * @param array マージ先
-	 * @param pos1 array配列のレーン1の開始位置
-	 * @param pos2 array配列のレーン2の開始位置
-	 * @param pos3 array配列のレーン3の開始位置
-	 * @param pos4 array配列のレーン4の開始位置
-	 * @param to ソート対象の終了位置（含まない位置）
-	 * @param workArray work area / 作業用一時領域
+	 * Merge four sublists / ４つのサブリストのマージ処理
+	 * @param array      Merge destination / マージ先
+	 * @param pos1       Index of Sublists1 / array配列のサブリスト1の開始位置
+	 * @param pos2       Index of Sublists2 / array配列のサブリスト2の開始位置
+	 * @param pos3       Index of Sublists3 / array配列のサブリスト3の開始位置
+	 * @param pos4       Index of Sublists4 / array配列のサブリスト4の開始位置
+	 * @param to         List end / ソート対象の終了位置（含まない位置）
+	 * @param workArray  work area / 作業用一時領域
 	 * @param comparator comparator of array element / 比較器
 	 */
 	public static final <T> void merge4(final T[] array, int pos1, int pos2, int pos3, int pos4, final int to, final T[] workArray, final Comparator<? super T> comparator) {
