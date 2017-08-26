@@ -250,9 +250,9 @@ public class MmsSort implements ISortAlgorithm {
 		if (comparator.compare(pivot1, pivot2) != 0) {
 			// pivot1 ≠ pivot2 のケース
 			// dual pivot quick sort ベースの処理
-			int idx1A = from;		//	value <= pivot1 の要素へのインデックス(arraysへの配置用)
-			int idx2W = 0;			//	pivot1 < value < pivot2の要素へのインデックス(worksへの配置用)
-			int idx3W = range - 1;	//	pivot2 <= value へのインデックス(worksへの配置用)
+			int idx1A = from;		//	value <= pivot1 の要素へのインデックス(arrayへの配置用)
+			int idx2W = 0;			//	pivot1 < value < pivot2の要素へのインデックス(workArrayへの配置用)
+			int idx3W = range - 1;	//	pivot2 <= value へのインデックス(workArrayへの配置用)
 
 			// 先頭から後方に向かってパーティション操作を行う。（一般的なクイックソートのように前後からではない）
 			//   ピボット１以下の値は配列の前方に詰めていく
@@ -270,13 +270,13 @@ public class MmsSort implements ISortAlgorithm {
 			}
 
 			int idxTo = idx1A;
-			// ピボット１より大きく、ピボット２より小さいオブジェクト (pivot1 < value < pivot2) を works から array へ書き戻し
+			// ピボット１より大きく、ピボット２より小さいオブジェクト (pivot1 < value < pivot2) を workArray から array へ書き戻し
 			System.arraycopy(workArray, 0, array, idxTo, idx2W);
 			idxTo += idx2W;
 			// ピボット１より大きく、ピボット２より小さいオブジェクト(pivot1 < value < pivot2)をソート
 			sortImpl(array, idx1A, idx1A + idx2W, workArray, depthRemainder - 1, comparator);
 
-			// ピボット２以上のオブジェクト(pivot2 ≦ value)を works から array へ書き戻し
+			// ピボット２以上のオブジェクト(pivot2 ≦ value)を workArray から array へ書き戻し
 			for (int idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = workArray[idx];
 			}
@@ -309,11 +309,11 @@ public class MmsSort implements ISortAlgorithm {
 			}
 
 			int idxTo = idx1A;
-			// ピボット値と同じキーのオブジェクト(value = pivot1)を works から array へ書き戻し
+			// ピボット値と同じキーのオブジェクト(value = pivot1)を workArray から array へ書き戻し
 			System.arraycopy(workArray, 0, array, idxTo, idx2W);
 			idxTo += idx2W;
 
-			// ピボット値よりも大きいオブジェクト(pivot1 < value)を works から array へ書き戻し
+			// ピボット値よりも大きいオブジェクト(pivot1 < value)を workArray から array へ書き戻し
 			for (int idx = range - 1; idx > idx3W; idx--) {
 				array[idxTo++] = workArray[idx];
 			}
