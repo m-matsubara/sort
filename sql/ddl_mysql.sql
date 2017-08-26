@@ -1,4 +1,7 @@
-drop table if exists TB_SORT_RESULT;
+-- Copyright (c) 2015 matsubara masakazu
+-- Released under the MIT license
+-- https://github.com/m-matsubara/sort/blob/master/LICENSE.txtdrop table if exists TB_SORT_RESULT;
+
 create table TB_SORT_RESULT (
   LANG VARCHAR(20)
   , NO DECIMAL(5, 0) NOT NULL
