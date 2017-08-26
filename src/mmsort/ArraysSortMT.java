@@ -1,5 +1,5 @@
 /*
- * ArraysSort
+ * ArraysSort (Multi Thread)
  *
  * http://www.mmatsubara.com/developer/sort/
  *
