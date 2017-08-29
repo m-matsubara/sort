@@ -16,7 +16,7 @@ public class MatMmsSort implements ISortAlgorithm {
 	/**
 	 * 作業領域サイズ(対象配列の 1/WORK_SIZE_RATIO のサイズで作業領域を用意する)
 	 */
-	public static final int WORK_SIZE_RATIO = 10;
+	public static final int WORK_SIZE_RATIO = 5;
 
 	/**
 	 * 前方優先バイナリサーチ
