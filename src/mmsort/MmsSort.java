@@ -221,7 +221,7 @@ public class MmsSort implements ISortAlgorithm {
 			workArray[4] = array[center + gap];
 			workArray[5] = array[center + (gap << 1)];
 			workArray[6] = array[center + gap * 3];
-			InsertionSort.sortImpl(workArray, 0, 8, comparator);
+			InsertionSort.sortImpl(workArray, 0, 7, comparator);
 
 			// 3等分ではなく、2:1:1位で分割されるようにpivot1, pivot2を選択する。（そのほうが比較回数が少なくなり、速度も速くなる）
 			pivot1 = workArray[3];
