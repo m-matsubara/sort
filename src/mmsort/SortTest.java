@@ -193,14 +193,15 @@ public class SortTest {
 	/**
 	 * 配列のキー値をシャッフルする
 	 * オブジェクトのキー値のみ入れ替え、オブジェクトの入れ替えは行わない。
+	 *
 	 * @param array 対象配列
 	 * @param randSeed 乱数の種
 	 */
-	public static void shuffleArray(SortItem[] array, long randSeed, int keyType)
+	public static void shuffleArray(SortItem[] array, long randSeed, int keyType, int from, int to)
 	{
 		final Random rand = new Random(randSeed);
-		for (int i = 1; i < array.length - 1; i++) {
-			final int j = rand.nextInt(array.length - 2) + 1;
+		for (int i = from; i < to; i++) {
+			final int j = i + rand.nextInt(to - i);
 
 			final int work = array[i].key;
 			array[i].key = array[j].key;
@@ -340,62 +341,65 @@ public class SortTest {
 		}
 
 		SortItem[] array = new SortItem[arraySize + 2];
-
+		SortItem[] initArray = new SortItem[arraySize + 2];
+		String arrayTypeName = "";
+		switch (arrayType) {
+			case ARRAY_TYPE_RANDOM:
+			{
+				initArray(array, duplicate, keyType);
+				arrayTypeName = "Random";
+				break;
+			}
+			case ARRAY_TYPE_UNIQUE_RANDOM:
+			{
+				initArray(array, 1, keyType);
+				arrayTypeName = "Unique Random";
+				break;
+			}
+			case ARRAY_TYPE_NOISE_ON_SIN:
+			{
+				initNoiseOnSin(array, 1, keyType);	//	乱数の種固定
+				arrayTypeName = "Noise on sine curve";
+				break;
+			}
+			case ARRAY_TYPE_HALF_SORTED:
+			{
+				initHalfSortedArray(array, 0, duplicate, keyType);	//	乱数の種固定
+				arrayTypeName = "Half sorted";
+				break;
+			}
+			case ARRAY_TYPE_ASC:
+			{
+				initArray(array, duplicate, keyType);
+				arrayTypeName = "Ascending ordered";
+				break;
+			}
+			case ARRAY_TYPE_DESC:
+			{
+				initReverseArray(array, duplicate, keyType);
+				arrayTypeName = "Descending ordered";
+				break;
+			}
+			case ARRAY_TYPE_FLAT:
+			{
+				initFlatArray(array, keyType);
+				arrayTypeName = "Flat";
+				break;
+			}
+		}
+		assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
+		System.arraycopy(array, 0, initArray, 0, array.length);
 
 		//System.out.println("language	no	algorithm	array type	key type	array size	time	compare count	stable");
 		for (int idx = 1; idx <= times; idx++) {
 			//	配列の準備
-			String arrayTypeName = "";
-			switch (arrayType) {
-				case ARRAY_TYPE_RANDOM:
-				{
-					initArray(array, duplicate, KEYTYPE_STRING);
-					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					shuffleArray(array, idx, KEYTYPE_STRING);
-					arrayTypeName = "Random";
-					break;
-				}
-				case ARRAY_TYPE_UNIQUE_RANDOM:
-				{
-					initArray(array, 1, KEYTYPE_STRING);
-					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					shuffleArray(array, idx, KEYTYPE_STRING);
-					arrayTypeName = "Unique Random";
-					break;
-				}
-				case ARRAY_TYPE_NOISE_ON_SIN:
-				{
-					// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
-					initNoiseOnSin(array, idx, KEYTYPE_STRING);
-					arrayTypeName = "Noise on sine curve";
-					break;
-				}
-				case ARRAY_TYPE_HALF_SORTED:
-				{
-					initHalfSortedArray(array, idx, duplicate, KEYTYPE_STRING);
-					arrayTypeName = "Half sorted";
-					break;
-				}
-				case ARRAY_TYPE_ASC:
-				{
-					initArray(array, duplicate, KEYTYPE_STRING);
-					arrayTypeName = "Ascending ordered";
-					break;
-				}
-				case ARRAY_TYPE_DESC:
-				{
-					initReverseArray(array, duplicate, KEYTYPE_STRING);
-					arrayTypeName = "Descending ordered";
-					break;
-				}
-				case ARRAY_TYPE_FLAT:
-				{
-					initFlatArray(array, KEYTYPE_STRING);
-					arrayTypeName = "Flat";
-					break;
-				}
+			System.arraycopy(initArray, 0, array, 0, array.length);
+			if (arrayType == ARRAY_TYPE_RANDOM || arrayType == ARRAY_TYPE_UNIQUE_RANDOM) {
+				// 実行ごとに乱数配列が変わったら比較に宜しくないので、idxを乱数の種とすることで疑似乱数配列を固定化する。
+				shuffleArray(array, idx, keyType, 1, array.length - 1);
+			} else if (arrayType == ARRAY_TYPE_HALF_SORTED) {
+				shuffleArray(array, idx, keyType, arraySize / 2 + 1, array.length - 1);
 			}
-			assignOriginalOrderArray(array);	//	元の順序を記憶する（安定ソートの確認用）
 
 			final String sortName = sorter.getName();
 			final boolean stable = sorter.isStable();
