@@ -1,8 +1,8 @@
 -- Copyright (c) 2015 matsubara masakazu
 -- Released under the MIT license
--- https://github.com/m-matsubara/sort/blob/master/LICENSE.txtdrop table if exists TB_SORT_RESULT;
+-- https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
 
-﻿--*DataTitle 乱数データ(実行時間)
+--*DataTitle 乱数データ(実行時間)
 select
   SR.ALGORITHM as "アルゴリズム"
   , case when SR.STABLE = 'stable' then '安定' else ' ' end as "安定"
