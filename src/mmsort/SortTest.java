@@ -266,6 +266,29 @@ public class SortTest {
 			throw new RuntimeException("array validation error.");
 	}
 
+	/**
+	 * 配列のソート結果を確認する(デバッグ用)
+	 * @param array 対象配列
+	 */
+	public static void validateArray(Object[] array, boolean stable, int from, int to)
+	{
+		SortItem[] arraySI = (SortItem[])array;
+		if (stable) {
+			//	安定ソート用
+			for (int i = 1; i < array.length - 2; i++) {
+				if (arraySI[i].key > arraySI[i + 1].key || ((arraySI[i].key == arraySI[i + 1].key) && (arraySI[i].orginalOrder > arraySI[i + 1].orginalOrder)))
+					throw new RuntimeException("array validation error. (stable mode) : " + i);
+			}
+		} else {
+			//	非安定ソート用
+			for (int i = 1; i < array.length - 2; i++) {
+				if (arraySI[i].key > arraySI[i + 1].key)
+					throw new RuntimeException("array validation error. (unstable mode) : " + i);
+			}
+		}
+	}
+
+
 
 	/**
 	 * Sort Algorithm Benchmark Program
@@ -273,6 +296,7 @@ public class SortTest {
 	 *   Example : $ java mmsort.SortTest mmsort.MmsSort 10000000 R I 10
 	 *   ArrayType:
 	 *     R: Random Data
+	 *     R999: Random Data (duplicate)
 	 *     U: Unique Random Data
 	 *     S: Noise on Sine Curve
 	 *     H: Half Sorted (Half Random)
@@ -302,20 +326,24 @@ public class SortTest {
 		int arrayType = 0;
 		int duplicate = 10;
 		if (args.length >= 3) {
-			if (args[2].equals("R")) {	//	Random
+			String arrayTypeStr = args[2];
+			if (arrayTypeStr.equals("R")) {	//	Random
 				arrayType = ARRAY_TYPE_RANDOM;
-			} else if (args[2].equals("U")) {	//	Unique Random
+			} else if (arrayTypeStr.length() >= 2 && arrayTypeStr.substring(0, 1).equals("R") ) {	//	Random (duplicate=1) == Unique Random
+				arrayType = ARRAY_TYPE_RANDOM;
+				duplicate = Integer.valueOf(args[2].substring(1, arrayTypeStr.length()));
+			} else if (arrayTypeStr.equals("U")) {	//	Unique Random
 				arrayType = ARRAY_TYPE_UNIQUE_RANDOM;
 				duplicate = 1;
-			} else if (args[2].equals("S")) {	//	Noise on sin
+			} else if (arrayTypeStr.equals("S")) {	//	Noise on sin
 				arrayType = ARRAY_TYPE_NOISE_ON_SIN;
-			} else if (args[2].equals("H")) {	//	Half sorted
+			} else if (arrayTypeStr.equals("H")) {	//	Half sorted
 				arrayType = ARRAY_TYPE_HALF_SORTED;
-			} else if (args[2].equals("A")) {	//	Ascending ordered
+			} else if (arrayTypeStr.equals("A")) {	//	Ascending ordered
 				arrayType = ARRAY_TYPE_ASC;
-			} else if (args[2].equals("D")) {	//	Deccending ordered
+			} else if (arrayTypeStr.equals("D")) {	//	Descending ordered
 				arrayType = ARRAY_TYPE_DESC;
-			} else if (args[2].equals("F")) {	//	Flat values
+			} else if (arrayTypeStr.equals("F")) {	//	Flat values
 				arrayType = ARRAY_TYPE_FLAT;
 			}
 			else
@@ -347,7 +375,7 @@ public class SortTest {
 			case ARRAY_TYPE_RANDOM:
 			{
 				initArray(array, duplicate, keyType);
-				arrayTypeName = "Random";
+				arrayTypeName = "Random(" + duplicate + ")";
 				break;
 			}
 			case ARRAY_TYPE_UNIQUE_RANDOM:
