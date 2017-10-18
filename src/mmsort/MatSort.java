@@ -1,6 +1,6 @@
-/*
+﻿/*
  * MatSort
- * Saving memory version merge sort (saving memory version MasSort)
+ * Saving memory version merge sort (saving memory version MmsSort)
  *
  * http://www.mmatsubara.com/developer/sort/
  *
@@ -82,7 +82,7 @@ public class MatSort implements ISortAlgorithm {
 		// |                                                       |          |
 		// from                                                fromIdx        to
 		int fromIdx = to - workSize;	// 最終ブロックの開始位置
-		MasSort.sortImpl(array, fromIdx, to, workArray, comparator);
+		MmsSort.sortImpl(array, fromIdx, to, workArray, 40, comparator);
 
 		int counter = 1;	// ループのカウンター(前側のブロックサイズと後ろ側ブロックサイズの比率でもある)
 		// It is repeated until the merge all the blocks merge ... by sorting the immediately preceding block of the last block.
@@ -108,7 +108,7 @@ public class MatSort implements ISortAlgorithm {
 			fromIdx = fromIdx - workSize;	// 前方ブロックの開始位置
 			if (fromIdx < from)
 				fromIdx = from;
-			MasSort.sortImpl(array, fromIdx, midIdx, workArray, comparator);
+			MmsSort.sortImpl(array, fromIdx, midIdx, workArray, 40, comparator);
 			System.arraycopy(array, fromIdx, workArray, 0, midIdx - fromIdx);
 
 			int idx1 = fromIdx;	// 前方ブロックの添え字（現在処理位置）
@@ -174,19 +174,19 @@ public class MatSort implements ISortAlgorithm {
 	/**
 	 * Sort body / ソート本体
 	 *
-	 * Saving memory version merge sort (saving memory version MasSort)
+	 * Saving memory version merge sort (saving memory version MmsSort)
 	 * WorkSize can specify the less value the number of elements to be sorted as the maximum value.
-	 * Performance If the workSize to the same value as the number of elements to be sorted is maximized, it is substantially MasSort.
+	 * Performance If the workSize to the same value as the number of elements to be sorted is maximized, it is substantially MmsSort.
 	 * When workSize a small value the performance becomes lower, if a 1, it is substantially insert sort.
 	 * Since workSize obviously affects performance when it is too small, it is better to specify it as a ratio to the number of elements such as 1 / N instead of a fixed value.
-	 * Logically, the larger the workSize should be, the better the performance will be, but there are cases where even 1/2 ~ 1/10 is faster than the normal MasSort.
+	 * Logically, the larger the workSize should be, the better the performance will be, but there are cases where even 1/2 ~ 1/10 is faster than the normal MmsSort.
 	 *
-	 * 省メモリ版マージソート(省メモリ版 MasSort)
+	 * 省メモリ版マージソート(省メモリ版 MmsSort)
 	 * workSizeはソート対象の要素数を最大値としてそれ以下の値を指定できる。
-	 * workSizeをソート対象の要素数と同じ値にするならパフォーマンスは最大となり、実質的に MasSort となる。
+	 * workSizeをソート対象の要素数と同じ値にするならパフォーマンスは最大となり、実質的に MmsSort となる。
 	 * workSizeを小さな値にするとパフォーマンスはより低くなり、1であるなら、実質的にインサートソートとなる。
 	 * workSizeは小さすぎる場合は明らかにパフォーマンスに影響するので、固定値ではなく、1/N といったような要素数との比で指定する方がよい。
-	 * 論理的にはworkSizeはより大きな方がパフォーマンスが向上するはずだが、1/2～1/10程度でも通常の MasSort より速くなるケースも見受けられた。
+	 * 論理的にはworkSizeはより大きな方がパフォーマンスが向上するはずだが、1/2～1/10程度でも通常の MmsSort より速くなるケースも見受けられた。
 	 *
 	 * @param array sort target / ソート対象
 	 * @param from index of first element / ソート対象の開始位置
