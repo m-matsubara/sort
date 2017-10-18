@@ -34,7 +34,7 @@ public class ArraysSort implements ISortAlgorithm {
 	@Override
 	public String getName()
 	{
-		return "Arrays.Sort";
+		return "Arrays.sort";
 	}
 
 }
