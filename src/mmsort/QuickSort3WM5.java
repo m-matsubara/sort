@@ -198,7 +198,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 		while (curFrom < curTo && comparator.compare(pivot, array[curTo]) == 0)
 			curTo--;
 
-		if (curFrom >= curTo)
+		if (curFrom > curTo)
 			return;
 
 		int eqFrom = curFrom;
