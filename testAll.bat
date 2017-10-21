@@ -3,6 +3,8 @@ rem Copyright (c) 2015 matsubara masakazu
 rem Released under the MIT license
 rem https://github.com/m-matsubara/sort/blob/master/LICENSE.txt
 
+time /t > con
+
 rem unstable sort
 rem call test.bat mmsort.CombSort %1
 call test.bat mmsort.ManyPivotSort %1
@@ -22,7 +24,9 @@ rem call test.bat mmsort.InsersionSort %1
 rem call test.bat mmsort.InplaceMergeSort %1
 call test.bat mmsort.MasSort %1
 call test.bat mmsort.MatSort %1
-call test.bat mmsort.MatMmsSort %1
+call test.bat mmsort.MatMasSort %1
 call test.bat mmsort.MergeSort %1
 call test.bat mmsort.MmsSort %1
 call test.bat mmsort.MmsSortH %1
+
+time /t > con

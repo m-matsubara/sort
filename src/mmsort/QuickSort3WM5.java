@@ -215,20 +215,16 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 			// from           eqFrom         curFrom   curTo            eqTo                to
 
 			int comp1 = comparator.compare(array[curFrom], pivot);
-			if (comp1 < 0) {
-				do {
-					comp1 = comparator.compare(array[++curFrom], pivot);
-				} while (comp1 < 0);
+			while (comp1 < 0) {
+				comp1 = comparator.compare(array[++curFrom], pivot);
 			}
 
 			int comp2 = comparator.compare(pivot, array[curTo]);
-			if (comp2 < 0) {
-				do {
-					comp2 = comparator.compare(pivot, array[--curTo]);
-				} while (comp2 < 0);
+			while (comp2 < 0) {
+				comp2 = comparator.compare(pivot, array[--curTo]);
 			}
 
-			if (curFrom > curTo)
+			if (curFrom >= curTo)
 				break;
 
 			if (comp1 != 0 || comp2 != 0) {
@@ -320,6 +316,7 @@ public class QuickSort3WM5 implements ISortAlgorithm {
 */
 		sortImpl(array, from, curFrom, comparator);
 		sortImpl(array, curTo + 1, to, comparator);
+//		assert SortTest.validateArray(array, false, from, to);
 	}
 
 	@Override

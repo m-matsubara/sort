@@ -270,22 +270,23 @@ public class SortTest {
 	 * 配列のソート結果を確認する(デバッグ用)
 	 * @param array 対象配列
 	 */
-	public static void validateArray(Object[] array, boolean stable, int from, int to)
+	public static boolean validateArray(Object[] array, boolean stable, int from, int to)
 	{
 		SortItem[] arraySI = (SortItem[])array;
 		if (stable) {
 			//	安定ソート用
-			for (int i = 1; i < array.length - 2; i++) {
+			for (int i = from; i < to - 1; i++) {
 				if (arraySI[i].key > arraySI[i + 1].key || ((arraySI[i].key == arraySI[i + 1].key) && (arraySI[i].orginalOrder > arraySI[i + 1].orginalOrder)))
-					throw new RuntimeException("array validation error. (stable mode) : " + i);
+					return false;
 			}
 		} else {
 			//	非安定ソート用
-			for (int i = 1; i < array.length - 2; i++) {
+			for (int i = from; i < to - 1; i++) {
 				if (arraySI[i].key > arraySI[i + 1].key)
-					throw new RuntimeException("array validation error. (unstable mode) : " + i);
+					return false;
 			}
 		}
+		return true;
 	}
 
 
